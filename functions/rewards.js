@@ -1,5 +1,7 @@
 const checkedUsers = [];
-const { User, shop, DailyChallenge } = require("./models.js");
+const User = require("../models/user.js");
+const shop = require("../models/shop.js");
+const DailyChallenge = require("../models/dailyChallenges.js");
 
 async function GiveRewards(id, difficulty) {
     let points;
