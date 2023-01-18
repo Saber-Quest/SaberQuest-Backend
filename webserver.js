@@ -120,6 +120,7 @@ app.use('/api/accept-challenge', (req, res, next) => {
 app.use('/api/add-collectible', (req, res, next) => {
     req.token = req.headers.user;
     req.item = req.query.item;
+    next();
 }, addCollectible);
 app.use('/api/buy-item', (req, res, next) => {
     req.token = req.headers.user;
