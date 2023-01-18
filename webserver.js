@@ -137,7 +137,10 @@ app.use('/api/encrypt/:reason', (req, res, next) => {
     next();
 }, encrypt);
 app.use('/api/gamble', gambleAPI);
-app.use('/api/mod-submit', modSubmit);
+app.use('/api/mod-submit', (req, res, next) =>{
+    req.user = req.headers.user;
+    next();
+}, modSubmit);
 app.use('/api/steam-login', steamLogin);
 app.use('/api/top-players', topPlayers);
 app.use('/api/update', (req, res, next) => {

@@ -4,7 +4,7 @@ const { decrypt } = require("../../functions/encryption.js");
 const { CheckCompletion } = require("../../functions/rewards.js");
 
 router.post("/", async (req, res) => {
-    const cd = CheckCompletion(decrypt(req.headers.user));
+    const cd = CheckCompletion(decrypt(req.user));
 
     if (!cd.success) return res.status(400).json({
         success: false,
