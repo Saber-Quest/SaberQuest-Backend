@@ -6,21 +6,17 @@ const { CheckCompletion } = require("../../functions/rewards.js");
 router.post("/", async (req, res) => {
     const cd = CheckCompletion(decrypt(req.headers.user));
 
-    if (cd) {
-        res.status(200).json({
-            success: false,
-            message: "This profile has already been updated within an hour."
-        });
-    }
+    if (!cd.success) return res.status(400).json({
+        success: false,
+        message: cd.message
+    });
 
-    else {
-        res.status(200).json({
-            success: true,
-            message: cd.message,
-            type: cd.type,
-            rewards: cd.rewards
-        });
-    }
+    res.status(200).json({
+        success: true,
+        message: cd.message,
+        type: cd.type,
+        rewards: cd.rewards
+    });
 });
 
 module.exports = router;
