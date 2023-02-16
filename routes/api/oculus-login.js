@@ -10,13 +10,15 @@ router.post('/', async (req, res) => {
 
     const user = await User.findOne({ id: id }).exec();
 
-    if (type == "oculus") {
+    if (type == "register") {
         if (!user) {
+            const pref = req.pref;
+
             const encryptedId = encrypt(id).split(":")[1].substring(0, 10);
 
             const newUser = new User({
                 userId: id,
-                pref: "ss",
+                pref: pref,
                 qp: 0,
                 r: 0,
                 cp: 0,

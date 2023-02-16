@@ -21,8 +21,9 @@ const currentDeals = require('./routes/api/current-deals');
 const dailyChallenges = require('./routes/api/daily-challenges');
 const decrypt = require('./routes/api/decrypt');
 const encrypt = require('./routes/api/encrypt');
-const passCors = require('./routes/api/pass-cors')
+const passCors = require('./routes/api/pass-cors');
 const gambleAPI = require('./routes/api/gamble');
+const modLoginSteam = require('./routes/api/mod-login-steam');
 const modSubmit = require('./routes/api/mod-submit');
 const oculusLogin = require('./routes/api/oculus-login');
 const steamLogin = require('./routes/api/steam-login');
@@ -103,6 +104,11 @@ app.use('/api/pass-cors', (req, res, next) => {
     next();
 }, passCors);
 app.use('/api/gamble', gambleAPI);
+app.use('/api/mod-login-steam', (req, res, next) => {
+    req.id = req.headers.id;
+    req.pref = req.headers.pref;
+    next();
+}, modLoginSteam);
 app.use('/api/mod-submit', (req, res, next) =>{
     req.user = req.headers.user;
     next();
@@ -111,6 +117,7 @@ app.use('/api/steam-login', steamLogin);
 app.use('/api/oculus-login', (req, res, next) => { 
     req.id = req.headers.id;
     req.type = req.headers.type;
+    req.pref = req.headers.pref;
     next();
 }, oculusLogin);
 app.use('/api/top-players', (req, res, next) => {
