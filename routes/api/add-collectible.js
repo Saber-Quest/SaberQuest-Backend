@@ -1,7 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const User = require("../../models/user.js");
+const shop = require("../../models/shop.js");
 const { decrypt } = require("../../functions/encryption.js");
+const io = require("../../websocket/websocket");
 
 router.put("/", async (req, res) => {
     const userId = decrypt(req.token);
@@ -10,14 +12,24 @@ router.put("/", async (req, res) => {
     try {
         const user = await User.findOne({ userId: userId }).exec();
 
-        user.collectibles.push({ name: collectible, amount: 1 });
+        const itemData = await shop.findOne({ id: collectible }).exec();
 
-        await User.updateOne({ userId: userId }, { collectibles: user.collectibles });
+        user.collectibles.push({ name: itemData.id, amount: 1 });
+
+        await User.updateOne({ userId: userId }, { collectibles: user.collectibles, value: user.value + itemData.value });
+
+        io.emit("userUpdate", {
+            userId: userId,
+            type: "add",
+            collectibles: collectible,
+            value: user.value
+        })
 
         res.status(200).json({
-            message: 'User updated successfully!',
+            success: true,
+            message: "User updated successfully!",
             user: user.userId,
-            collectibles: user.collectibles
+            collectible: itemData.id,
         });
     }
     catch (err) {

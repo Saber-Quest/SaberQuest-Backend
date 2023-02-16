@@ -1,11 +1,11 @@
 const express = require("express")
 const router = express.Router();
-const fs = require("fs")
+const fs = require("fs")    
 const User = require("../../models/user.js")
 
-let file = String(fs.readFileSync("./public/html/profile.html", "utf8"));
-
 router.get("/", async (req, res) => {
+    let file = String(fs.readFileSync("./public/html/profile.html", "utf8"));
+
     const ssUser = await fetch(`https://scoresaber.com/api/player/${req.id}/basic`).then(res => res.json());
 
     const user = await User.findOne({ userId: req.id }).exec();

@@ -3,6 +3,7 @@ const router = express.Router();
 const { decrypt } = require("../../functions/encryption.js");
 const User = require("../../models/user");
 const shop = require("../../models/shop");
+const io = require("../../websocket/websocket");
 
 router.post("/", async (req, res) => {
     const token = req.token;
@@ -27,7 +28,14 @@ router.post("/", async (req, res) => {
 
         user.qp -= itemData.price;
 
-        await User.updateOne({ userId: id }, { qp: user.qp, collectibles: collectibles });
+        await User.updateOne({ userId: id }, { qp: user.qp, collectibles: collectibles, value: user.value + itemData.value });
+
+        io.emit("itemBought", {
+            userId: id,
+            item: itemData.id,
+            qp: user.qp,
+            value: user.value + itemData.value
+        });
 
         res.status(200).json({
             success: true,

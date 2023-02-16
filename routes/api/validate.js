@@ -24,6 +24,13 @@ router.post("/", async (req, res) => {
             });
         }
 
+        else if (cd == "no-diff") {
+            res.status(200).json({
+                success: false,
+                message: "This profile has not accepted a challenge yet."
+            });
+        }
+
         else {
             res.status(200).json({
                 success: true,

@@ -12,9 +12,14 @@ router.get("/", async (req, res) => {
     try {
         const user = await User.findOne({ userId: userId }).exec();
 
+        if (!user) return res.status(404).json({
+            message: 'User not found!'
+        });
+
         res.status(200).json({
             message: 'User fetched successfully!',
             user: user.userId,
+            preference: user.pref,
             rank: user.r,
             qp: user.qp,
             challengesCompleted: user.cp,

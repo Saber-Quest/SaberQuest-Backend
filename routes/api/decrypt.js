@@ -1,13 +1,19 @@
 const express = require("express")
 const router = express.Router();
 const { decrypt } = require("../../functions/encryption.js");
-const User = require("../../models/User");
+const User = require("../../models/user");
+const io = require("../../websocket/websocket");
 
 router.post("/", async (req, res) => {
     const reason = req.reason;
     const data = req.headers.user;
 
     const decrypted = decrypt(data);
+
+    if (decrypted == null) return res.status(401).json({
+        message: "error",
+        message: "Something went wrong while decrypting the token."
+    });
 
     switch (reason) {
         case "userId": {
@@ -39,11 +45,25 @@ router.post("/", async (req, res) => {
                     cp: 0,
                     value: 0,
                     collectibles: [],
-                    "completed": null,
-                    "diff": null
+                    completed: false,
+                    diff: 4,
+                    oculus: null
                 });
 
                 await newUser.save();
+
+                const people = await User.find().exec();
+
+                people.sort((a, b) => b.value - a.value);
+                people.forEach((person, index) => {
+                    person.r = index + 1;
+                    person.save();
+                });
+
+                io.emit("newUser", {
+                    userId: decrypted,
+                    link: `https://saberquest.xyz/profile/${decrypted}`
+                })
             }
 
             res.status(200).json({

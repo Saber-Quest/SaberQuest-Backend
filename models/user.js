@@ -19,8 +19,21 @@ const User = Users.model('User', new mongoose.Schema({
     }],
     value: Number,
     diff: Number,
-    completed: Boolean
+    completed: Boolean,
+    oculus: String
 }), 'User');
+
+let today = new Date().getUTCDate();
+
+setInterval(async () => {
+    if (new Date().getUTCDate() !== today) {
+        console.log("Updating users...")
+        await User.updateMany({ completed: true }, { $set: { completed: false } }).exec();
+        await User.updateMany({ diff: { $ne: 4 } }, { $set: { diff: 4 } }).exec();
+
+        today = new Date().getUTCDate();
+    }
+}, 1000 * 60);
 
 
 module.exports = User;

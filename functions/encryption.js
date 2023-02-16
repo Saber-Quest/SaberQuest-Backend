@@ -14,6 +14,7 @@ module.exports = {
         return iv.toString('hex') + ':' + encrypted.toString('hex');
     },
     decrypt : (text) => {
+        try {
         const textParts = text.split(':');
     
         const iv = Buffer.from(textParts.shift(), 'hex');
@@ -25,5 +26,8 @@ module.exports = {
         const decrypted = Buffer.concat([decipher.update(encryptedText), decipher.final()]);
     
         return decrypted.toString();
+        } catch (err) {
+            return null;
+        }
     }
 }

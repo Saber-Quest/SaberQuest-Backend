@@ -3,6 +3,7 @@ const router = express.Router();
 const shop = require("../../models/shop.js");
 const User = require("../../models/user.js");
 const { decrypt } = require("../../functions/encryption.js");
+const io = require("../../websocket/websocket");
 
 router.post("/", async (req, res) => {
     const userId = decrypt(req.headers.user);
@@ -53,6 +54,12 @@ router.post("/", async (req, res) => {
     }
 
     user.collectibles = collectibles;
+
+    io.emit("gamble", {
+        userId: user.userId,
+        itemWon: chosenItem.id,
+        rarity: chosenItem.rarity
+    })
 
     await user.save();
 

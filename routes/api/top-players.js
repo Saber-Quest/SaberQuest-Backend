@@ -3,11 +3,11 @@ const router = express.Router();
 const User = require("../../models/user.js");
 
 router.get("/", async (req, res) => {
-    const page = req.query.page;
+    const page = req.page;
     try {
-        const topPlayers = await User.find().sort({ value: -1 }).select("userId value cp");
+        let topPlayers = await User.find().sort({ value: -1 }).select("userId value cp r");
 
-        topPlayers.splice(0, (page - 1) * 10);
+        topPlayers = topPlayers.sort((a, b) => a.r - b.r).slice((page - 1) * 10, page * 10);
 
         res.status(200).json({
             message: 'Top players fetched successfully!',
