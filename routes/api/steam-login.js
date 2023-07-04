@@ -7,7 +7,7 @@ router.get("/", async (req, res) => {
 
     const encrypted = encrypt(id);
 
-    res.redirect(`http://localhost:3000/profile#${encrypted}`);
+    res.redirect(`https://saberquest.xyz/profile#${encrypted}`);
 });
 
 module.exports = router;

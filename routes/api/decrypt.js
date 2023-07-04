@@ -36,10 +36,31 @@ router.post("/", async (req, res) => {
             const user = await User.findOne({ userId: decrypted }).exec();
 
             if (user == null) {
+                let hasBl = false;
+                let hasSs = false;
+                const beatleader = await fetch(`https://api.beatleader.xyz/player/${decrypted}`).then(res => res.json());
+                if (beatleader.id != null) hasBl = true;
+                const scoresaber = await fetch(`https://scoresaber.com/api/player/${decrypted}/basic`).then(res => res.json());
+                if (!scoresaber.errorMessage) hasSs = true;
+
+                let preference;
+
+                if (hasBl) {
+                    preference = "bl";
+                } else if (hasSs) {
+                    preference = "ss";
+                } else {
+                    preference = undefined;
+                }
+
+                if (preference == undefined) return res.status(401).json({
+                    message: "error",
+                    message: "User does not exist in any of the databases."
+                });
 
                 const newUser = new User({
                     userId: decrypted,
-                    pref: "ss",
+                    pref: preference,
                     qp: 0,
                     r: 0,
                     cp: 0,
@@ -47,7 +68,7 @@ router.post("/", async (req, res) => {
                     collectibles: [],
                     completed: false,
                     diff: 4,
-                    oculus: null
+                    discordId: null
                 });
 
                 await newUser.save();

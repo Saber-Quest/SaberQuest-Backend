@@ -55,6 +55,8 @@ router.post("/", async (req, res) => {
 
     user.collectibles = collectibles;
 
+    user.value += chosenItem.value;
+
     io.emit("gamble", {
         userId: user.userId,
         itemWon: chosenItem.id,
@@ -63,10 +65,19 @@ router.post("/", async (req, res) => {
 
     await user.save();
 
+    const people = await User.find().exec();
+
+    people.sort((a, b) => b.value - a.value);
+    people.forEach((person, index) => {
+        person.r = index + 1;
+        person.save();
+    });
+
     res.status(200).json({
         success: true,
         itemWon: chosenItem.id,
-        rarity: chosenItem.rarity
+        rarity: chosenItem.rarity,
+        qp: user.qp
     });
 });
 

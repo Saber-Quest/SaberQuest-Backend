@@ -23,7 +23,15 @@ router.put("/", async (req, res) => {
             type: "add",
             collectibles: collectible,
             value: user.value
-        })
+        });
+
+        const people = await User.find().exec();
+
+        people.sort((a, b) => b.value - a.value);
+        people.forEach((person, index) => {
+            person.r = index + 1;
+            person.save();
+        });
 
         res.status(200).json({
             success: true,

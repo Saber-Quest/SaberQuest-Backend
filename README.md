@@ -95,8 +95,7 @@ the user ID. Example: `/api/user/76561198343533017`
 SaberQuest also has a websocket that you can listen to if you want to get all
 the latest updates.
 
-The websocket runs on port 8080, you can listen to it at
-ws://saberquest.xyz:8080.
+The websocket runs on port 8080, you can listen to it at `ws://saberquest.xyz:8080`.
 
 Each update has it's own specific event, so make sure to listen to the events
 that you need.
@@ -119,7 +118,7 @@ away through crafting.
 
 ```js
 {
-    "id": "string",
+    "userId": "string",
     "difficulty": "string",
     "rewards": string[]
 }

@@ -18,7 +18,8 @@ router.post("/", async (req, res) => {
             case "Extreme": diff = 3; break;
         }
 
-        await User.updateOne({ userId: id }, { diff: diff });
+        user.diff = diff;
+        await user.save();
 
         res.status(200).json({
             message: 'Challenge accepted!'

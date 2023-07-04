@@ -34,13 +34,23 @@ router.post("/", async (req, res) => {
             userId: id,
             item: itemData.id,
             qp: user.qp,
-            value: user.value + itemData.value
+            value: user.value + itemData.value,
+            price: itemData.price
+        });
+
+        const people = await User.find().exec();
+
+        people.sort((a, b) => b.value - a.value);
+        people.forEach((person, index) => {
+            person.r = index + 1;
+            person.save();
         });
 
         res.status(200).json({
             success: true,
             message: "User updated successfully!",
             user: user.userId,
+            qp: user.qp,
             item: itemData.id,
         });
     } else {

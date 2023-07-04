@@ -18,11 +18,11 @@ const possibleChallenges = mongoose.createConnection(`${env.MONGO_URL}challenges
 
 // Create the Challenge model
 
-const Challenge = possibleChallenges.model('Challenge', new mongoose.Schema({
+const Challenge = possibleChallenges.model('challenges', new mongoose.Schema({
     source: String,
     type: String,
     difficulties: Array,
-}), 'Challenge');
+}), 'challenges');
 
 // Create the Daily Challenge model
 
@@ -32,73 +32,89 @@ let DailyChallenge = challenges.model(`${day}`, new mongoose.Schema({
     difficulties: Array,
 }), `${day}`);
 
-// Add a new challenge to the database if one doesn't exist
+async function Do() {
 
-const challenge = DailyChallenge.findOne().exec();
+    // Add a new challenge to the database if one doesn't exist
 
-if (!challenge) {
-    const challenges = Challenge.find().exec();
+    const challenge = await DailyChallenge.findOne().exec();
 
-    const randomChallenge = challenges[Math.floor(Math.random() * challenges.length)];
+    if (!challenge) {
+        const challenges = await Challenge.find().exec();
 
-    DailyChallenge.create(randomChallenge);
+        const randomChallenge = challenges[Math.floor(Math.random() * challenges.length)];
 
-    console.log(`Created a new challenge for ${day}`);
+        DailyChallenge.create({
+            source: randomChallenge.source,
+            type: randomChallenge.type,
+            difficulties: randomChallenge.difficulties
+        });
+
+        setTimeout(() => {
+            io.emit('challenge', randomChallenge)
+        }, 6000);
+
+        console.log(`Created a new challenge for ${day}`);
+    }
+
+    setInterval(async () => {
+        if (new Date().getUTCDate() !== day) {
+            day = new Date().getUTCDate();
+
+            DailyChallenge = challenges.model(`${day}`, new mongoose.Schema({
+                source: String,
+                type: String,
+                difficulties: Array,
+            }), `${day}`);
+
+            const challenges = await Challenge.find().exec();
+
+            const randomChallenge = challenges[Math.floor(Math.random() * challenges.length)];
+
+            await DailyChallenge.create(randomChallenge);
+
+            console.log(`Created a new challenge for ${new Date().getUTCDate()}/${new Date().getUTCMonth() + 1}/${new Date().getUTCFullYear()}`);
+
+            io.emit('challenge', randomChallenge)
+        }
+    }, 1000 * 60 * 10);
+
+    setInterval(async () => {
+        const newDate = new Date();
+
+        if (newDate.getUTCMonth() + 1 !== date.getUTCMonth() + 1) {
+            challenges.close();
+
+            currentDb = `${newDate.getMonth() + 1}${newDate.getFullYear().toString().slice(2)}`;
+
+            challenges = mongoose.createConnection(`${env.MONGO_URL}${currentDb}?retryWrites=true&w=majority`, { useNewUrlParser: true, useUnifiedTopology: true });
+
+            DailyChallenge = challenges.model(`${day}`, new mongoose.Schema({
+                source: String,
+                type: String,
+                difficulties: Array,
+            }), `${day}`);
+
+            const challenges = await Challenge.find().exec();
+
+            const randomChallenge = challenges[Math.floor(Math.random() * challenges.length)];
+
+            await DailyChallenge.create({
+                source: randomChallenge.source,
+                type: randomChallenge.type,
+                difficulties: randomChallenge.difficulties
+            });
+
+            console.log(`Created a new challenge for ${day}`);
+
+            io.emit('challenge', randomChallenge)
+        }
+    }, 1000 * 60 * 30)
+
 }
 
-setInterval(async () => {
-    if (new Date().getUTCDate() !== day) {
-        day = new Date().getUTCDate();
-        
-        DailyChallenge = challenges.model(`${day}`, new mongoose.Schema({
-            source: String,
-            type: String,
-            difficulties: Array,
-        }), `${day}`);
-
-        const challenges = await Challenge.find().exec();
-
-        const randomChallenge = challenges[Math.floor(Math.random() * challenges.length)];
-
-        await DailyChallenge.create(randomChallenge);
-
-        console.log(`Created a new challenge for ${day}`);
-
-        io.emit('challenge', randomChallenge)
-    }
-}, 1000 * 60 * 10);
-
-setInterval(async () => {
-    const newDate = new Date();
-
-    if (newDate.getUTCMonth() + 1 !== date.getUTCMonth() + 1) {
-        challenges.close();
-
-        currentDb = `${newDate.getMonth() + 1}${newDate.getFullYear().toString().slice(2)}`;
-
-        challenges = mongoose.createConnection(`${env.MONGO_URL}${currentDb}?retryWrites=true&w=majority`, { useNewUrlParser: true, useUnifiedTopology: true });
-
-        DailyChallenge = challenges.model(`${day}`, new mongoose.Schema({
-            source: String,
-            type: String,
-            difficulties: Array,
-        }), `${day}`);
-
-        const challenges = await Challenge.find().exec();
-
-        const randomChallenge = challenges[Math.floor(Math.random() * challenges.length)];
-
-        await DailyChallenge.create(randomChallenge);
-
-        console.log(`Created a new challenge for ${day}`);
-
-        io.emit('challenge', randomChallenge)
-    }
-}, 1000 * 60 * 60 * 24)
-
-
+Do();
 
 module.exports = {
-    DailyChallenge,
-    Challenge
+    challenges,
+    DailyChallenge
 };

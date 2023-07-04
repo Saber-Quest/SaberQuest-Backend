@@ -144,9 +144,9 @@ async function GiveRewards(id, difficulty) {
 async function BeatLeader(id, difficulty) {
     let completed = false;
     const user = await User.findOne({ userId: id }).exec();
-    const today = new Date("2023-02-06T18:11:36.000Z").getUTCDate();
-    const month = new Date("2023-02-06T18:11:36.000Z").getUTCMonth();
-    const year = new Date("2023-02-06T18:11:36.000Z").getUTCFullYear();
+    const today = new Date().getUTCDate();
+    const month = new Date().getUTCMonth();
+    const year = new Date().getUTCFullYear();
     const currentChallenge = await DailyChallenge.findOne().exec();
 
     const bl = await fetch(`https://api.beatleader.xyz/player/${id}/scores?sortBy=date&order=desc&page=1&count=50`).then(res => res.json());
@@ -156,7 +156,7 @@ async function BeatLeader(id, difficulty) {
     const promise = new Promise((resolve, reject) => {
         scores.forEach(async play => {
             if (completed) return;
-            if (currentChallenge.source == "scoresaber") {
+            if (currentChallenge.source == "score") {
                 switch (currentChallenge.type) {
                     case "FCStars":
                         if (play.leaderboard.difficulty.stars >= currentChallenge.difficulties[difficulty].starsBL && play.fullCombo == true) {
@@ -173,7 +173,7 @@ async function BeatLeader(id, difficulty) {
                                 await user.save();
 
                                 io.emit("challengeCompleted", {
-                                    id: id,
+                                    userId: id,
                                     difficulty: currentChallenge.difficulties[difficulty].name,
                                     rewards: rewards
                                 })
@@ -201,7 +201,7 @@ async function BeatLeader(id, difficulty) {
                                 await user.save();
 
                                 io.emit("challengeCompleted", {
-                                    id: id,
+                                    userId: id,
                                     difficulty: currentChallenge.difficulties[difficulty].name,
                                     rewards: rewards
                                 })
@@ -232,7 +232,7 @@ async function BeatLeader(id, difficulty) {
                                 await user.save();
 
                                 io.emit("challengeCompleted", {
-                                    id: id,
+                                    userId: id,
                                     difficulty: currentChallenge.difficulties[difficulty].name,
                                     rewards: rewards
                                 })
@@ -263,7 +263,7 @@ async function BeatLeader(id, difficulty) {
                                 await user.save();
 
                                 io.emit("challengeCompleted", {
-                                    id: id,
+                                    userId: id,
                                     difficulty: currentChallenge.difficulties[difficulty].name,
                                     rewards: rewards
                                 })
@@ -279,13 +279,12 @@ async function BeatLeader(id, difficulty) {
                         break;
                     case "playXMaps": {
                         const plays = await fetch(`https://api.beatleader.xyz/player/${id}/scores?sortBy=date&order=desc&page=1&count=50`).then(res => res.json());
-                        const dateSet = new Date(play.timepost * 1000).getUTCDate();
-                        const monthSet = new Date(play.timepost * 1000).getUTCMonth();
-                        const yearSet = new Date(play.timepost * 1000).getUTCFullYear();
                         let count = 0;
 
                         plays.playerScores.forEach(play => {
                             const dateSet = new Date(play.timepost * 1000).getDate();
+                            const monthSet = new Date(play.timepost * 1000).getUTCMonth();
+                            const yearSet = new Date(play.timepost * 1000).getUTCFullYear();
                             if (dateSet == today && monthSet == month && yearSet == year) count++;
                         });
 
@@ -299,7 +298,7 @@ async function BeatLeader(id, difficulty) {
                             await user.save();
 
                             io.emit("challengeCompleted", {
-                                id: id,
+                                userId: id,
                                 difficulty: currentChallenge.difficulties[difficulty].name,
                                 rewards: rewards
                             })
@@ -339,7 +338,7 @@ async function BeatLeader(id, difficulty) {
                                             await user.save();
 
                                             io.emit("challengeCompleted", {
-                                                id: id,
+                                                userId: id,
                                                 difficulty: currentChallenge.difficulties[difficulty].name,
                                                 rewards: rewards
                                             })
@@ -377,7 +376,7 @@ async function BeatLeader(id, difficulty) {
                                         await user.save();
 
                                         io.emit("challengeCompleted", {
-                                            id: id,
+                                            userId: id,
                                             difficulty: currentChallenge.difficulties[difficulty].name,
                                             rewards: rewards
                                         })
@@ -410,7 +409,7 @@ async function BeatLeader(id, difficulty) {
                                 await user.save();
 
                                 io.emit("challengeCompleted", {
-                                    id: id,
+                                    userId: id,
                                     difficulty: currentChallenge.difficulties[difficulty].name,
                                     rewards: rewards
                                 })

@@ -145,9 +145,9 @@ async function GiveRewards(id, difficulty) {
 async function ScoreSaber(id, difficulty) {
     let completed = false;
     const user = await User.findOne({ userId: id }).exec();
-    const today = new Date("2023-02-06T18:11:36.000Z").getUTCDate();
-    const month = new Date("2023-02-06T18:11:36.000Z").getUTCMonth();
-    const year = new Date("2023-02-06T18:11:36.000Z").getUTCFullYear();
+    const today = new Date().getUTCDate();
+    const month = new Date().getUTCMonth();
+    const year = new Date().getUTCFullYear();
     const currentChallenge = await DailyChallenge.findOne().exec();
 
     const ss = await fetch(`https://scoresaber.com/api/player/${id}/scores?limit=50&sort=recent`).then(res => res.json())
@@ -155,7 +155,7 @@ async function ScoreSaber(id, difficulty) {
     const promise = new Promise((resolve, reject) => {
         ss.playerScores.forEach(async play => {
             if (completed) return;
-            if (currentChallenge.source == "scoresaber") {
+            if (currentChallenge.source == "score") {
                 switch (currentChallenge.type) {
                     case "FCStars":
                         if (play.leaderboard.stars >= currentChallenge.difficulties[difficulty].starsSS && play.score.fullCombo == true) {
@@ -172,7 +172,7 @@ async function ScoreSaber(id, difficulty) {
                                 await user.save();
 
                                 io.emit("challengeCompleted", {
-                                    id: id,
+                                    userId: id,
                                     difficulty: currentChallenge.difficulties[difficulty].name,
                                     rewards: rewards
                                 })
@@ -198,7 +198,7 @@ async function ScoreSaber(id, difficulty) {
                                 await user.save();
 
                                 io.emit("challengeCompleted", {
-                                    id: id,
+                                    userId: id,
                                     difficulty: currentChallenge.difficulties[difficulty].name,
                                     rewards: rewards
                                 })
@@ -226,7 +226,7 @@ async function ScoreSaber(id, difficulty) {
                                 await user.save();
 
                                 io.emit("challengeCompleted", {
-                                    id: id,
+                                    userId: id,
                                     difficulty: currentChallenge.difficulties[difficulty].name,
                                     rewards: rewards
                                 })
@@ -255,7 +255,7 @@ async function ScoreSaber(id, difficulty) {
                                 await user.save();
 
                                 io.emit("challengeCompleted", {
-                                    id: id,
+                                    userId: id,
                                     difficulty: currentChallenge.difficulties[difficulty].name,
                                     rewards: rewards
                                 })
@@ -289,7 +289,7 @@ async function ScoreSaber(id, difficulty) {
                             await user.save();
 
                             io.emit("challengeCompleted", {
-                                id: id,
+                                userId: id,
                                 difficulty: currentChallenge.difficulties[difficulty].name,
                                 rewards: rewards
                             })
@@ -327,7 +327,7 @@ async function ScoreSaber(id, difficulty) {
                                             await user.save();
 
                                             io.emit("challengeCompleted", {
-                                                id: id,
+                                                userId: id,
                                                 difficulty: currentChallenge.difficulties[difficulty].name,
                                                 rewards: rewards
                                             })
@@ -363,7 +363,7 @@ async function ScoreSaber(id, difficulty) {
                                         await user.save();
 
                                         io.emit("challengeCompleted", {
-                                            id: id,
+                                            userId: id,
                                             difficulty: currentChallenge.difficulties[difficulty].name,
                                             rewards: rewards
                                         })
@@ -394,7 +394,7 @@ async function ScoreSaber(id, difficulty) {
                                 await user.save();
 
                                 io.emit("challengeCompleted", {
-                                    id: id,
+                                    userId: id,
                                     difficulty: currentChallenge.difficulties[difficulty].name,
                                     rewards: rewards
                                 })
