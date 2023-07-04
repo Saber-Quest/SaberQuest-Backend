@@ -107,7 +107,6 @@ data
 public
 package-lock.json
 swagger.json
-.gitignore
 addChallengesToDb.js
 addToDb.js
 dataStructures.js
