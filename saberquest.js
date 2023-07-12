@@ -1,6 +1,7 @@
 const express = require('express');
 const favicon = require('serve-favicon');
 const path = require('path');
+const io = require("./websocket/websocket");
 
 const fourOhFour = require('./routes/site/404');
 const admin = require('./routes/site/admin');
@@ -28,8 +29,8 @@ const decrypt = require('./routes/api/decrypt');
 const encrypt = require('./routes/api/encrypt');
 const passCors = require('./routes/api/pass-cors');
 const gambleAPI = require('./routes/api/gamble');
+const items = require('./routes/api/items');
 const linkDiscord = require('./routes/api/link-discord');
-const modLoginSteam = require('./routes/api/mod-login-steam');
 const steamLogin = require('./routes/api/steam-login');
 const topPlayers = require('./routes/api/top-players');
 const update = require('./routes/api/update');
@@ -204,15 +205,14 @@ app.use('/api/pass-cors', (req, res, next) => {
     next();
 }, passCors);
 app.use('/api/gamble', gambleAPI);
+app.use('/api/items', (req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    next();
+}, items);
 app.use('/api/link-discord', (req, res, next) => {
     req.code = req.query.code;
     next();
 }, linkDiscord);
-app.use('/api/mod-login-steam', (req, res, next) => {
-    req.id = req.headers.id;
-    req.pref = req.headers.pref;
-    next();
-}, modLoginSteam);
 app.use('/api/steam-login', steamLogin);
 app.use('/api/top-players', (req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -256,4 +256,20 @@ app.use('*', fourOhFour)
 
 app.listen(3000, () => {
     console.log("Server started on port 3000");
+});
+
+process.on('uncaughtException', (err, origin) => {
+    io.emit('serverError', {
+        name: err.name,
+        message: err.message
+    });
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+    promise.catch((err) => {
+        io.emit('serverError', {
+            name: err.name || "Unhandled Rejection",
+            message: err.message || "No message"
+        });
+    });
 });

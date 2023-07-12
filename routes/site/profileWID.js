@@ -18,12 +18,12 @@ router.get("/", async (req, res) => {
 
         if (ssUser.errorMessage) return res.redirect("/profile");
     
-        const avatar = ssUser.profilePicture
+        const avatar = ssUser.profilePicture;
     
         const color = await colorN.getAverageColor(avatar);
         const hex = color.hex;
     
-        file = file.replace(/{{user}}/g, ssUser.name).replace("{{description}}", `Player Rank: #${user.r}\nAccount Value: ${user.value}\nChallenges Completed: ${user.cp}\nQuest Points: ${user.qp}\nNumber of Collectibles: ${amountOfCollectibles}`).replace("{{avatar}}", avatar).replace("{{color}}", hex)
+        file = file.replace(/{{user}}/g, ssUser.name).replace("{{description}}", `Player Rank: #${user.r}\nAccount Value: ${user.value}\nChallenges Completed: ${user.cp}\nQuest Points: ${user.qp}\nNumber of Collectibles: ${amountOfCollectibles}`).replace("{{avatar}}", avatar).replace("{{color}}", hex);
     
         return res.send(file);
     }
@@ -33,12 +33,12 @@ router.get("/", async (req, res) => {
 
         if (blUser.id == null) return res.redirect("/profile");
 
-        const avatar = blUser.avatar
+        const avatar = blUser.avatar;
 
         const color = await colorN.getAverageColor(avatar);
         const hex = color.hex;
 
-        file = file.replace(/{{user}}/g, blUser.name).replace("{{description}}", `Player Rank: #${user.r}\nAccount Value: ${user.value}\nChallenges Completed: ${user.cp}\nQuest Points: ${user.qp}\nNumber of Collectibles: ${amountOfCollectibles}`).replace("{{avatar}}", avatar).replace("{{color}}", hex)
+        file = file.replace(/{{user}}/g, blUser.name).replace("{{description}}", `Player Rank: #${user.r}\nAccount Value: ${user.value}\nChallenges Completed: ${user.cp}\nQuest Points: ${user.qp}\nNumber of Collectibles: ${amountOfCollectibles}`).replace("{{avatar}}", avatar).replace("{{color}}", hex);
 
         return res.send(file);
     }

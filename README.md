@@ -14,7 +14,16 @@ being sold in the shop.
 ```js
 {
     "message": "string",
-    "deals": string[]
+    "deals": object[]
+}
+
+// Example of the deals object
+
+{
+    "id": "string",
+    "price": int,
+    "rarity": "string",
+    "value": int
 }
 ```
 

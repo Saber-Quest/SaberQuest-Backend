@@ -1,10 +1,10 @@
 const express = require("express")
 const router = express.Router();
-const { DailyChallenge } = require("../../models/dailyChallenges.js");
+const fs = require("fs");
 
 router.get("/", async (req, res) => {
     try {
-        const dailyChallenges = await DailyChallenge.findOne().exec();
+        const dailyChallenges = JSON.parse(fs.readFileSync("./data/currentChallenge.json", "utf8"));
 
         let task;
 

@@ -8,7 +8,14 @@ router.get("/", async (req, res) => {
 
         res.status(200).json({
             message: 'Current deals fetched successfully!',
-            deals: items.currentlySelling
+            deals: items.currentlySelling.map(item => {
+                return {
+                    id: item.id,
+                    price: item.price,
+                    rarity: item.rarity,
+                    value: item.value
+                }
+            }) 
         });
     }
     catch (err) {

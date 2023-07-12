@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const env = require('dotenv').config().parsed;
 const io = require('../websocket/websocket');
+const fs = require('fs');
 
 const date = new Date();
 
@@ -49,11 +50,11 @@ async function Do() {
             difficulties: randomChallenge.difficulties
         });
 
-        setTimeout(() => {
-            io.emit('challenge', randomChallenge)
-        }, 6000);
+        fs.writeFileSync('./data/currentChallenge.json', JSON.stringify(randomChallenge, null, 4));
 
-        console.log(`Created a new challenge for ${day}`);
+        io.emit('challenge', randomChallenge);
+
+        console.log(`Created a new challenge for ${new Date().getUTCDate()}/${new Date().getUTCMonth() + 1}/${new Date().getUTCFullYear()}`);
     }
 
     setInterval(async () => {
@@ -66,22 +67,29 @@ async function Do() {
                 difficulties: Array,
             }), `${day}`);
 
-            const challenges = await Challenge.find().exec();
+            const challengesObj = await Challenge.find().exec();
 
-            const randomChallenge = challenges[Math.floor(Math.random() * challenges.length)];
+            const randomChallenge = challengesObj[Math.floor(Math.random() * challengesObj.length)];
 
-            await DailyChallenge.create(randomChallenge);
+            await DailyChallenge.create({
+                source: randomChallenge.source,
+                type: randomChallenge.type,
+                difficulties: randomChallenge.difficulties
+            });
+
+            fs.writeFileSync('./data/currentChallenge.json', JSON.stringify(randomChallenge, null, 4));
 
             console.log(`Created a new challenge for ${new Date().getUTCDate()}/${new Date().getUTCMonth() + 1}/${new Date().getUTCFullYear()}`);
 
-            io.emit('challenge', randomChallenge)
+            io.emit('challenge', randomChallenge);
         }
-    }, 1000 * 60 * 10);
+    }, 1000 * 60);
 
     setInterval(async () => {
         const newDate = new Date();
 
         if (newDate.getUTCMonth() + 1 !== date.getUTCMonth() + 1) {
+            date = newDate;
             challenges.close();
 
             currentDb = `${newDate.getMonth() + 1}${newDate.getFullYear().toString().slice(2)}`;
@@ -94,9 +102,9 @@ async function Do() {
                 difficulties: Array,
             }), `${day}`);
 
-            const challenges = await Challenge.find().exec();
+            const challengesObj = await Challenge.find().exec();
 
-            const randomChallenge = challenges[Math.floor(Math.random() * challenges.length)];
+            const randomChallenge = challengesObj[Math.floor(Math.random() * challengesObj.length)];
 
             await DailyChallenge.create({
                 source: randomChallenge.source,
@@ -104,11 +112,13 @@ async function Do() {
                 difficulties: randomChallenge.difficulties
             });
 
-            console.log(`Created a new challenge for ${day}`);
+            fs.writeFileSync('./data/currentChallenge.json', JSON.stringify(randomChallenge, null, 4));
 
-            io.emit('challenge', randomChallenge)
+            console.log(`Created a new challenge for ${new Date().getUTCDate()}/${new Date().getUTCMonth() + 1}/${new Date().getUTCFullYear()}`);
+
+            io.emit('challenge', randomChallenge);
         }
-    }, 1000 * 60 * 30)
+    }, 1000 * 60 * 60)
 
 }
 
