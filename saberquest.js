@@ -4,7 +4,6 @@ const path = require('path');
 const io = require("./websocket/websocket");
 
 const fourOhFour = require('./routes/site/404');
-const admin = require('./routes/site/admin');
 const challenges = require('./routes/site/challenges');
 const index = require('./routes/site/index');
 const inventory = require('./routes/site/inventory');
@@ -14,7 +13,6 @@ const profile = require('./routes/site/profile');
 const profileWID = require('./routes/site/profileWID');
 const sabers = require('./routes/site/sabers');
 const shop = require('./routes/site/shop');
-const team = require('./routes/site/team');
 
 const acceptChallenge = require('./routes/api/accept-challenge');
 const addChallenge = require('./routes/api/add-challenge');
@@ -66,14 +64,6 @@ app.use('/challenges', (req, res, next) => {
     res.setHeader('Permissions-Policy', 'geolocation=(), microphone=(), camera=(), magnetometer=(), gyroscope=(), payment=()');
     next();
 }, challenges);
-app.use('/hello-random-person-looking-at-the-source-code', (req, res, next) => {
-    res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
-    res.setHeader('X-Frame-Options', 'SAMEORIGIN');
-    res.setHeader('X-Content-Type-Options', 'nosniff');
-    res.setHeader('Referrer-Policy', 'no-referrer');
-    res.setHeader('Permissions-Policy', 'geolocation=(), microphone=(), camera=(), magnetometer=(), gyroscope=(), payment=()');
-    next();
-}, admin);
 app.use('/shop', (req, res, next) => {
     res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
     res.setHeader('X-Frame-Options', 'SAMEORIGIN');
@@ -133,14 +123,6 @@ app.use('/inventory', (req, res, next) => {
     res.setHeader('Permissions-Policy', 'geolocation=(), microphone=(), camera=(), magnetometer=(), gyroscope=(), payment=()');
     next();
 }, inventory);
-app.use('/team', (req, res, next) => {
-    res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
-    res.setHeader('X-Frame-Options', 'SAMEORIGIN');
-    res.setHeader('X-Content-Type-Options', 'nosniff');
-    res.setHeader('Referrer-Policy', 'no-referrer');
-    res.setHeader('Permissions-Policy', 'geolocation=(), microphone=(), camera=(), magnetometer=(), gyroscope=(), payment=()');
-    next();
-}, team);
 
 // --------------------------------------------------------------------------- API ---------------------------------------------------------------------------
 
