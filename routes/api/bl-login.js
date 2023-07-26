@@ -2,6 +2,7 @@ const querystring = require("querystring");
 const express = require("express")
 const { encrypt } = require("../../functions/encryption.js");
 const router = express.Router();
+require("dotenv").config();
 
 router.get("/", async (req, res) => {
     const code = querystring.stringify({ code: req.code });
@@ -9,9 +10,11 @@ router.get("/", async (req, res) => {
 
     if (iss != "https://api.beatleader.xyz/") return res.status(401).send("Unauthorized");
 
-    const secret = querystring.stringify({ client_secret: env.SABERQUEST_SECRET })
-    const client_id = querystring.stringify({ client_id: env.SABERQUEST_ID })
+    const secret = querystring.stringify({ client_secret: process.env.BEATLEADER_SECRET })
+    const client_id = querystring.stringify({ client_id: process.env.BEATLEADER_ID })
     const redirect_uri = querystring.stringify({ redirect_uri: "https://saberquest.xyz/api/bl-login" })
+
+    console.log(secret, client_id, redirect_uri, code)
 
     const response = await fetch("https://api.beatleader.xyz/oauth2/token", {
         method: "POST",
@@ -33,6 +36,7 @@ router.get("/", async (req, res) => {
     else {
         const info = await user.json();
         const id = info.id;
+        console.log("New login from " + id);
 
         const encrypted = encrypt(id);
 

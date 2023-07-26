@@ -10,6 +10,9 @@ const Users = mongoose.createConnection(`${env.MONGO_URL}users?retryWrites=true&
 
 const User = Users.model('User', new mongoose.Schema({
     userId: String,
+    username: String,
+    avatar: String,
+    banner: String,
     pref: String,
     r: Number,
     qp: Number,

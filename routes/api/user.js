@@ -16,32 +16,11 @@ router.get("/", async (req, res) => {
             message: 'User not found!'
         });
 
-        let name;
-        let country;
-        let profilePicture;
-        switch (user.pref) {
-            case "ss": {
-                await fetch(`https://scoresaber.com/api/player/${user.userId}/basic`).then(res => res.json()).then(json => {
-                    name = json.name;
-                    country = json.country;
-                    profilePicture = json.profilePicture;
-                });
-            }
-            case "bl": {
-                await fetch(`https://api.beatleader.xyz/player/${user.userId}`).then(res => res.json()).then(json => {
-                    name = json.name;
-                    country = json.country;
-                    profilePicture = json.avatar;
-                });
-            }
-        }
-
         res.status(200).json({
             message: 'User fetched successfully!',
             user: user.userId,
-            name: name,
-            country: country,
-            profilePicture: profilePicture,
+            username: user.username,
+            avatar: user.avatar,
             preference: user.pref,
             rank: user.r,
             qp: user.qp,

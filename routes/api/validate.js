@@ -13,7 +13,7 @@ router.post("/", async (req, res) => {
         if (cd == true) {
             res.status(200).json({
                 success: false,
-                message: "This profile has already been updated within an hour."
+                message: "You can only update your profile once per 5 minutes!"
             });
         }
 
@@ -28,6 +28,13 @@ router.post("/", async (req, res) => {
             res.status(200).json({
                 success: false,
                 message: "This profile has not accepted a challenge yet."
+            });
+        }
+
+        else if (cd == "not-completed") {
+            res.status(200).json({
+                success: false,
+                message: "This profile does not meet the requirements to complete the challenge."
             });
         }
 

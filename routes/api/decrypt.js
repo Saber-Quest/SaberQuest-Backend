@@ -3,6 +3,9 @@ const router = express.Router();
 const { decrypt } = require("../../functions/encryption.js");
 const User = require("../../models/user");
 const io = require("../../websocket/websocket");
+const fs = require("fs");
+const { Readable } = require("stream");
+const { finished } = require("stream/promises");
 
 router.post("/", async (req, res) => {
     const reason = req.reason;
@@ -38,6 +41,9 @@ router.post("/", async (req, res) => {
             if (user == null) {
                 let hasBl = false;
                 let hasSs = false;
+                let username;
+                let avatar;
+
                 const beatleader = await fetch(`https://api.beatleader.xyz/player/${decrypted}`).then(res => res.json());
                 if (beatleader.id != null) hasBl = true;
                 const scoresaber = await fetch(`https://scoresaber.com/api/player/${decrypted}/basic`).then(res => res.json());
@@ -47,8 +53,12 @@ router.post("/", async (req, res) => {
 
                 if (hasBl) {
                     preference = "bl";
+                    avatar = beatleader.avatar;
+                    username = beatleader.name;
                 } else if (hasSs) {
                     preference = "ss";
+                    avatar = scoresaber.profilePicture;
+                    username = scoresaber.name;
                 } else {
                     preference = undefined;
                 }
@@ -58,8 +68,17 @@ router.post("/", async (req, res) => {
                     message: "User does not exist in any of the databases."
                 });
 
+                await fetch(avatar).then(async res => {
+                    const body = Readable.fromWeb(res.body);
+                    const download = fs.createWriteStream(`./data/avatars/${decrypted}.png`);
+                    await finished(body.pipe(download));
+                });
+
                 const newUser = new User({
                     userId: decrypted,
+                    username: username,
+                    avatar: `https://saberquest.xyz/avatar/${decrypted}.png`,
+                    banner: null,
                     pref: preference,
                     qp: 0,
                     r: 0,

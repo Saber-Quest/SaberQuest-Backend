@@ -4,6 +4,7 @@ const path = require('path');
 const io = require("./websocket/websocket");
 
 const fourOhFour = require('./routes/site/404');
+const avatar = require('./routes/site/avatar');
 const challenges = require('./routes/site/challenges');
 const index = require('./routes/site/index');
 const inventory = require('./routes/site/inventory');
@@ -56,6 +57,10 @@ app.use('/', (req, res, next) => {
     res.setHeader('Permissions-Policy', 'geolocation=(), microphone=(), camera=(), magnetometer=(), gyroscope=(), payment=()');
     next();
 }, index);
+app.use('/avatar/:id', (req, res, next) => {
+    req.img = req.params.id;
+    next();
+}, avatar);
 app.use('/challenges', (req, res, next) => {
     res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
     res.setHeader('X-Frame-Options', 'SAMEORIGIN');
@@ -241,6 +246,7 @@ app.listen(3000, () => {
 });
 
 process.on('uncaughtException', (err, origin) => {
+    console.log(err);
     io.emit('serverError', {
         name: err.name,
         message: err.message
@@ -248,6 +254,7 @@ process.on('uncaughtException', (err, origin) => {
 });
 
 process.on('unhandledRejection', (reason, promise) => {
+    console.log(reason);
     promise.catch((err) => {
         io.emit('serverError', {
             name: err.name || "Unhandled Rejection",

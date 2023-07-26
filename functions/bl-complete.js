@@ -9,9 +9,11 @@ async function GiveRewards(id, difficulty) {
 
     // Give the user one to three random collectibles
 
-    // The chance of getting a common collectible is 60%, uncommon is 20%, rare is 10%, epic is 7%, legendary is 3%
-
-    const collectibleChance = ["Common", "Common", "Common", "Common", "Common", "Common", "Uncommon", "Uncommon", "Uncommon", "Uncommon", "Rare", "Rare", "Rare", "Epic", "Epic", "Legendary"];
+    // Funny array of rarities
+    const collectibleChance = ["Common", "Common", "Uncommon", "Common", "Common", "Common", "Common", "Common", "Common", "Rare", "Common",
+        "Uncommon", "Uncommon", "Common", "Rare", "Common", "Common", "Uncommon", "Common", "Legendary", "Common", "Common", "Uncommon",
+        "Common", "Common", "Uncommon", "Common", "Common", "Common", "Common", "Common", "Common", "Rare", "Uncommon", "Common", "Common",
+        "Common", "Rare", "Common", "Common", "Common"]
 
     const randomAmount = Math.floor(Math.random() * 3) + 1;
 
@@ -28,7 +30,7 @@ async function GiveRewards(id, difficulty) {
 
         let reward = await shop.find({ rarity: collectible }).exec();
 
-        reward = reward.filter(item => item.id !== "115" && item.id !== "bcn");
+        reward = reward.filter(item => item.id !== "115" && item.id !== "bcn" && item.id !== "gn" && item.id !== "sn");
 
         // Pick a random item from the list of items with that rarity
 
@@ -80,7 +82,7 @@ async function GiveRewards(id, difficulty) {
 
         for (const collectible of collectibles) {
             const item = await shop.findOne({ id: collectible.name }).exec();
-            totalValue += item.price * collectible.amount;
+            totalValue += item.value * collectible.amount;
         }
 
         return totalValue;
@@ -153,172 +155,222 @@ async function BeatLeader(id, difficulty) {
 
     const scores = bl.data;
 
-    const promise = new Promise((resolve, reject) => {
-        scores.forEach(async play => {
+    if (currentChallenge.type == "playXMaps") {
+        let count = 0;
+
+        bl.data.forEach(play => {
+            const dateSet = new Date(play.timepost * 1000).getDate();
+            const monthSet = new Date(play.timepost * 1000).getUTCMonth();
+            const yearSet = new Date(play.timepost * 1000).getUTCFullYear();
+            if (dateSet == today && monthSet == month && yearSet == year) count++;
+        });
+
+        if (count >= currentChallenge.difficulties[difficulty].maps) {
             if (completed) return;
-            if (currentChallenge.source == "score") {
-                switch (currentChallenge.type) {
-                    case "FCStars":
-                        if (play.leaderboard.difficulty.stars >= currentChallenge.difficulties[difficulty].starsBL && play.fullCombo == true) {
-                            const dateSet = new Date(play.timepost * 1000).getUTCDate();
-                            const monthSet = new Date(play.timepost * 1000).getUTCMonth();
-                            const yearSet = new Date(play.timepost * 1000).getUTCFullYear();
-                            if (dateSet == today && monthSet == month && yearSet == year) {
-                                completed = true;
-                                const rewards = await GiveRewards(id, currentChallenge.difficulties[difficulty].name);
+            completed = true;
+            const rewards = await GiveRewards(id, currentChallenge.difficulties[difficulty].name);
 
-                                user.completed = true;
-                                user.cp += 1;
+            user.completed = true;
+            user.cp += 1;
 
-                                await user.save();
+            await user.save();
 
-                                io.emit("challengeCompleted", {
-                                    userId: id,
-                                    difficulty: currentChallenge.difficulties[difficulty].name,
-                                    rewards: rewards
-                                })
+            io.emit("challengeCompleted", {
+                userId: id,
+                difficulty: currentChallenge.difficulties[difficulty].name,
+                rewards: rewards
+            })
 
-                                return resolve({
-                                    message: 'Challenge completed!',
-                                    difficulty: currentChallenge.difficulties[difficulty].name,
-                                    rewards: rewards
-                                });
+            return {
+                message: 'Challenge completed!',
+                difficulty: currentChallenge.difficulties[difficulty].name,
+                rewards: rewards
+            };
+        }
+
+        else {
+            return "not-completed"
+        }
+    }
+
+    else {
+        const promise = new Promise(async (resolve, reject) => {
+            for (const play of scores) {
+                if (completed) return;
+                if (currentChallenge.source == "score") {
+                    switch (currentChallenge.type) {
+                        case "FCStars":
+                            if (play.leaderboard.difficulty.stars >= currentChallenge.difficulties[difficulty].starsBL && play.fullCombo == true) {
+                                const dateSet = new Date(play.timepost * 1000).getUTCDate();
+                                const monthSet = new Date(play.timepost * 1000).getUTCMonth();
+                                const yearSet = new Date(play.timepost * 1000).getUTCFullYear();
+                                if (dateSet == today && monthSet == month && yearSet == year) {
+                                    if (completed) return;
+                                    completed = true;
+                                    const rewards = await GiveRewards(id, currentChallenge.difficulties[difficulty].name);
+
+                                    user.completed = true;
+                                    user.cp += 1;
+
+                                    await user.save();
+
+                                    io.emit("challengeCompleted", {
+                                        userId: id,
+                                        difficulty: currentChallenge.difficulties[difficulty].name,
+                                        rewards: rewards
+                                    })
+
+                                    return resolve({
+                                        message: 'Challenge completed!',
+                                        difficulty: currentChallenge.difficulties[difficulty].name,
+                                        rewards: rewards
+                                    });
+                                }
+                            }
+                            break;
+                        case "pp": {
+                            if (play.pp >= currentChallenge.difficulties[difficulty].ppBL) {
+                                const dateSet = new Date(play.timepost * 1000).getUTCDate();
+                                const monthSet = new Date(play.timepost * 1000).getUTCMonth();
+                                const yearSet = new Date(play.timepost * 1000).getUTCFullYear();
+                                if (dateSet == today && monthSet == month && yearSet == year) {
+                                    if (completed) return;
+                                    completed = true;
+                                    const rewards = await GiveRewards(id, currentChallenge.difficulties[difficulty].name);
+
+                                    user.completed = true;
+                                    user.cp += 1;
+
+                                    await user.save();
+
+                                    io.emit("challengeCompleted", {
+                                        userId: id,
+                                        difficulty: currentChallenge.difficulties[difficulty].name,
+                                        rewards: rewards
+                                    })
+
+                                    return resolve({
+                                        message: 'Challenge completed!',
+                                        difficulty: currentChallenge.difficulties[difficulty].name,
+                                        rewards: rewards
+                                    });
+                                }
                             }
                         }
-                        break;
-                    case "pp": {
-                        if (play.pp >= currentChallenge.difficulties[difficulty].ppBL) {
-                            const dateSet = new Date(play.timepost * 1000).getUTCDate();
-                            const monthSet = new Date(play.timepost * 1000).getUTCMonth();
-                            const yearSet = new Date(play.timepost * 1000).getUTCFullYear();
-                            if (dateSet == today && monthSet == month && yearSet == year) {
-                                completed = true;
-                                const rewards = await GiveRewards(id, currentChallenge.difficulties[difficulty].name);
+                            break;
+                        case "xAccuracyStars": {
+                            const accuracy = play.accuracy * 100;
 
-                                user.completed = true;
-                                user.cp += 1;
+                            if (accuracy >= currentChallenge.difficulties[difficulty].accuracy && play.leaderboard.difficulty.stars >= currentChallenge.difficulties[difficulty].starsBL) {
+                                const dateSet = new Date(play.timepost * 1000).getUTCDate();
+                                const monthSet = new Date(play.timepost * 1000).getUTCMonth();
+                                const yearSet = new Date(play.timepost * 1000).getUTCFullYear();
+                                if (dateSet == today && monthSet == month && yearSet == year) {
+                                    if (completed) return;
+                                    completed = true;
+                                    const rewards = await GiveRewards(id, currentChallenge.difficulties[difficulty].name);
 
-                                await user.save();
+                                    user.completed = true;
+                                    user.cp += 1;
 
-                                io.emit("challengeCompleted", {
-                                    userId: id,
-                                    difficulty: currentChallenge.difficulties[difficulty].name,
-                                    rewards: rewards
-                                })
+                                    await user.save();
 
-                                return resolve({
-                                    message: 'Challenge completed!',
-                                    difficulty: currentChallenge.difficulties[difficulty].name,
-                                    rewards: rewards
-                                });
+                                    io.emit("challengeCompleted", {
+                                        userId: id,
+                                        difficulty: currentChallenge.difficulties[difficulty].name,
+                                        rewards: rewards
+                                    })
+
+                                    return resolve({
+                                        message: 'Challenge completed!',
+                                        difficulty: currentChallenge.difficulties[difficulty].name,
+                                        rewards: rewards
+                                    });
+                                }
                             }
                         }
-                    }
-                        break;
-                    case "xAccuracyStars": {
-                        const accuracy = play.accuracy * 100;
+                            break;
+                        case "xAccuracyPP": {
+                            const accuracy = play.accuracy * 100;
 
-                        if (accuracy >= currentChallenge.difficulties[difficulty].accuracy && play.leaderboard.difficulty.stars >= currentChallenge.difficulties[difficulty].starsBL) {
-                            const dateSet = new Date(play.timepost * 1000).getUTCDate();
-                            const monthSet = new Date(play.timepost * 1000).getUTCMonth();
-                            const yearSet = new Date(play.timepost * 1000).getUTCFullYear();
-                            if (dateSet == today && monthSet == month && yearSet == year) {
-                                completed = true;
-                                const rewards = await GiveRewards(id, currentChallenge.difficulties[difficulty].name);
+                            if (accuracy >= currentChallenge.difficulties[difficulty].accuracy && play.pp >= currentChallenge.difficulties[difficulty].ppBL) {
+                                const dateSet = new Date(play.timepost * 1000).getUTCDate();
+                                const monthSet = new Date(play.timepost * 1000).getUTCMonth();
+                                const yearSet = new Date(play.timepost * 1000).getUTCFullYear();
+                                if (dateSet == today && monthSet == month && yearSet == year) {
+                                    if (completed) return;
+                                    completed = true;
+                                    const rewards = await GiveRewards(id, currentChallenge.difficulties[difficulty].name);
 
-                                user.completed = true;
-                                user.cp += 1;
+                                    user.completed = true;
+                                    user.cp += 1;
 
-                                await user.save();
+                                    await user.save();
 
-                                io.emit("challengeCompleted", {
-                                    userId: id,
-                                    difficulty: currentChallenge.difficulties[difficulty].name,
-                                    rewards: rewards
-                                })
+                                    io.emit("challengeCompleted", {
+                                        userId: id,
+                                        difficulty: currentChallenge.difficulties[difficulty].name,
+                                        rewards: rewards
+                                    })
 
-                                return resolve({
-                                    message: 'Challenge completed!',
-                                    difficulty: currentChallenge.difficulties[difficulty].name,
-                                    rewards: rewards
-                                });
+                                    return resolve({
+                                        message: 'Challenge completed!',
+                                        difficulty: currentChallenge.difficulties[difficulty].name,
+                                        rewards: rewards
+                                    });
+                                }
                             }
                         }
+                            break;
                     }
-                        break;
-                    case "xAccuracyPP": {
-                        const accuracy = play.accuracy * 100;
-
-                        if (accuracy >= currentChallenge.difficulties[difficulty].accuracy && play.pp >= currentChallenge.difficulties[difficulty].ppBL) {
-                            const dateSet = new Date(play.timepost * 1000).getUTCDate();
-                            const monthSet = new Date(play.timepost * 1000).getUTCMonth();
-                            const yearSet = new Date(play.timepost * 1000).getUTCFullYear();
-                            if (dateSet == today && monthSet == month && yearSet == year) {
-                                completed = true;
-                                const rewards = await GiveRewards(id, currentChallenge.difficulties[difficulty].name);
-
-                                user.completed = true;
-                                user.cp += 1;
-
-                                await user.save();
-
-                                io.emit("challengeCompleted", {
-                                    userId: id,
-                                    difficulty: currentChallenge.difficulties[difficulty].name,
-                                    rewards: rewards
-                                })
-
-                                return resolve({
-                                    message: 'Challenge completed!',
-                                    difficulty: currentChallenge.difficulties[difficulty].name,
-                                    rewards: rewards
-                                });
-                            }
-                        }
-                    }
-                        break;
-                    case "playXMaps": {
-                        const plays = await fetch(`https://api.beatleader.xyz/player/${id}/scores?sortBy=date&order=desc&page=1&count=50`).then(res => res.json());
-                        let count = 0;
-
-                        plays.playerScores.forEach(play => {
-                            const dateSet = new Date(play.timepost * 1000).getDate();
-                            const monthSet = new Date(play.timepost * 1000).getUTCMonth();
-                            const yearSet = new Date(play.timepost * 1000).getUTCFullYear();
-                            if (dateSet == today && monthSet == month && yearSet == year) count++;
-                        });
-
-                        if (count >= currentChallenge.difficulties[difficulty].maps) {
-                            completed = true;
-                            const rewards = await GiveRewards(id, currentChallenge.difficulties[difficulty].name);
-
-                            user.completed = true;
-                            user.cp += 1;
-
-                            await user.save();
-
-                            io.emit("challengeCompleted", {
-                                userId: id,
-                                difficulty: currentChallenge.difficulties[difficulty].name,
-                                rewards: rewards
-                            })
-
-                            return resolve({
-                                message: 'Challenge completed!',
-                                difficulty: currentChallenge.difficulties[difficulty].name,
-                                rewards: rewards
-                            });
-                        }
-                    }
-                        break;
                 }
-            }
 
-            else if (currentChallenge.source == "beatsaver") {
-                switch (currentChallenge.type) {
-                    case "fcNotes": {
-                        if (play.fullCombo) {
-                            const map = await fetch(`https://api.beatsaver.com/maps/hash/${play.leaderboard.songHash}`).then(res => res.json());
+                else if (currentChallenge.source == "beatsaver") {
+                    switch (currentChallenge.type) {
+                        case "fcNotes": {
+                            if (play.fullCombo) {
+                                await new Promise(resolve => setTimeout(resolve, 10));
+                                const map = await fetch(`https://api.beatsaver.com/maps/hash/${play.leaderboard.songHash}`).then(res => res.json());
+
+                                const diff = play.leaderboard.difficulty.difficultyName;
+
+                                map.versions[0].diffs.forEach(async d => {
+                                    if (d.difficulty == diff) {
+                                        if (d.notes >= currentChallenge.difficulties[difficulty].notes) {
+                                            const dateSet = new Date(play.timepost * 1000).getUTCDate();
+                                            const monthSet = new Date(play.timepost * 1000).getUTCMonth();
+                                            const yearSet = new Date(play.timepost * 1000).getUTCFullYear();
+                                            if (dateSet == today && monthSet == month && yearSet == year) {
+                                                if (completed) return;
+                                                completed = true;
+                                                const rewards = await GiveRewards(id, currentChallenge.difficulties[difficulty].name);
+
+                                                user.completed = true;
+                                                user.cp += 1;
+
+                                                await user.save();
+
+                                                io.emit("challengeCompleted", {
+                                                    userId: id,
+                                                    difficulty: currentChallenge.difficulties[difficulty].name,
+                                                    rewards: rewards
+                                                })
+
+                                                return resolve({
+                                                    message: 'Challenge completed!',
+                                                    difficulty: currentChallenge.difficulties[difficulty].name,
+                                                    rewards: rewards
+                                                });
+                                            }
+                                        }
+                                    }
+                                });
+                            }
+                        }
+                            break;
+                        case "passNotes": {
+                            await new Promise(resolve => setTimeout(resolve, 10));
+                            const map = await fetch(`https://api.beatsaver.com/maps/hash/${play.leaderboard.song.hash}`).then(res => res.json());
 
                             const diff = play.leaderboard.difficulty.difficultyName;
 
@@ -329,6 +381,7 @@ async function BeatLeader(id, difficulty) {
                                         const monthSet = new Date(play.timepost * 1000).getUTCMonth();
                                         const yearSet = new Date(play.timepost * 1000).getUTCFullYear();
                                         if (dateSet == today && monthSet == month && yearSet == year) {
+                                            if (completed) return;
                                             completed = true;
                                             const rewards = await GiveRewards(id, currentChallenge.difficulties[difficulty].name);
 
@@ -353,82 +406,50 @@ async function BeatLeader(id, difficulty) {
                                 }
                             });
                         }
-                    }
-                        break;
-                    case "passNotes": {
-                        const map = await fetch(`https://api.beatsaver.com/maps/hash/${play.leaderboard.songHash}`).then(res => res.json());
+                            break;
+                        case "passLength": {
+                            await new Promise(resolve => setTimeout(resolve, 10));
+                            const map = await fetch(`https://api.beatsaver.com/maps/hash/${play.leaderboard.songHash}`).then(res => res.json());
 
-                        const diff = play.leaderboard.difficulty.difficultyName;
+                            if (map.metadata.duration >= currentChallenge.difficulties[difficulty].length) {
+                                const dateSet = new Date(play.timepost * 1000).getUTCDate();
+                                const monthSet = new Date(play.timepost * 1000).getUTCMonth();
+                                const yearSet = new Date(play.timepost * 1000).getUTCFullYear();
+                                if (dateSet == today && monthSet == month && yearSet == year) {
+                                    if (completed) return;
+                                    completed = true;
+                                    const rewards = await GiveRewards(id, currentChallenge.difficulties[difficulty].name);
 
-                        map.versions[0].diffs.forEach(async d => {
-                            if (d.difficulty == diff) {
-                                if (d.notes >= currentChallenge.difficulties[difficulty].notes) {
-                                    const dateSet = new Date(play.timepost * 1000).getUTCDate();
-                                    const monthSet = new Date(play.timepost * 1000).getUTCMonth();
-                                    const yearSet = new Date(play.timepost * 1000).getUTCFullYear();
-                                    if (dateSet == today && monthSet == month && yearSet == year) {
-                                        completed = true;
-                                        const rewards = await GiveRewards(id, currentChallenge.difficulties[difficulty].name);
+                                    user.completed = true;
+                                    user.cp += 1;
 
-                                        user.completed = true;
-                                        user.cp += 1;
+                                    await user.save();
 
-                                        await user.save();
+                                    io.emit("challengeCompleted", {
+                                        userId: id,
+                                        difficulty: currentChallenge.difficulties[difficulty].name,
+                                        rewards: rewards
+                                    })
 
-                                        io.emit("challengeCompleted", {
-                                            userId: id,
-                                            difficulty: currentChallenge.difficulties[difficulty].name,
-                                            rewards: rewards
-                                        })
-
-                                        return resolve({
-                                            message: 'Challenge completed!',
-                                            difficulty: currentChallenge.difficulties[difficulty].name,
-                                            rewards: rewards
-                                        });
-                                    }
+                                    return resolve({
+                                        message: 'Challenge completed!',
+                                        difficulty: currentChallenge.difficulties[difficulty].name,
+                                        rewards: rewards
+                                    });
                                 }
                             }
-                        });
-                    }
-                        break;
-                    case "passLength": {
-                        const map = await fetch(`https://api.beatsaver.com/maps/hash/${play.leaderboard.songHash}`).then(res => res.json());
-
-                        if (map.metadata.duration >= currentChallenge.difficulties[difficulty].length) {
-                            const dateSet = new Date(play.timepost * 1000).getUTCDate();
-                            const monthSet = new Date(play.timepost * 1000).getUTCMonth();
-                            const yearSet = new Date(play.timepost * 1000).getUTCFullYear();
-                            if (dateSet == today && monthSet == month && yearSet == year) {
-                                completed = true;
-                                const rewards = await GiveRewards(id, currentChallenge.difficulties[difficulty].name);
-
-                                user.completed = true;
-                                user.cp += 1;
-
-                                await user.save();
-
-                                io.emit("challengeCompleted", {
-                                    userId: id,
-                                    difficulty: currentChallenge.difficulties[difficulty].name,
-                                    rewards: rewards
-                                })
-
-                                return resolve({
-                                    message: 'Challenge completed!',
-                                    difficulty: currentChallenge.difficulties[difficulty].name,
-                                    rewards: rewards
-                                });
-                            }
                         }
+                            break;
                     }
-                        break;
+                }
+
+                if (play == scores[scores.length - 1]) {
+                    return resolve("not-completed");
                 }
             }
         });
-    });
-
-    return promise;
+        return promise
+    }
 }
 
 module.exports = BeatLeader;

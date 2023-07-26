@@ -13,6 +13,8 @@ router.post("/", async (req, res) => {
 
     const user = await User.findOne({ userId: id }).exec();
 
+    if (!user) return res.status(404).json({ message: "User not found" });
+
     const itemData = await shop.findOne({ id: item }).exec();
 
     if (user.qp >= itemData.price) {

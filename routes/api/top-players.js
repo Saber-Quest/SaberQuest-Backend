@@ -5,7 +5,7 @@ const User = require("../../models/user.js");
 router.get("/", async (req, res) => {
     const page = req.page;
     try {
-        let topPlayers = await User.find().sort({ value: -1 }).select("userId value cp r pref");
+        let topPlayers = await User.find().sort({ value: -1 }).select("userId value cp r pref avatar username");
 
         topPlayers = topPlayers.sort((a, b) => a.r - b.r).slice((page - 1) * 10, page * 10);
 
