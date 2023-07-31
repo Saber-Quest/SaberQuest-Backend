@@ -11,12 +11,6 @@
         "noImplicitAny": false,
         "sourceMap": false,
         "baseUrl": ".",
-        "paths": {
-            "*": [
-                "node_modules/*",
-                "src/types/*"
-            ]
-        },
         "allowSyntheticDefaultImports": true,
         "strict": true,
         "forceConsistentCasingInFileNames": true
