@@ -17,6 +17,8 @@
                 "src/types/*"
             ]
         },
-        "allowSyntheticDefaultImports": true
+        "allowSyntheticDefaultImports": true,
+        "strict": true,
+        "forceConsistentCasingInFileNames": true
     }
 }

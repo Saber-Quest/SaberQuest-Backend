@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 const env = require('dotenv').config().parsed;
-import io from '../websocket/websocket';
+import io from '../../websocket/websocket';
 import fs from 'fs';
 
 let date = new Date();
