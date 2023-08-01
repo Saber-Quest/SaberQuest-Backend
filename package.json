@@ -1,11 +1,17 @@
 {
+  "name": "saberquest-backend",
+  "version": "1.0.0",
+  "main": "src/main.ts",
+  "license": "Apache-2.0",
   "dependencies": {
     "body-parser": "^1.20.2",
+    "class-validator": "^0.14.0",
     "crypto": "^1.0.1",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "fast-average-color-node": "^2.6.0",
     "mongoose": "^6.9.0",
+    "nodemon": "^3.0.1",
     "path": "^0.12.7",
     "pgsql": "^1.0.0",
     "prisma": "^5.0.0",
@@ -18,6 +24,7 @@
     "@types/serve-favicon": "^2.5.4"
   },
   "scripts": {
-    "dev": "ts-node main.ts"
+    "dev": "ts-node ./src/main.ts",
+    "watch": "nodemon watch"
   }
 }

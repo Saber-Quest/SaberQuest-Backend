@@ -1,9 +1,7 @@
-import { Express } from "express";
-import { IRoutes } from "./interfaces/IRoutes";
-
+import { Express, RequestHandler } from "express";
 var routes: IRoutes[] = [];
 
-export function GET(route: string) {
+export function GetRoute(route: string) {
     return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
         routes.push({
             function: descriptor.value,
@@ -13,7 +11,7 @@ export function GET(route: string) {
     }
 }
 
-export function PUT(route: string) {
+export function PutRoute(route: string) {
     return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
         routes.push({
             function: descriptor.value,
@@ -23,7 +21,7 @@ export function PUT(route: string) {
     }
 }
 
-export function DELETE(route: string) {
+export function DelRoute(route: string) {
     return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
         routes.push({
             function: descriptor.value,
@@ -33,7 +31,7 @@ export function DELETE(route: string) {
     }
 }
 
-export function POST(route: string) {
+export function PostRoute(route: string) {
     return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
         routes.push({
             function: descriptor.value,
@@ -43,7 +41,7 @@ export function POST(route: string) {
     }
 }
 
-export function ALL(route: string) {
+export function AllRoute(route: string) {
     return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
         routes.push({
             function: descriptor.value,
@@ -58,23 +56,29 @@ export function setupRoutes(app: Express) {
         const route = routes[i];
         switch (route.type) {
             case "ALL":
-                app.all("/api/" + route.route, route.function)
+                app.all("/" + route.route, route.function)
                 break;
             case "POST":
-                app.post("/api/" + route.route, route.function)
+                app.post("/" + route.route, route.function)
                 break;
             case "DEL":
-                app.delete("/api/" + route.route, route.function)
+                app.delete("/" + route.route, route.function)
                 break;
             case "PUT":
-                app.put("/api/" + route.route, route.function)
+                app.put("/" + route.route, route.function)
                 break;
             case "GET":
-                app.get("/api/" + route.route, route.function)
+                app.get("/" + route.route, route.function)
                 break;
 
             default:
                 break;
         }
     }
+}
+
+interface IRoutes {
+    route: string,
+    type: string,
+    function: RequestHandler
 }
