@@ -2,9 +2,6 @@
     "ts-node": {
         "files": true
     },
-    "include": [
-        "types/environment.d.ts",
-    ],
     "compilerOptions": {
         "module": "NodeNext",
         "target": "es6",
@@ -13,6 +10,7 @@
         "baseUrl": ".",
         "allowSyntheticDefaultImports": true,
         "strict": true,
-        "forceConsistentCasingInFileNames": true
+        "forceConsistentCasingInFileNames": true,
+        "experimentalDecorators": true
     }
 }
