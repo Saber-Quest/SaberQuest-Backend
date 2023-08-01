@@ -4,7 +4,7 @@ import express from "express";
 import { setupRoutes } from "./router";
 import { Server } from "socket.io";
 import path from "path";
-let files = readdirSync(path.join(__dirname, "api"));
+const files = readdirSync(path.join(__dirname, "api"));
 for (let i = 0; i < files.length; i++) {
     require(`./api/${files[i]}`);
 }
