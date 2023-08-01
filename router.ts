@@ -1,5 +1,5 @@
 import { Express } from "express";
-import { IRoutes } from "../interfaces/IRoutes";
+import { IRoutes } from "./interfaces/IRoutes";
 
 var routes: IRoutes[] = [];
 

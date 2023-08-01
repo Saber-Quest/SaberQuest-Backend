@@ -8,8 +8,8 @@ async function main() {
     const app = express();
     const socketServer = new Server(socketPort);
     
-    console.log(`Socket server started on port ${socketPort}`);
-    
+    console.log(`Web socket started on port ${socketPort}.`);
+
     setupRoutes(app);
 
     app.use(express.json());
