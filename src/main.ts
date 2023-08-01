@@ -1,6 +1,13 @@
+import "reflect-metadata";
+import { readdirSync } from "fs";
 import express from "express";
 import { setupRoutes } from "./router";
 import { Server } from "socket.io";
+import path from "path";
+let files = readdirSync(path.join(__dirname, "api"));
+for (let i = 0; i < files.length; i++) {
+    require(`./api/${files[i]}`);
+}
 
 async function main() {
     const httpPort = 3000; // Private port, public secure port is 443, which gets routed through nginx.
@@ -21,7 +28,7 @@ async function main() {
 
     });
 
-    socketServer.on("connection", (socket) => {
+    socketServer.on("connection", (socket: any) => {
         console.log(`New listener connected.\nID: ${socket.id}\nIP: ${socket.handshake.address} (${socket.handshake.headers['x-forwarded-for']})\n\n`);
     });
 

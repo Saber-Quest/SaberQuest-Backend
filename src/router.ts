@@ -54,6 +54,7 @@ export function AllRoute(route: string) {
 export function setupRoutes(app: Express) {
     for (let i = 0; i < routes.length; i++) {
         const route = routes[i];
+        console.log(route)
         switch (route.type) {
             case "ALL":
                 app.all("/" + route.route, route.function)
