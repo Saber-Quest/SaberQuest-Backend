@@ -1,7 +1,7 @@
 import { Express, RequestHandler } from "express";
-var routes: IRoutes[] = [];
+const routes: IRoutes[] = [];
 
-export function GetRoute(route: string) {
+export function GET(route: string) {
     return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
         routes.push({
             function: descriptor.value,
@@ -11,7 +11,7 @@ export function GetRoute(route: string) {
     }
 }
 
-export function PutRoute(route: string) {
+export function PUT(route: string) {
     return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
         routes.push({
             function: descriptor.value,
@@ -21,7 +21,7 @@ export function PutRoute(route: string) {
     }
 }
 
-export function DelRoute(route: string) {
+export function DEL(route: string) {
     return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
         routes.push({
             function: descriptor.value,
@@ -31,7 +31,7 @@ export function DelRoute(route: string) {
     }
 }
 
-export function PostRoute(route: string) {
+export function POST(route: string) {
     return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
         routes.push({
             function: descriptor.value,
