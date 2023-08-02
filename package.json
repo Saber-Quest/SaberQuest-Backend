@@ -27,6 +27,7 @@
   },
   "scripts": {
     "dev": "ts-node ./src/main.ts",
+    "build": "tsc -p .",
     "watch": "nodemon watch",
     "deps:get": "yarn run deps:global && yarn run deps:local",
     "deps:global": "npm i -g typescript ts-node nodemon prisma yarn",

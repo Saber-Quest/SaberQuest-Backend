@@ -4,14 +4,19 @@ import express from "express";
 import { setupRoutes } from "./router";
 import { Server } from "socket.io";
 import path from "path";
-const files = readdirSync(path.join(__dirname, "api"));
-for (let i = 0; i < files.length; i++) {
-    require(`./api/${files[i]}`);
+const folders = readdirSync(path.join(__dirname, "api"));
+for (let i = 0; i < folders.length; i++) {
+    const files = readdirSync(path.join(__dirname, "api", folders[i]));
+    for (let j = 0; j < files.length; j++) {
+        require(`./api/${folders[i]}/${files[j]}`);
+    }
 }
+import * as dotenv from "dotenv";
+dotenv.config();
 
 async function main() {
-    const httpPort = 3000; // Private port, public secure port is 443, which gets routed through nginx.
-    const socketPort = 8080;
+    const httpPort = process.env.PORT || 3000;
+    const socketPort = Number(process.env.SOCKET_PORT) || 3001;
     const app = express();
     const socketServer = new Server(socketPort);
     
