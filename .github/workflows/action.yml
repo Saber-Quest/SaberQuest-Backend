@@ -40,4 +40,4 @@ jobs:
           pm2 delete main -s
           rm -r dist
           yarn build
-          pm2 start main -s
+          pm2 start dist/main.js -s
