@@ -4,9 +4,12 @@ import express from "express";
 import { setupRoutes } from "./router";
 import { Server } from "socket.io";
 import path from "path";
-const files = readdirSync(path.join(__dirname, "api"));
-for (let i = 0; i < files.length; i++) {
-    require(`./api/${files[i]}`);
+const folders = readdirSync(path.join(__dirname, "api"));
+for (let i = 0; i < folders.length; i++) {
+    const files = readdirSync(path.join(__dirname, "api", folders[i]));
+    for (let j = 0; j < files.length; j++) {
+        require(`./api/${folders[i]}/${files[j]}`);
+    }
 }
 
 async function main() {
