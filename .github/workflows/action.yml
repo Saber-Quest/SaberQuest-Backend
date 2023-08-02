@@ -2,7 +2,10 @@ name: CI
 
 on:
   push:
-    branches: [ "dev/prisma/pgsql" ]
+    branches: [ 
+      "main"
+      "dev/knex/pgsql" 
+      ]
     paths-ignore:
       - "**.yml"
       - "!.github/workflows/action.yml"
