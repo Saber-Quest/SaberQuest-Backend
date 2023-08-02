@@ -38,6 +38,6 @@ jobs:
         script: |
           cd "/var/www/dev.saberquest.xyz"
           pm2 delete main -s
-          rm dist
+          rm -r dist
           yarn build
           pm2 start main -s
