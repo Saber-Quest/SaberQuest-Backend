@@ -3,6 +3,13 @@ name: CI
 on:
   push:
     branches: [ "dev/prisma/pgsql" ]
+    paths-ignore:
+      - "**.yml"
+      - "!.github/workflows/action.yml"
+      - "**.json"
+      - "**.txt"
+      - "**.md"
+      - ".gitignore"
 
 jobs:
   build:
@@ -30,4 +37,7 @@ jobs:
         script_stop: true
         script: |
           cd "/var/www/dev.saberquest.xyz"
+          pm2 delete main
+          rm /dist
           yarn build
+          pm2 start main
