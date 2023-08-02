@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { GET } from "../router";
+import { GET } from "../../router";
 
 export class PlayerProfile {
     @GET("profile")
