@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
 import { GET } from "../router";
 
-export class Test {
-    @GET("test")
+export class PlayerProfile {
+    @GET("profile")
     get(req: Request, res: Response) {
-        res.send("Test Received.");
+        res.send("user found, returning.")
     }
 }
