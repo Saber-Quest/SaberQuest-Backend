@@ -27,6 +27,7 @@
   },
   "scripts": {
     "dev": "ts-node ./src/main.ts",
+    "build": "tsc -p .",
     "watch": "nodemon watch"
   }
 }
