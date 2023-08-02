@@ -29,7 +29,7 @@ async function main() {
     app.use(express.static("public"));
     
     app.listen(httpPort, () => {
-        console.log(`App is listening to port ${httpPort}!`)
+        console.log(`App is listening to port ${httpPort} | https://localhost:${httpPort}!`)
 
     });
 
