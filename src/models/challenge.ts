@@ -1,5 +1,9 @@
 export class Challenge {
-    id: number;
-    name: string;
-    content: string[];
+    type: string;
+    difficulties: {
+        easy: number[];
+        normal: number[];
+        hard: number[];
+        extreme: number[];
+    };
 }
