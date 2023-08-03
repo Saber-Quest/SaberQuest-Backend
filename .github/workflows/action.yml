@@ -41,6 +41,7 @@ jobs:
         script_stop: true
         script: |
           cd "/var/www/dev.saberquest.xyz"
+          echo '${{ secrets.ENV }}' > .env
           pm2 delete main -s
           yarn deps:get
           yarn build
