@@ -1,6 +1,7 @@
 import querystring from "querystring";
 import { Request, Response } from "express";
 import { GET } from "../../router";
+import db from "../../db";
 
 export class BeatLeaderLogin {
   @GET("login/beatleader")
@@ -49,5 +50,8 @@ export class BeatLeaderLogin {
     console.log("New user logged in: " + id);
 
     // Code to add user to database here
+    
+    // imported as db
+    
   }
 }
