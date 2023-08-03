@@ -31,7 +31,7 @@
     "build": "tsc -p .",
     "watch": "nodemon watch",
     "deps:get": "yarn run deps:global && yarn run deps:local",
-    "deps:global": "npm i -g typescript ts-node nodemon prisma yarn",
+    "deps:global": "npm i -g typescript ts-node nodemon yarn",
     "deps:local": "yarn",
     "migrate": "knex migrate:latest"
   }
