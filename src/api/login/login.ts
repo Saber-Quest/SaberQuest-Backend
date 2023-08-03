@@ -3,10 +3,10 @@ import { Request, Response } from "express";
 import { GET } from "../../router";
 
 export class BeatLeaderLogin {
-  @GET("bl-login")
+  @GET("login/beatleader")
   async get(req: Request, res: Response) {
-    const code = req.query.code.toString();
-    const iss = req.query.iss.toString();
+    const code = req.query.code;
+    const iss = req.query.iss;
 
     if (iss !== "https://beatleader.xyz") {
       return res.status(403).send("Invalid issuer");
@@ -23,10 +23,10 @@ export class BeatLeaderLogin {
       },
       body: querystring.stringify({
         grant_type: "authorization_code",
-        code: code,
+        code: code.toString(),
         client_secret: process.env.BEATLEADER_SECRET,
         client_id: process.env.BEATLEADER_ID,
-        redirect_uri: "https://saberquest.xyz/bl-login",
+        redirect_uri: "https://saberquest.xyz/login/beatleader",
       }),
     }).then((res) => res.json());
 

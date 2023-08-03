@@ -1,6 +1,7 @@
 import knex, { Knex } from "knex";
 import config from "./config.json";
 import { User } from "./models/user";
+import { Challenge } from "./models/challenge";
 
 const db = knex({
     connection: config.db,
@@ -17,5 +18,6 @@ export default db;
 declare module "knex/types/tables.js" {
     interface Tables {
         users: User;
+        challenges: Challenge;
     }
 }

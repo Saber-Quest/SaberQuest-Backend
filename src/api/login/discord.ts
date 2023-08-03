@@ -3,7 +3,7 @@ import { Request, Response } from "express";
 import { GET } from "../../router";
 
 export class DiscordLogin {
-    @GET("link-discord")
+    @GET("link")
     async get(req: Request, res: Response) {
         const code = req.query.code.toString();
 
