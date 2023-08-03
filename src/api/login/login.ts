@@ -1,7 +1,8 @@
 import querystring from "querystring";
 import { Request, Response } from "express";
 import { GET } from "../../router";
-import db from "../../db";
+import knex from "knex";
+import { User } from "../../models/user";
 
 export class BeatLeaderLogin {
   @GET("login/beatleader")
@@ -51,7 +52,9 @@ export class BeatLeaderLogin {
 
     // Code to add user to database here
     
-    // imported as db
+    // Need to have a chat with Wild about this, but I imagine this is how it'll look.
+    knex<User>("users")
+      .where("id", 1).first();
     
   }
 }
