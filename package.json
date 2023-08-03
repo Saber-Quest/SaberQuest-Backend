@@ -33,8 +33,6 @@
     "deps:get": "yarn run deps:global && yarn run deps:local",
     "deps:global": "npm i -g typescript ts-node nodemon prisma yarn",
     "deps:local": "yarn",
-    "migrate:dev:no-apply": "npx prisma migrate dev --create-only",
-    "migrate:dev": "npx prisma migrate dev",
-    "migrate": "npx prisma migrate"
+    "migrate": "knex migrate:latest"
   }
 }
