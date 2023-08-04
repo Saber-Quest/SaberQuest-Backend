@@ -15,8 +15,8 @@ import * as dotenv from "dotenv";
 dotenv.config();
 
 async function main() {
-    const httpPort = process.env.PORT || 3000;
-    const socketPort = Number(process.env.SOCKET_PORT) || 3001;
+    const httpPort = 5000;
+    const socketPort = 5001;
     const app = express();
     const socketServer = new Server(socketPort);
     
