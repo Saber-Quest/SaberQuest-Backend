@@ -2,7 +2,7 @@ import config from "./src/config.json";
 
 module.exports = {
     development: {
-        client: "postgresql",
+        client: "pg",
         connection: config.db,
         version: "13",
         pool: {
@@ -14,7 +14,7 @@ module.exports = {
         }
     },
     staging: {
-        client: "postgresql",
+        client: "pg",
         connection: config.db,
         version: "13",
         pool: {
@@ -26,7 +26,7 @@ module.exports = {
         }
     },
     production: {
-        client: "postgresql",
+        client: "pg",
         connection: config.db,
         version: "13",
         pool: {

@@ -1,9 +1,10 @@
 {
     "db": {
-        "user": "postgres",
-        "password": "postgres",
+        "user": "FutureMapper",
+        "password": "balls",
         "host": "localhost",
-        "database": "saberquest"
+        "port": "5432",
+        "database": "postgres"
     },
     "---COMMENT---": "junk secret, only to show how it'd look.",
     "secret": "hS7Mwhv+fvDOurE69LshXDmkc84l9QeVx9qniqAziOcQsYGQBND1tftQsDi4SvA4"

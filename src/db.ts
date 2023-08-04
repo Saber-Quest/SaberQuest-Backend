@@ -1,12 +1,13 @@
 import knex, { Knex } from "knex";
-import * as dbConfig from "./config.json";
-import * as knexConfig from "../knexfile"
 import { User } from "./models/user";
 import { Challenge } from "./models/challenge";
 import { Item } from "./models/item";
 import { Shop } from "./models/shop";
 
-const db: Knex = knex(knexConfig);
+const environment = process.env.NODE_ENV || 'development';
+const config = require("../knexfile.ts")[environment];
+
+const db: Knex = knex(config);
 
 export default db;
 
