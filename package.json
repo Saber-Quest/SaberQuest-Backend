@@ -39,6 +39,7 @@
     "seed": "knex seed:run",
     "createSeed": "knex seed:make",
     "createMigration": "knex migrate:make",
+    "startDBContainer": "docker start postgresql",
     "actions": "yarn deps:get && yarn build"
   }
 }
