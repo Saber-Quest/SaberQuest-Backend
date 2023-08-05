@@ -1,6 +1,4 @@
-# SaberQuest-Backend
-
-The backend code for SaberQuest
+# This branch is currently stale, the rewrite is being done on the dev/knex/pgsql branch
 
 ---
 
