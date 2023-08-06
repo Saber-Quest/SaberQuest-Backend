@@ -43,11 +43,11 @@ export async function seed(knex: Knex): Promise<void> {
         },
         {
             challengeSet: 'daily',
-            difficulty: 'Expert',
+            difficulty: 'Extreme',
             values: {
                 "ss": [9, 96.5],
                 "bl": [10, 96.5]
             }
-        },
+        }
     ])
 };
