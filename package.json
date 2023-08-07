@@ -1,13 +1,14 @@
 {
   "name": "saberquest-backend",
   "version": "1.0.0",
-  "main": "src/main.ts",
+  "main": "main.ts",
   "license": "Apache-2.0",
   "dependencies": {
     "body-parser": "^1.20.2",
     "class-validator": "^0.14.0",
     "crypto": "^1.0.1",
     "dotenv": "^16.3.1",
+    "eslint": "^8.46.0",
     "express": "^4.18.2",
     "fast-average-color-node": "^2.6.0",
     "knex": "^2.5.1",
@@ -25,6 +26,9 @@
     "@types/pg": "^8.10.2",
     "@types/serve-favicon": "^2.5.4",
     "@types/socket.io": "^3.0.2",
+    "@typescript-eslint/eslint-plugin": "^6.2.1",
+    "@typescript-eslint/parser": "^6.2.1",
+    "eslint": "^8.46.0",
     "ts-node": "^10.9.1",
     "typescript": "^5.1.6"
   },
@@ -40,6 +44,7 @@
     "createSeed": "knex seed:make",
     "createMigration": "knex migrate:make",
     "startDBContainer": "docker start postgresql",
-    "actions": "yarn deps:get && yarn build"
+    "actions": "yarn deps:get && yarn build",
+    "lint": "yarn eslint **/*.ts"
   }
 }
