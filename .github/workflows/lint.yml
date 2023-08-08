@@ -1,21 +1,22 @@
 name: Lint Project
 
 on:
-  push:
-    branches:
-      - main 
-      - dev/knex/pgsql
+    push:
+        branches:
+            - main
+            - dev/knex/pgsql
 
 jobs:
-  lint:
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./
-    steps:
-    - uses: actions/setup-node@v3
-      with:
-        node-version: "16"
-    - run: |
-        cd ./
-        yarn lint
+    lint:
+        runs-on: ubuntu-latest
+        defaults:
+            run:
+                working-directory: ./
+        steps:
+            - name: Check Project
+              uses: actions/setup-node@v3
+              with:
+                  node-version: "16"
+                  script: |
+                      cd ..
+                      yarn lint
