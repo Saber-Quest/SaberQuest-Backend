@@ -1,9 +1,12 @@
 export class Challenge {
-    type: string;
-    difficulties: {
-        easy: number[];
-        normal: number[];
-        hard: number[];
-        extreme: number[];
-    };
+    challengeSet: string;
+    difficulty: string;
+    values: any;
+
+    constructor(object: Challenge)
+    {
+        this.challengeSet = object.challengeSet;
+        this.difficulty = object.difficulty;
+        this.values = object.values;
+    }
 }
