@@ -45,6 +45,6 @@
     "createMigration": "knex migrate:make",
     "startDBContainer": "docker start postgresql",
     "actions": "yarn deps:get && yarn build",
-    "lint": "yarn eslint **/*.ts"
+    "lint": "yarn deps:get && yarn eslint **/*.ts"
   }
 }
