@@ -1,0 +1,7 @@
+{
+    "prettier.enable": true,
+    "prettier.tabWidth": 4,
+    "prettier.trailingComma": "es5",
+    "prettier.arrowParens": "always",
+    "eslint.enable": true
+}
