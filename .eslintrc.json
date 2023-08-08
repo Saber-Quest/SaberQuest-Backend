@@ -19,6 +19,7 @@
         "arrow-spacing": "warn",
         "arrow-parens": "warn",
         "no-undef": "warn",
-        "no-unused-vars": "warn"
+        "no-unused-vars": "warn",
+        "no-extra-semi": "off"
     }
 }
