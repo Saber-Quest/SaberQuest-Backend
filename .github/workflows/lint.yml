@@ -10,8 +10,12 @@ jobs:
     lint:
         runs-on: ubuntu-latest
         steps:
-            - name: Go up a directory
+            - name: Check out
+              uses: action/checkout@v3
+            - name: Set up Node
               uses: actions/setup-node@v3
               with:
-                  node-version: "16"
-                  command: yarn lint
+                  node-version: 16
+                  cache: yarn
+            - name: Install dependencies and Lint Project
+              run: yarn lint
