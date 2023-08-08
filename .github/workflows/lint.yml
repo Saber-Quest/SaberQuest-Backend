@@ -9,14 +9,11 @@ on:
 jobs:
     lint:
         runs-on: ubuntu-latest
-        defaults:
-            run:
-                working-directory: ./
         steps:
-            - name: Check Project
+            - name: Go up a directory
               uses: actions/setup-node@v3
               with:
                   node-version: "16"
-                  script: |
+                  runs: |
                       cd ..
                       yarn lint
