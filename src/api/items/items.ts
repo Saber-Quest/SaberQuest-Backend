@@ -5,7 +5,7 @@ import db from "../../db";
 export class Items {
     @GET("items/all")
     get(req: Request, res: Response) {
-        db("Items")
+        db("items")
             .select({
                 id: "id",
                 image: "image",
