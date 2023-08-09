@@ -45,7 +45,7 @@ jobs:
           cd "dev.saberquest.xyz"
           cat ../secrets/.env > .env
           cat ../secrets/config.json > src/config.json
-          pm2 delete main -s
           yarn actions
           cd dist/src
+          pm2 delete main -s
           pm2 start main.js -s
