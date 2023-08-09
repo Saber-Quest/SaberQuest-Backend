@@ -51,12 +51,12 @@ export class PlayerProfile {
     }
 
     @POST("profile/create")
-    post(res: Response, req: Request) {
+    async post(res: Response, req: Request) {
         console.log(req);
         console.log(req.body);
         const userData = JSON.parse(req.body);
         console.log(userData);
-        db.select<User>()
+        await db.select<User>()
             .insert({
                 id: userData.id,
                 username: userData.username,
