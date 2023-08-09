@@ -36,6 +36,7 @@
     "dev": "ts-node ./src/main.ts",
     "build": "tsc -p .",
     "watch": "nodemon watch",
+    "db": "yarn migrate && yarn seed",
     "deps:get": "yarn run deps:global && yarn run deps:local",
     "deps:global": "npm i -g typescript ts-node nodemon yarn",
     "deps:local": "yarn",
@@ -44,7 +45,7 @@
     "createSeed": "knex seed:make",
     "createMigration": "knex migrate:make",
     "startDBContainer": "docker start postgresql",
-    "actions": "yarn deps:get && yarn build",
+    "actions": "yarn deps:get && yarn db && yarn build",
     "lint": "yarn deps:get && yarn eslint **/*.ts"
   }
 }
