@@ -7,7 +7,7 @@ import { User } from "../../models/user";
 export class PlayerProfile {
     @GET("profile/:id")
     get(req: Request, res: Response) {
-        db("Users")
+        db("users")
             .select("*")
             .where("id", req.params.id)
             .then((users) => {
