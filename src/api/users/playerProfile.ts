@@ -15,7 +15,7 @@ export class PlayerProfile {
                 if (!user) {
                     return res.status(404).json({ message: "User not found." });
                 }
-                const JsonRepsone: userRes = {
+                const JsonResponse: userRes = {
                     userInfo: {
                         id: user.id,
                         username: user.username,
@@ -39,7 +39,7 @@ export class PlayerProfile {
                         completed: user.completed,
                     },
                 };
-                return res.status(200).json(JsonRepsone);
+                return res.status(200).json(JsonResponse);
             })
             .catch((err) => {
                 console.error(err);
