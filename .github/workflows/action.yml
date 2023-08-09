@@ -40,7 +40,9 @@ jobs:
         key: ${{ secrets.SSHKEY }}
         script_stop: true
         script: |
-          cd "/var/www/dev.saberquest.xyz"
+          cd "/var/www/"
+          touch "dev.saberquest.xyz/.env"
+          cd "dev.saberquest.xyz"
           cat ../secrets/.env > .env
           cat ../secrets/config.json > src/config.json
           pm2 delete main -s
