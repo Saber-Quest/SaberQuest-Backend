@@ -2,11 +2,11 @@ import { Knex } from "knex";
 
 export async function seed(knex: Knex): Promise<void> {
     // Deletes ALL existing entries
-    await knex("ChallengeSets").del();
+    await knex("challengeSets").del();
     await knex("Challenges").del();
 
     // Inserts seed entries
-    await knex("ChallengeSets").insert([
+    await knex("challengeSets").insert([
         {
             id: 'daily',
             name: 'Daily Challenges',
