@@ -42,10 +42,6 @@ export class DiscordLogin {
             return res.status(500).send("Error getting user");
         }
 
-        const userJson = await user.json();
-
-        const id = userJson.id;
-
         // Code to link the user to their discord account here
     }
 }

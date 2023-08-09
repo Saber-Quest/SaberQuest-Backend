@@ -103,11 +103,4 @@ dist
 # TernJS port file
 .tern-port
 
-data
-public
-package-lock.json
-swagger.json
-addChallengesToDb.js
-addToDb.js
-dataStructures.js
-index.html
+*.lock

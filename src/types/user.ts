@@ -1,7 +1,32 @@
-// example file, to show how you would use the types dir.
+interface IUserImages {
+    avatar: string;
+    banner: string;
+    border: string;
+}
 
-export type User = {
+interface IUserInfo {
+    id: string;
     username: string;
-    id: number;
-    profile_url: string;
+    images: IUserImages;
+    preference: string;
+}
+
+interface IUserStats {
+    challengesCompleted: number;
+    rank: number;
+    qp: number;
+    value: number;
+}
+
+interface IUserToday {
+    diff: number;
+    completed: boolean;
+}
+
+export type userRes = {
+    userInfo: IUserInfo;
+    chistory: number[];
+    items: string[];
+    stats: IUserStats;
+    today: IUserToday;
 }

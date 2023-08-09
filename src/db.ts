@@ -5,7 +5,7 @@ import { Item } from "./models/item";
 import { Shop } from "./models/shop";
 
 const environment = process.env.NODE_ENV || 'development';
-const config = require("../knexfile.ts")[environment];
+const config = require("../knexfile")[environment];
 
 const db: Knex = knex(config);
 
