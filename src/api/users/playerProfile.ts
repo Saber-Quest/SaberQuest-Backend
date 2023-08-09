@@ -65,6 +65,15 @@ export class PlayerProfile {
                     banner: null,
                     border: null,
                 },
+                preference: userData.preference,
+                chistory: {},
+                items: {},
+                challengesComplete: 0,
+                rank: userData.rank,
+                qp: 0,
+                value: 0,
+                diff: 4,
+                completed: false,
             })
             .then(() => {
                 res.status(200).send("User created!");
