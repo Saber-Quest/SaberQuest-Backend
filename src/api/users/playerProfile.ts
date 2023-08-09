@@ -52,24 +52,18 @@ export class PlayerProfile {
 
     @POST("profile/create")
     async post(req: Request, res: Response) {
-        console.log(req);
-        console.log(req.body);
         const userData = req.body;
-        console.log(userData);
-        await db
-            .select<User>("*")
+        await db<User>("users")
             .insert({
                 id: userData.id,
                 username: userData.username,
-                images: {
-                    avatar: userData.avatar,
-                    banner: null,
-                    border: null,
-                },
+                avatar: userData.avatar,
+                banner: null,
+                border: null,
                 preference: userData.preference,
-                chistory: {},
-                items: {},
-                challengesComplete: 0,
+                chistory: [],
+                items: [],
+                challengesCompleted: 0,
                 rank: userData.rank,
                 qp: 0,
                 value: 0,
