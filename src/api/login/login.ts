@@ -50,7 +50,7 @@ export class BeatLeaderLogin {
     const id = userJson.id;
     console.log("New user logged in: " + id);
     
-    // Need to have a chat with Wild about this, but I imagine this is how it'll look.
+    // Need to have a chat with Wild about this, but I imagine this is how it'll look
     knex<User>("users")
       .where("id", 1).first();
     
