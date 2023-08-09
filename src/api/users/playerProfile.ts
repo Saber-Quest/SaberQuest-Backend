@@ -57,7 +57,7 @@ export class PlayerProfile {
         const userData = req.body;
         console.log(userData);
         await db
-            .select<User>()
+            .select<User>("*")
             .insert({
                 id: userData.id,
                 username: userData.username,
