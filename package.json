@@ -1,7 +1,7 @@
 {
   "name": "saberquest-backend",
   "version": "1.0.0",
-  "main": "main.ts",
+  "main": "./src/main.ts",
   "license": "Apache-2.0",
   "dependencies": {
     "body-parser": "^1.20.2",
@@ -12,7 +12,6 @@
     "express": "^4.18.2",
     "fast-average-color-node": "^2.6.0",
     "knex": "^2.5.1",
-    "mongoose": "^6.9.0",
     "nodemon": "^3.0.1",
     "path": "^0.12.7",
     "pg": "^8.11.2",
