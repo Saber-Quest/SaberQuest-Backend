@@ -3,6 +3,7 @@ import { readdirSync } from "fs";
 import express from "express";
 import { setupRoutes } from "./router";
 import { Server } from "socket.io";
+import { Formidable } from "formidable";
 import path from "path";
 const folders = readdirSync(path.join(__dirname, "api"));
 for (let i = 0; i < folders.length; i++) {
@@ -12,7 +13,6 @@ for (let i = 0; i < folders.length; i++) {
     }
 }
 import * as dotenv from "dotenv";
-import bodyParser from "body-parser";
 dotenv.config();
 
 async function main() {
@@ -24,11 +24,7 @@ async function main() {
     console.log(`Web socket started on port ${socketPort}.`);
 
     app.use(express.json());
-    app.use(
-        bodyParser.urlencoded({
-            extended: true,
-        })
-    );
+    app.use(express.urlencoded());
 
     app.disable("x-powered-by");
 
