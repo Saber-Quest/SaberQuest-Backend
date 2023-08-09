@@ -77,7 +77,7 @@ export class PlayerProfile {
                 console.error(err);
                 return res.status(500).json({
                     success: false,
-                    message: `An error occurred, did you include all the data?`,
+                    message: `An error occurred, did you include all the data?!`,
                 });
             });
     }
