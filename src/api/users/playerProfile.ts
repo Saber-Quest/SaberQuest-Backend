@@ -52,22 +52,29 @@ export class PlayerProfile {
 
     @POST("profile/create")
     post(res: Response, req: Request) {
-        let userData = req.params;
+        console.log(req);
+        console.log(req.body);
+        const userData = JSON.parse(req.body);
+        console.log(userData);
         db.select<User>()
             .insert({
                 id: userData.id,
                 username: userData.username,
                 images: {
                     avatar: userData.avatar,
-                    banner: userData.banner,
-                    border: userData.border,
+                    banner: null,
+                    border: null,
                 },
             })
             .then(() => {
                 res.status(200).send("User created!");
-            }).catch((err) => {
+            })
+            .catch((err) => {
                 console.error(err);
-                return res.status(500).json({ success: false, message: `An error occurred, did you include all the data?` });
+                return res.status(500).json({
+                    success: false,
+                    message: `An error occurred, did you include all the data?`,
+                });
             });
     }
 }

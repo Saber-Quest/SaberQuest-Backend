@@ -29,4 +29,4 @@ export type userRes = {
     items: string[];
     stats: IUserStats;
     today: IUserToday;
-}
+};
