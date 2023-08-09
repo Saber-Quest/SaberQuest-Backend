@@ -3,7 +3,6 @@ import { readdirSync } from "fs";
 import express from "express";
 import { setupRoutes } from "./router";
 import { Server } from "socket.io";
-import { Formidable } from "formidable";
 import path from "path";
 const folders = readdirSync(path.join(__dirname, "api"));
 for (let i = 0; i < folders.length; i++) {

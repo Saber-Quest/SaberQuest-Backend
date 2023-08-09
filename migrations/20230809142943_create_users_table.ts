@@ -5,7 +5,7 @@ export async function up(knex: Knex): Promise<void> {
     return knex.schema.createTable('users', function (table) {
         table.string('id', 19);
         table.string('username', 40);
-        table.string('avatar', 70);
+        table.string('avatar', 200);
         table.string('banner', 70);
         table.string('border', 70);
         table.string('preference', 2);
