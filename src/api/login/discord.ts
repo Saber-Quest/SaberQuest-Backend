@@ -41,7 +41,5 @@ export class DiscordLogin {
         if (user.status !== 200) {
             return res.status(500).send("Error getting user");
         }
-
-        // Code to link the user to their discord account here
     }
 }
