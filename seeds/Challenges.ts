@@ -3,7 +3,7 @@ import { Knex } from "knex";
 export async function seed(knex: Knex): Promise<void> {
     // Deletes ALL existing entries
     await knex("challengeSets").del();
-    await knex("challenges").del();
+    await knex("Challenges").del();
 
     // Inserts seed entries
     await knex("challengeSets").insert([
