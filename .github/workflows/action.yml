@@ -41,9 +41,8 @@ jobs:
         script_stop: true
         script: |
           cd "/var/www/dev.saberquest.xyz"
-          echo '${{ secrets.ENV }}' > .env
-          rm src/config.json
-          echo '${{ secrets.DB }}' > src/config.json
+          cat ../secrets/.env > .env
+          cat ../secrets/config.json > src/config.json
           pm2 delete main -s
           yarn actions
           cd dist/src
