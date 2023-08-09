@@ -2,10 +2,10 @@ import { Knex } from "knex";
 
 export async function seed(knex: Knex): Promise<void> {
     // Deletes ALL existing entries
-    await knex("Items").del();
+    await knex("items").del();
 
     // Inserts seed entries
-    await knex("Items").insert([
+    await knex("items").insert([
         {
             id: "ap",
             image: "https://saberquest.xyz/images/arrow_pieces_icon.png",
