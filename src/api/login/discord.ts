@@ -23,7 +23,7 @@ export class DiscordLogin {
                 client_id: process.env.DISCORD_ID,
                 redirect_uri: "https://saberquest.xyz/link-discord",
             }),
-        })
+        });
 
         if (response.status !== 200) {
             return res.status(500).send("Failed to fetch the token");
@@ -34,7 +34,7 @@ export class DiscordLogin {
         const user = await fetch("https://discord.com/api/users/@me", {
             method: "GET",
             headers: {
-                "authorization": `Bearer ${token}`,
+                authorization: `Bearer ${token}`,
             },
         });
 

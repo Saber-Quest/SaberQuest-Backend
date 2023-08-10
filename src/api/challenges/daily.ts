@@ -6,7 +6,8 @@ import db from "../../db";
 export class Daily {
     @GET("challenge/daily")
     async get(req: Request, res: Response) {
-        await db.select<ChallengeHistory>("challengeHistory").first();
+        const challenge = await db.select<ChallengeHistory>("challengeHistory").first();
+        return res.json(challenge);
     }
 
     @POST("challenge/daily/new")
