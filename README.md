@@ -1,5 +1,13 @@
 # This branch is currently stale, the rewrite is being done on the dev/knex/pgsql branch
 
+## Why are you rewriting the project?!
+
+In short, the web server was basically broken from release and didn't work properly half the time, and as such, this version of the web server is largely unsupported and anything gained/done on the current version will be lost when the rewrite releases.
+
+## Are you a developer? We welcome contributions!
+
+While yes, we're working on this largely internally, all of our code is open source under [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0) and welcomes contributions to make development go faster, making you, the end-user have the product faster. All questions regarding the project should be asked in [the developer channel](https://canary.discord.com/channels/1036356704742416505/1139295840465342558) in [the discord](https://discord.gg/ZRvXXqd9jM)
+
 ---
 
 # API Endpoints
