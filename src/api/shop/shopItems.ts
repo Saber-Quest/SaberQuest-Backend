@@ -1,11 +1,12 @@
 import { Request, Response } from "express";
 import { GET } from "../../router";
+import { Shop } from "../../models/shop";
 import db from "../../db";
 
 export class ShopItems {
     @GET("shop/items")
     get(req: Request, res: Response) {
-        db("ShopItems")
+        db<Shop>("shop")
             .select({
                 id: "id",
                 price: "price",
