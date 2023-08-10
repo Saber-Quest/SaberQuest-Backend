@@ -22,7 +22,7 @@ export class Daily {
                 date: isoTimestamp,
             })
             .then(() => {
-                res.status(200).send("Challenge created!");
+                res.status(200).send("Challenge created!!");
             })
             .catch(() => {
                 console.error(
