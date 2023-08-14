@@ -13,8 +13,8 @@ export class Items {
                 image: "image",
                 name: "name",
             })
-            .then((users) => {
-                return res.json(users);
+            .then((items) => {
+                return res.json(items);
             })
             .catch((err) => {
                 console.error(err);
