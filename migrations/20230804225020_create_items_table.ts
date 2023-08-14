@@ -6,6 +6,7 @@ export async function up(knex: Knex): Promise<void> {
         table.string('id', 6);
         table.string('image', 70); //Most URLs have ~50 characters so we should pad it a bit to be safe.
         table.string('name', 25);
+        table.integer('value');
         });
 }
 
