@@ -1,12 +1,13 @@
 import { Request, Response } from "express";
 import { GET, POST } from "../../router";
+import { Item } from "../../models/item";
 import db from "../../db";
 import { IUserItem } from "../../types/user";
 
 export class Items {
     @GET("items/all")
-    async get(req: Request, res: Response) {
-        await db("items")
+    get(req: Request, res: Response) {
+        db<Item>("items")
             .select({
                 id: "id",
                 image: "image",
