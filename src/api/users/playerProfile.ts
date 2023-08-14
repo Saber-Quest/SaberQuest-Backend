@@ -3,18 +3,30 @@ import { GET, POST } from "../../router";
 import db from "../../db";
 import { userRes } from "../../types/user";
 import { User } from "../../models/user";
+import { Item } from "../../models/item";
 
 export class PlayerProfile {
     @GET("profile/:id")
     get(req: Request, res: Response) {
-        db("users")
+        db<User>("users")
             .select("*")
             .where("id", req.params.id)
-            .then((users) => {
-                const user = users[0];
+            .first()
+            .then((user) => {
                 if (!user) {
                     return res.status(404).json({ message: "User not found." });
                 }
+
+                const items  = user.items.map((item) => {
+                    const json = JSON.parse(item.toString());
+                    return {
+                        id: json.id,
+                        image: json.image,
+                        name: json.name,
+                        amount: json.amount
+                    };
+                });
+
                 const JsonResponse: userRes = {
                     userInfo: {
                         id: user.id,
@@ -27,7 +39,7 @@ export class PlayerProfile {
                         preference: user.preference,
                     },
                     chistory: user.chistory,
-                    items: user.items,
+                    items: items,
                     stats: {
                         challengesCompleted: user.challengesCompleted,
                         rank: user.rank,

@@ -1,3 +1,6 @@
+import { IUserItem } from "../types/user";
+import { Challenge } from "./challenge";
+
 export class User {
     id: string;
     username: string;
@@ -5,8 +8,8 @@ export class User {
     banner: string;
     border: string;
     preference: string;
-    chistory: number[];
-    items: string[];
+    chistory: Challenge[];
+    items: IUserItem[];
     challengesCompleted: number;
     rank: number;
     qp: number;
