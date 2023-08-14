@@ -3,7 +3,6 @@ import { GET, POST } from "../../router";
 import db from "../../db";
 import { userRes } from "../../types/user";
 import { User } from "../../models/user";
-import { Item } from "../../models/item";
 
 export class PlayerProfile {
     @GET("profile/:id")

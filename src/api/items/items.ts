@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import { GET, POST } from "../../router";
 import db from "../../db";
-import { Item } from "../../models/item";
 import { IUserItem } from "../../types/user";
 
 export class Items {
