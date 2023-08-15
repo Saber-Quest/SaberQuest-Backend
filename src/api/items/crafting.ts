@@ -4,6 +4,7 @@ import { Request, Response } from "express";
 import { Item } from "../../models/item";
 import { User } from "../../models/user";
 import { Craft } from "../../functions/craft";
+import { IUserItem } from "../../types/user";
 
 export class Crafting {
   @PATCH("craft")
@@ -41,7 +42,7 @@ export class Crafting {
     used1Data.amount--;
     used2Data.amount--;
 
-    const newItems = [
+    const newItems: IUserItem[] = [
       ...personItems,
     ];
 
@@ -63,7 +64,7 @@ export class Crafting {
 
     const crafted = Craft(used1, used2);
 
-    const craftedFiltered = newItems.filter((item) => item.id === crafted);
+    const craftedFiltered = newItems.filter((item) => item.name_id === crafted);
 
     if (craftedFiltered.length === 0) {
       const allItems = await db<Item>("items")
@@ -72,18 +73,18 @@ export class Crafting {
           return items;
         });
 
-      const item = allItems.filter((item) => item.id === crafted)[0];
+      const item = allItems.filter((item) => item.name_id === crafted)[0];
 
       if (!item) {
         return res.status(404).json({ message: "Item not found." });
       }
 
-      const newItem = {
+      const newItem: IUserItem = {
         ...item,
         amount: 1,
       };
 
-      const withCrafted = [
+      const withCrafted: IUserItem[] = [
         ...newItems,
         newItem,
       ];
@@ -92,7 +93,7 @@ export class Crafting {
 
       for (const item of withCrafted) {
         const dbItem: Item[] = allItems.filter((dbItem) =>
-          dbItem.id === item.id
+          dbItem.name_id === item.name_id
         );
         if (dbItem.length === 0) {
           return res.status(404).json({ message: "Item not found." });
@@ -114,7 +115,7 @@ export class Crafting {
 
       craftedData.amount++;
 
-      const craftedIndex = newItems.findIndex((item) => item.id === crafted);
+      const craftedIndex = newItems.findIndex((item) => item.name_id === crafted);
 
       newItems[craftedIndex] = craftedData;
 
@@ -128,7 +129,7 @@ export class Crafting {
 
       for (const item of newItems) {
         const dbItem: Item[] = allItems.filter((dbItem) =>
-          dbItem.id === item.id
+          dbItem.name_id === item.name_id
         );
         if (dbItem.length === 0) {
           return res.status(404).json({ message: "Item not found." });

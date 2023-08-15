@@ -19,7 +19,7 @@ export class PlayerProfile {
                 const items = user.items.map((item) => {
                     const json = JSON.parse(item.toString());
                     return {
-                        id: json.id,
+                        name_id: json.id,
                         image: json.image,
                         name: json.name,
                         amount: json.amount,
@@ -28,7 +28,7 @@ export class PlayerProfile {
 
                 const JsonResponse: userRes = {
                     userInfo: {
-                        id: user.id,
+                        id: user.platform_id,
                         steam_id: user.steam_id,
                         username: user.username,
                         images: {
@@ -67,13 +67,12 @@ export class PlayerProfile {
         const userData = req.body;
         await db<User>("users")
             .insert({
-                id: userData.id,
+                platform_id: userData.id,
                 username: userData.username,
                 avatar: userData.avatar,
                 banner: null,
                 border: null,
                 preference: userData.preference,
-                challenge_history: [],
                 items: [],
                 challenges_completed: 0,
                 rank: userData.rank,

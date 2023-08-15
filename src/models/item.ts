@@ -1,5 +1,6 @@
 export class Item {
-    id: string;
+    name_id: string;
+    name: string;
     value: number;
     image: string;
 }
@@ -8,5 +9,5 @@ export class ItemShop {
     id: string;
     price: number | undefined | null;
     item: Item;
-    item_id: string;
+    name_id: string;
 }

@@ -46,7 +46,7 @@ export class Items {
         const itemsArray: IUserItem[] = [];
 
         for (const item of items) {
-            const personItem = personItems.find((personItem) => personItem.id === item);
+            const personItem = personItems.find((personItem) => personItem.name_id === item);
             if (personItem) {
                 if (item === "rs" || item === "bs") {
                     personItem.amount += 10;
