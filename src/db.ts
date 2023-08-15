@@ -20,6 +20,7 @@ const db: Knex = knex({
 export default db;
 
 declare module "knex/types/tables.js" {
+    // eslint-disable-next-line no-unused-vars
     interface Tables {
         users: User;
         challenges: Challenge;

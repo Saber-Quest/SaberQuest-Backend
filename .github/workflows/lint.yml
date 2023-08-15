@@ -3,13 +3,11 @@ name: Lint Project
 on:
     push:
         branches:
-            - main
-            - dev/knex/pgsql
+            - next
     
     pull_request:
-      branches:
-        - main
-        - dev/knex/pgsql
+        branches:
+            - next
 
 jobs:
     lint:

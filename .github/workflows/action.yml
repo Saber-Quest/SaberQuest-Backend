@@ -3,15 +3,10 @@ name: CI
 on:
   push:
     branches: 
-      - "dev/knex/pgsql" 
+      - next
       
-    paths-ignore:
-      - "**.yml"
-      - "!.github/workflows/action.yml"
-      - "**.json"
-      - "**.txt"
-      - "**.md"
-      - ".gitignore"
+    paths:
+      - "./**/*.ts"
 
 jobs:
   build:
