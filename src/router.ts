@@ -28,7 +28,7 @@ export function PATCH(route: string) {
             type: "PATCH",
             route
         });
-    }
+    };
 }
 
 export function DEL(route: string) {
@@ -73,7 +73,7 @@ export function setupRoutes(app: Express) {
                 app.post("/" + route.route, route.function);
                 break;
             case "PATCH":
-                app.patch("/" + route.route, route.function)
+                app.patch("/" + route.route, route.function);
                 break;
             case "DEL":
                 app.delete("/" + route.route, route.function);

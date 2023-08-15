@@ -39,7 +39,7 @@ export class Items {
         const person = await db("users")
             .select("items")
             .where("id", id)
-            .first()
+            .first();
 
         const personItems = person.items;
 
@@ -62,7 +62,7 @@ export class Items {
 
             console.log(DbItems[itemIndex]);
 
-            const itemData = DbItems[itemIndex]
+            const itemData = DbItems[itemIndex];
             if (item === "rs" || item === "bs") {
                 itemData.amount = 10;
                 itemsArray.push(itemData);

@@ -1,7 +1,3 @@
-import { ChallengeHistory } from "../models/challengeHistory";
-
-import { Challenge } from "../models/challenge";
-
 export interface IUserItem {
     id: string;
     image: string;

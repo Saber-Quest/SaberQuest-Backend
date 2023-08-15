@@ -37,4 +37,4 @@ module.exports = {
             tableName: "migrations"
         }
     }
-}
+};

@@ -199,4 +199,4 @@ export async function seed(knex: Knex): Promise<void> {
             value: 3
         }
     ]);
-};
+}
