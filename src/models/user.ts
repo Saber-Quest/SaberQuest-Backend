@@ -8,9 +8,9 @@ export class User {
     banner: string;
     border: string;
     preference: string;
-    chistory: number[];
+    challenge_history: number[];
     items: string[];
-    challengesCompleted: number;
+    challenges_completed: number;
     rank: number;
     qp: number;
     value: number;
