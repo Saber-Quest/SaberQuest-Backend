@@ -1,4 +1,4 @@
-import { ChallengeHistory } from "./challengeHistory";
+import { IUserItem } from "../types/user";
 
 export class User {
     id: string;
@@ -8,9 +8,9 @@ export class User {
     banner: string;
     border: string;
     preference: string;
-    chistory: number[];
-    items: string[];
-    challengesCompleted: number;
+    challenge_history: string[];
+    items: IUserItem[];
+    challenges_completed: number;
     rank: number;
     qp: number;
     value: number;
