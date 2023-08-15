@@ -13,10 +13,27 @@ for (let i = 0; i < folders.length; i++) {
 }
 import * as dotenv from "dotenv";
 dotenv.config();
+// import {  } from "swagger-jsdoc";
+// import swagger "swagger-ui-express";
+
+// const swaggerDefinition = {
+//     openapi: "3.0.0",
+//     info: {
+//         title: "SaberQuest API Documentation",
+//         version: "1.0.0",
+//     },
+// };
+
+// const options = {
+//     swaggerDefinition,
+//     apis: ["./api/**/*.ts"],
+// };
+
+// const swaggerSpec = jsDoc(options);
 
 async function main() {
-    const httpPort = 5000;
-    const socketPort = 5001;
+    const httpPort = parseInt(process.env.PORT) || 5000;
+    const socketPort = parseInt(process.env.SOCKET_PORT) || 5001;
     const app = express();
     const socketServer = new Server(socketPort);
 
@@ -26,6 +43,8 @@ async function main() {
     app.use(express.urlencoded());
 
     app.disable("x-powered-by");
+
+    // app.use("/api", swagger.serve, swagger.setup(swaggerSpec));
 
     setupRoutes(app);
 

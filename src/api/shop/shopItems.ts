@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import type { Request, Response } from "express";
 import { GET } from "../../router";
 import { Shop } from "../../models/shop";
 import db from "../../db";

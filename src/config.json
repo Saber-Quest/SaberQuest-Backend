@@ -1,10 +1,10 @@
 {
     "db": {
-        "user": "postgres",
-        "password": "test",
+        "user": "saberquest-test",
+        "password": "password",
         "host": "localhost",
         "port": "5432",
-        "database": "postgres"
+        "database": "saberquest"
     },
     "---COMMENT---": "junk secret, only to show how it'd look.",
     "secret": "hS7Mwhv+fvDOurE69LshXDmkc84l9QeVx9qniqAziOcQsYGQBND1tftQsDi4SvA4"

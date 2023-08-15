@@ -3,6 +3,6 @@ import { Item } from "./item";
 
 export class RewardedChallenge {
     id: string;
-    completedChallenge: Challenge;
+    completed_challenge: Challenge;
     item: Item[];
 }

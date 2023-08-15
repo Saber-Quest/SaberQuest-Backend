@@ -1,5 +1,5 @@
 import querystring from "querystring";
-import { Request, Response } from "express";
+import type { Request, Response } from "express";
 import { GET } from "../../router";
 
 export class DiscordLogin {

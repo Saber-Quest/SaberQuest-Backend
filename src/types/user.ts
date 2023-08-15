@@ -1,3 +1,5 @@
+import { ChallengeHistory } from "../models/challengeHistory";
+
 interface IUserImages {
     avatar: string;
     banner: string;
@@ -6,6 +8,7 @@ interface IUserImages {
 
 interface IUserInfo {
     id: string;
+    steam_id: string;
     username: string;
     images: IUserImages;
     preference: string;
@@ -25,7 +28,7 @@ interface IUserToday {
 
 export type userRes = {
     userInfo: IUserInfo;
-    chistory: number[];
+    challenge_history: number[];
     items: string[];
     stats: IUserStats;
     today: IUserToday;

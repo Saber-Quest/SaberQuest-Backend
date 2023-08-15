@@ -8,7 +8,7 @@ export function GET(route: string) {
             type: "GET",
             route
         });
-    }
+    };
 }
 
 export function PUT(route: string) {
@@ -18,7 +18,7 @@ export function PUT(route: string) {
             type: "PUT",
             route
         });
-    }
+    };
 }
 
 export function DEL(route: string) {
@@ -28,7 +28,7 @@ export function DEL(route: string) {
             type: "DEL",
             route
         });
-    }
+    };
 }
 
 export function POST(route: string) {
@@ -38,7 +38,7 @@ export function POST(route: string) {
             type: "POST",
             route
         });
-    }
+    };
 }
 
 export function AllRoute(route: string) {
@@ -48,28 +48,28 @@ export function AllRoute(route: string) {
             type: "ALL",
             route
         });
-    }
+    };
 }
 
 export function setupRoutes(app: Express) {
     for (let i = 0; i < routes.length; i++) {
         const route = routes[i];
-        console.log(route)
+        console.log(route);
         switch (route.type) {
             case "ALL":
-                app.all("/" + route.route, route.function)
+                app.all("/" + route.route, route.function);
                 break;
             case "POST":
-                app.post("/" + route.route, route.function)
+                app.post("/" + route.route, route.function);
                 break;
             case "DEL":
-                app.delete("/" + route.route, route.function)
+                app.delete("/" + route.route, route.function);
                 break;
             case "PUT":
-                app.put("/" + route.route, route.function)
+                app.put("/" + route.route, route.function);
                 break;
             case "GET":
-                app.get("/" + route.route, route.function)
+                app.get("/" + route.route, route.function);
                 break;
 
             default:
@@ -79,7 +79,7 @@ export function setupRoutes(app: Express) {
 }
 
 interface IRoutes {
-    route: string,
-    type: string,
-    function: RequestHandler
+    route: string;
+    type: string;
+    function: RequestHandler;
 }

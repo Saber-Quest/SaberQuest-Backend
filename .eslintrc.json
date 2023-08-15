@@ -10,8 +10,10 @@
     },
     "parser": "@typescript-eslint/parser",
     "plugins": ["@typescript-eslint"],
+    "ignorePatterns":[
+        "node_modules"
+    ],
     // Add additional configuration here if needed
-
     "rules": {
         "complexity": "warn",
         "curly": "warn",
@@ -20,6 +22,8 @@
         "arrow-parens": "warn",
         "no-undef": "warn",
         "no-unused-vars": "warn",
-        "no-extra-semi": "off"
+        "no-extra-semi": "warn",
+        "semi": "off",
+        "@typescript-eslint/semi": "error"
     }
 }

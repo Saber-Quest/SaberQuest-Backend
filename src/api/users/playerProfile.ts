@@ -1,5 +1,5 @@
-import { Request, Response } from "express";
-import { GET, POST } from "../../router";
+import type { Request, Response } from "express";
+import { GET, PUT } from "../../router";
 import db from "../../db";
 import { userRes } from "../../types/user";
 import { User } from "../../models/user";
@@ -7,17 +7,18 @@ import { User } from "../../models/user";
 export class PlayerProfile {
     @GET("profile/:id")
     get(req: Request, res: Response) {
-        db("users")
+        db<User>("users")
             .select("*")
-            .where("id", req.params.id)
-            .then((users) => {
-                const user = users[0];
+            .where("steam_id", req.params.steam_id)
+            .first()
+            .then((user) => {
                 if (!user) {
                     return res.status(404).json({ message: "User not found." });
                 }
                 const JsonResponse: userRes = {
                     userInfo: {
                         id: user.id,
+                        steam_id: user.steam_id,
                         username: user.username,
                         images: {
                             avatar: user.avatar,
@@ -26,10 +27,10 @@ export class PlayerProfile {
                         },
                         preference: user.preference,
                     },
-                    chistory: user.chistory,
+                    challenge_history: [],
                     items: user.items,
                     stats: {
-                        challengesCompleted: user.challengesCompleted,
+                        challengesCompleted: user.challenges_completed,
                         rank: user.rank,
                         qp: user.qp,
                         value: user.value,
@@ -50,7 +51,7 @@ export class PlayerProfile {
             });
     }
 
-    @POST("profile/create")
+    @PUT("profile/create")
     async post(req: Request, res: Response) {
         const userData = req.body;
         await db<User>("users")
@@ -61,9 +62,9 @@ export class PlayerProfile {
                 banner: null,
                 border: null,
                 preference: userData.preference,
-                chistory: [],
+                challenge_history: userData.challenge_history,
                 items: [],
-                challengesCompleted: 0,
+                challenges_completed: 0,
                 rank: userData.rank,
                 qp: 0,
                 value: 0,
