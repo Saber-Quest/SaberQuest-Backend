@@ -4,6 +4,7 @@ export async function up(knex: Knex): Promise<void> {
     await knex.schema.createTable("difficulty", (table) => {
         table.uuid("id").defaultTo(knex.raw("gen_random_uuid()")).primary();
         table.json("difficulty");
+        table.string("color");
     });
 
     await knex.schema.createTable("challenge_sets", (table) => {
@@ -35,7 +36,12 @@ export async function up(knex: Knex): Promise<void> {
             .inTable("challenge_sets")
             .onDelete("CASCADE");
         table.string("type");
-        table.json("difficulty");
+        table.uuid("difficulty_id");
+        table
+            .foreign("difficulty_id")
+            .references("id")
+            .inTable("difficulty")
+            .onDelete("CASCADE");
     });
 
     // id: string;
@@ -49,7 +55,7 @@ export async function up(knex: Knex): Promise<void> {
     //     extreme: number;
     // }
 
-    await knex.schema.createTable("challenge_history", (table) => {
+    await knex.schema.createTable("challenge_histories", (table) => {
         table.uuid("id").defaultTo(knex.raw("gen_random_uuid()")).primary();
         table.uuid("challenge_id");
         table
@@ -105,7 +111,8 @@ export async function up(knex: Knex): Promise<void> {
 
 export async function down(knex: Knex): Promise<void> {
     await knex.schema.dropTable("users");
-    await knex.schema.dropTable("challenge_history");
+    await knex.schema.dropTable("challenge_histories");
     await knex.schema.dropTable("challenges");
     await knex.schema.dropTable("challenge_sets");
+    await knex.schema.dropTable("difficulty");
 }
