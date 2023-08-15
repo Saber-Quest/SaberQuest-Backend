@@ -82,7 +82,7 @@ export async function up(knex: Knex): Promise<void> {
         table
             .foreign("challenge_history_id")
             .references("id")
-            .inTable("challenge_history")
+            .inTable("challenge_histories")
             .onDelete("CASCADE");
         table.json("items");
         table.integer("challenges_completed");
