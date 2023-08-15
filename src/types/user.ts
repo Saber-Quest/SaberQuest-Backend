@@ -13,7 +13,7 @@ interface IUserImages {
 
 interface IUserInfo {
     id: string;
-    steam_id: string;
+    platform_id: string;
     username: string;
     images: IUserImages;
     preference: string;

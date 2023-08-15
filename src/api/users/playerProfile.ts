@@ -9,7 +9,7 @@ export class PlayerProfile {
     get(req: Request, res: Response) {
         db<User>("users")
             .select("*")
-            .where("steam_id", req.params.steam_id)
+            .where("platform_id", req.params.id)
             .then((users) => {
                 let user = users[0];
                 if (!user) {
@@ -29,7 +29,7 @@ export class PlayerProfile {
                 const JsonResponse: userRes = {
                     userInfo: {
                         id: user.platform_id,
-                        steam_id: user.steam_id,
+                        platform_id: user.platform_id,
                         username: user.username,
                         images: {
                             avatar: user.avatar,
