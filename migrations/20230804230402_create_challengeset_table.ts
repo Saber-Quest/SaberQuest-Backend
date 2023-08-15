@@ -89,6 +89,7 @@ export async function up(knex: Knex): Promise<void> {
         table.integer("rank");
         table.integer("qp");
         table.integer("value");
+        table.integer("diff");
         table.boolean("completed");
     });
 
