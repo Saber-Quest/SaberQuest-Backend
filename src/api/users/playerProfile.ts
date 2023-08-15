@@ -16,13 +16,13 @@ export class PlayerProfile {
                     return res.status(404).json({ message: "User not found." });
                 }
 
-                const items  = user.items.map((item) => {
+                const items = user.items.map((item) => {
                     const json = JSON.parse(item.toString());
                     return {
                         id: json.id,
                         image: json.image,
                         name: json.name,
-                        amount: json.amount
+                        amount: json.amount,
                     };
                 });
 
