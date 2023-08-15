@@ -21,6 +21,16 @@ export function PUT(route: string) {
     };
 }
 
+export function PATCH(route: string) {
+    return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+        routes.push({
+            function: descriptor.value,
+            type: "PATCH",
+            route
+        });
+    }
+}
+
 export function DEL(route: string) {
     return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
         routes.push({
@@ -61,6 +71,9 @@ export function setupRoutes(app: Express) {
                 break;
             case "POST":
                 app.post("/" + route.route, route.function);
+                break;
+            case "PATCH":
+                app.patch("/" + route.route, route.function)
                 break;
             case "DEL":
                 app.delete("/" + route.route, route.function);

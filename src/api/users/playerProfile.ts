@@ -10,11 +10,22 @@ export class PlayerProfile {
         db<User>("users")
             .select("*")
             .where("steam_id", req.params.steam_id)
-            .first()
-            .then((user) => {
+            .then((users) => {
+                let user = users[0];
                 if (!user) {
                     return res.status(404).json({ message: "User not found." });
                 }
+
+                const items  = user.items.map((item) => {
+                    const json = JSON.parse(item.toString());
+                    return {
+                        id: json.id,
+                        image: json.image,
+                        name: json.name,
+                        amount: json.amount
+                    };
+                });
+
                 const JsonResponse: userRes = {
                     userInfo: {
                         id: user.id,
@@ -27,7 +38,7 @@ export class PlayerProfile {
                         },
                         preference: user.preference,
                     },
-                    challenge_history: [],
+                    chistory: user.chistory,
                     items: user.items,
                     stats: {
                         challengesCompleted: user.challenges_completed,

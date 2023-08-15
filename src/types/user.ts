@@ -1,5 +1,14 @@
 import { ChallengeHistory } from "../models/challengeHistory";
 
+import { Challenge } from "../models/challenge";
+
+export interface IUserItem {
+    id: string;
+    image: string;
+    name: string;
+    amount: number;
+}
+
 interface IUserImages {
     avatar: string;
     banner: string;
@@ -28,7 +37,7 @@ interface IUserToday {
 
 export type userRes = {
     userInfo: IUserInfo;
-    challenge_history: number[];
+    chistory: number[];
     items: string[];
     stats: IUserStats;
     today: IUserToday;

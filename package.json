@@ -42,7 +42,7 @@
     "watch": "nodemon watch",
     "db": "yarn migrate && yarn seed:run",
     "db:start": "docker start postgresql",
-    "deps:get": "yarn run deps:global && yarn run deps:local",
+    "deps:get": "npm run deps:global && yarn deps:local",
     "deps:global": "npm i -g typescript ts-node nodemon yarn",
     "deps:local": "yarn",
     "migrate": "knex migrate:latest",
