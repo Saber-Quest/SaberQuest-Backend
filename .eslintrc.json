@@ -1,0 +1,29 @@
+{
+    "root": true,
+    "extends": "eslint:recommended",
+    "parserOptions": {
+        "ecmaVersion": "latest",
+        "sourceType": "module"
+    },
+    "env": {
+        "node": true
+    },
+    "parser": "@typescript-eslint/parser",
+    "plugins": ["@typescript-eslint"],
+    "ignorePatterns":[
+        "node_modules"
+    ],
+    // Add additional configuration here if needed
+    "rules": {
+        "complexity": "warn",
+        "curly": "warn",
+        "eqeqeq": "error",
+        "arrow-spacing": "warn",
+        "arrow-parens": "warn",
+        "no-undef": "warn",
+        "no-unused-vars": "warn",
+        "no-extra-semi": "warn",
+        "semi": "off",
+        "@typescript-eslint/semi": "error"
+    }
+}
