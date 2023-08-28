@@ -1,9 +1,10 @@
 import "reflect-metadata";
 import { readdirSync } from "fs";
 import express from "express";
-import { GET, setupRoutes } from "./router";
+import { setupRoutes } from "./router";
 import { Server } from "socket.io";
 import path from "path";
+import cookieParser from "cookie-parser";
 const folders = readdirSync(path.join(__dirname, "api"));
 for (let i = 0; i < folders.length; i++) {
     const files = readdirSync(path.join(__dirname, "api", folders[i]));
@@ -13,9 +14,7 @@ for (let i = 0; i < folders.length; i++) {
 }
 import * as dotenv from "dotenv";
 dotenv.config();
-import * as swaggerJSDoc from "swagger-jsdoc";
-
-const swaggerSpec = swaggerJSDoc(options);
+import expressJSDocSwagger from "express-jsdoc-swagger";
 
 async function main() {
     const httpPort = parseInt(process.env.PORT) || 5000;
@@ -25,32 +24,32 @@ async function main() {
 
     console.log(`Web socket started on port ${socketPort}.`);
 
-    const swaggerDefinition = {
-    openapi: "3.0.0",
-    info: {
-        title: "SaberQuest API Documentation",
-        version: "1.0.0",
-    },
-    host: `localhost:${httpPort}`,
-    basePath: "/",
-};
+    const options = {
+        info: {
+            version: "1.0.0",
+            title: "SaberQuest API",
+            description: "SaberQuest API",
+            license: {
+                name: "Apache 2.0",
+            }
+        },
+        baseDir: __dirname,
+        filesPattern: "./api/**/*.ts",
+        swaggerUIPath: "/docs",
+        exposeSwaggerUI: true,
+        exposeApiDocs: false,
+        apiDocsPath: "/docs.json",
+        notRequiredAsNullable: false,
+        swaggerUiOptions: {},
+    };
 
-const options = {
-    swaggerDefinition,
-    apis: ["./api/**/*.ts"],
-};
+    expressJSDocSwagger(app)(options);
 
-const swaggerSpec = jsDoc(options);
-
+    app.use(cookieParser());
     app.use(express.json());
     app.use(express.urlencoded());
 
     app.disable("x-powered-by");
-
-    app.get("/", (req, res) => {
-        res.setHeader("Content-Type", "application/json");
-        res.send(swaggerSpec)
-    })
 
     setupRoutes(app);
 

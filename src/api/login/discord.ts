@@ -1,7 +1,6 @@
 import querystring from "querystring";
 import type { Request, Response } from "express";
 import { GET } from "../../router";
-
 export class DiscordLogin {
     @GET("link")
     async get(req: Request, res: Response) {

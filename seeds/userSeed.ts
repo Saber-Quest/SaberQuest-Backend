@@ -4,7 +4,7 @@ import { User } from "../src/models/user";
 export async function seed(knex: Knex): Promise<void> {
     await knex("users").del();
 
-    knex<User>("users").insert({
+    await knex<User>("users").insert({
         platform_id: "76561199108042297",
         username: "Raine'); DROP TABLE users;--",
         avatar: "https://cdn.discordapp.com/avatars/813176414692966432/0ce8808ab0435a25610ae7d045e9a03f.webp",

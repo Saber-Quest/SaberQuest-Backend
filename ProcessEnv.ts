@@ -4,6 +4,8 @@ export const env = z.object({
     DATABASE_URL: z.string(),
     PORT: z.string(),
     SOCKET_PORT: z.string(),
+    JWT_SECRET: z.string(),
+    AUTHORIZATION_CODE: z.string(),
 });
 
 declare global {
