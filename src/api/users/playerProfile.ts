@@ -125,9 +125,6 @@ export class PlayerProfile {
      * PUT /profile/create
      * @summary Create a player's profile
      * @tags users
-     * @param {object} request.body.required - The user to create
-     * @return {object} 200 - Success
-     * @return {object} 500 - An error occurred
      */
     @PUT("profile/create")
     async createUser(req: Request, res: Response) {
