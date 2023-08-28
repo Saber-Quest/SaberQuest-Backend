@@ -9,12 +9,6 @@ export class User {
     banner: string;
     border: string;
     preference: string;
-    challenge_history: string[];
-    items: IUserItem[];
-    challenges_completed: number;
     rank: number;
     qp: number;
-    value: number;
-    diff: number;
-    completed: boolean;
 }

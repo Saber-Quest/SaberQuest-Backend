@@ -3,21 +3,21 @@ import { Knex } from "knex";
 export async function up(knex: Knex): Promise<void> {
     await knex.schema.createTable("items", (table) => {
         table.uuid("id").defaultTo(knex.raw("gen_random_uuid()")).primary();
-        table.string("name_id", 10);
-        table.string("image", 70); //Most URLs have ~50 characters so we should pad it a bit to be safe.
-        table.string("name", 25);
+        table.string("name_id");
+        table.string("image");
+        table.string("name");
         table.integer("value");
     });
 
-    await knex.schema.createTable("shop_items", function (table) {
+    await knex.schema.createTable("shop_items", (table) => {
         table.uuid("id").defaultTo(knex.raw("gen_random_uuid()")).primary();
-        table.integer("price").nullable();
-        table.uuid("table_id");
+        table.uuid("item_id");
         table
-            .foreign("table_id")
+            .foreign("item_id")
             .references("id")
             .inTable("items")
             .onDelete("CASCADE");
+        table.integer("price");
     });
 }
 

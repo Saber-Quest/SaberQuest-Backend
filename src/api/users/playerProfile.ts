@@ -1,8 +1,8 @@
 import type { Request, Response } from "express";
 import { GET, PUT } from "../../router";
 import db from "../../db";
-import { userRes } from "../../types/user";
 import { User } from "../../models/user";
+import { UserItem } from "../../models/userItem";
 
 export class PlayerProfile {
     @GET("profile/:id")
@@ -16,17 +16,7 @@ export class PlayerProfile {
                     return res.status(404).json({ message: "User not found." });
                 }
 
-                const items = user.items.map((item) => {
-                    const json = JSON.parse(item.toString());
-                    return {
-                        name_id: json.id,
-                        image: json.image,
-                        name: json.name,
-                        amount: json.amount,
-                    };
-                });
-
-                const JsonResponse: userRes = {
+                const JsonResponse = {
                     userInfo: {
                         id: user.platform_id,
                         platform_id: user.platform_id,
@@ -38,17 +28,9 @@ export class PlayerProfile {
                         },
                         preference: user.preference,
                     },
-                    chistory: user.challenge_history,
-                    items: items,
                     stats: {
-                        challengesCompleted: user.challenges_completed,
                         rank: user.rank,
                         qp: user.qp,
-                        value: user.value,
-                    },
-                    today: {
-                        diff: user.diff,
-                        completed: user.completed,
                     },
                 };
                 return res.status(200).json(JsonResponse);
@@ -62,27 +44,31 @@ export class PlayerProfile {
             });
     }
 
+    @GET("profile/:id/inventory")
+    async getPlayerInventory(req: Request, res: Response) {
+        const dbItems = db<UserItem>()
+            .select("item_id")
+            .where("user_id", req.params.id);
+
+        res.status(200).json(JSON.stringify(dbItems));
+    }
+
     @PUT("profile/create")
-    async post(req: Request, res: Response) {
+    async createUser(req: Request, res: Response) {
         const userData = req.body;
         await db<User>("users")
             .insert({
-                platform_id: userData.id,
+                platform_id: userData.platform_id,
                 username: userData.username,
                 avatar: userData.avatar,
                 banner: null,
                 border: null,
                 preference: userData.preference,
-                items: [],
-                challenges_completed: 0,
                 rank: userData.rank,
                 qp: 0,
-                value: 0,
-                diff: 4,
-                completed: false,
             })
             .then(() => {
-                res.status(200).send("User created!");
+                res.sendStatus(200);
             })
             .catch((err) => {
                 console.error(err);

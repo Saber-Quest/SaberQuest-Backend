@@ -46,7 +46,7 @@ export class Items {
         const itemsArray: IUserItem[] = [];
 
         for (const item of items) {
-            const personItem = personItems.find((personItem) => personItem.name_id === item);
+            const personItem = personItems.find((personItem: { name_id: any; }) => personItem.name_id === item);
             if (personItem) {
                 if (item === "rs" || item === "bs") {
                     personItem.amount += 10;
@@ -77,7 +77,7 @@ export class Items {
             ...itemsArray,
         ];
 
-        await db("users")
+        await db("user_items")
             .where("id", id)
             .update({
                 items: newItems,

@@ -1,7 +1,7 @@
 import "reflect-metadata";
 import { readdirSync } from "fs";
 import express from "express";
-import { setupRoutes } from "./router";
+import { GET, setupRoutes } from "./router";
 import { Server } from "socket.io";
 import path from "path";
 const folders = readdirSync(path.join(__dirname, "api"));
@@ -13,23 +13,9 @@ for (let i = 0; i < folders.length; i++) {
 }
 import * as dotenv from "dotenv";
 dotenv.config();
-// import {  } from "swagger-jsdoc";
-// import swagger "swagger-ui-express";
+import * as swaggerJSDoc from "swagger-jsdoc";
 
-// const swaggerDefinition = {
-//     openapi: "3.0.0",
-//     info: {
-//         title: "SaberQuest API Documentation",
-//         version: "1.0.0",
-//     },
-// };
-
-// const options = {
-//     swaggerDefinition,
-//     apis: ["./api/**/*.ts"],
-// };
-
-// const swaggerSpec = jsDoc(options);
+const swaggerSpec = swaggerJSDoc(options);
 
 async function main() {
     const httpPort = parseInt(process.env.PORT) || 5000;
@@ -39,12 +25,32 @@ async function main() {
 
     console.log(`Web socket started on port ${socketPort}.`);
 
+    const swaggerDefinition = {
+    openapi: "3.0.0",
+    info: {
+        title: "SaberQuest API Documentation",
+        version: "1.0.0",
+    },
+    host: `localhost:${httpPort}`,
+    basePath: "/",
+};
+
+const options = {
+    swaggerDefinition,
+    apis: ["./api/**/*.ts"],
+};
+
+const swaggerSpec = jsDoc(options);
+
     app.use(express.json());
     app.use(express.urlencoded());
 
     app.disable("x-powered-by");
 
-    // app.use("/api", swagger.serve, swagger.setup(swaggerSpec));
+    app.get("/", (req, res) => {
+        res.setHeader("Content-Type", "application/json");
+        res.send(swaggerSpec)
+    })
 
     setupRoutes(app);
 
