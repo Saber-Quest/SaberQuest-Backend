@@ -30,6 +30,7 @@ export async function up(knex: Knex): Promise<void> {
         table.string("border");
         table.string("preference");
         table.string("discord_id");
+        table.boolean("patreon");
         table.integer("rank");
         table.integer("qp");
     });
@@ -63,6 +64,7 @@ export async function up(knex: Knex): Promise<void> {
             .references("id")
             .inTable("items")
             .onDelete("CASCADE");
+        table.integer("amount");
     });
 
     await knex.schema.createTable("challenges", (table) => {

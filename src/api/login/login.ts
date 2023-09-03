@@ -4,28 +4,11 @@ import { GET } from "../../router";
 import { User } from "../../models/user";
 import db from "../../db";
 import jwt from "jsonwebtoken";
-import fs from "fs";
+import { downloadAvatar, compareAvatars, createBuffer } from "../../functions/avatar";
+import { createRandomToken, createRandomState } from "../../functions/random";
 
 const activeTokens: string[] = [];
 const activeStates: string[] = [];
-
-function createRandomToken() {
-    let token = "";
-    const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    for (let i = 0; i < 10; i++) {
-        token += characters.charAt(Math.floor(Math.random() * characters.length));
-    }
-    return token;
-}
-
-function createRandomState() {
-    let state = "";
-    const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_";
-    for (let i = 0; i < 30; i++) {
-        state += characters.charAt(Math.floor(Math.random() * characters.length));
-    }
-    return state;
-}
 
 export class BeatLeaderLogin {
     /**
@@ -81,15 +64,8 @@ export class BeatLeaderLogin {
                 message: "User does not exist in any of the databases."
             });
 
-            async function downloadAvatar(url: string, id: string) {
-                const response = await fetch(url);
-                const blob = await response.blob();
-                const arrayBuffer = await blob.arrayBuffer();
-                const buffer = Buffer.from(arrayBuffer);
-                fs.writeFileSync(`./${id}.png`, buffer)
-            }
-
-            await downloadAvatar(avatar, id.toString());
+            const buffer = await createBuffer(avatar);
+            await downloadAvatar(buffer, id.toString());
 
             const rank = await db<User>("users").count("id").then(res => Number(res[0].count) + 1);
 
@@ -117,6 +93,24 @@ export class BeatLeaderLogin {
                 }
             })
         }
+
+        if (user.patreon === false) {
+            if (user.preference === "bl") {
+                const beatleader = await fetch(`https://api.beatleader.xyz/player/${id}`).then(res => res.json());
+                compareAvatars(beatleader.avatar, id.toString());
+            } else if (user.preference === "ss") {
+                const scoresaber = await fetch(`https://scoresaber.com/api/player/${id}/basic`).then(res => res.json());
+                compareAvatars(scoresaber.profilePicture, id.toString());
+            }
+        }
+
+        const jwtToken = jwt.sign({
+            id: id
+        }, process.env.JWT_SECRET, {
+            expiresIn: "30d"
+        });
+
+        return res.redirect(`https://saberquest.xyz/login?token=${jwtToken}`);
     }
 
     /**
@@ -225,7 +219,7 @@ export class BeatLeaderLogin {
      * }
      */
     @GET("login/steam")
-    async getSteamLogin(req: Request, res: Response) {
+    async getSteamLogin(req: Request, res: Response): Promise<void | Response> {
         if (!req.query.state) {
             const state = createRandomState();
             activeStates.push(state);

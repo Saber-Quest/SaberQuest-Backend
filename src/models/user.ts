@@ -9,6 +9,8 @@ export class User {
     banner: string;
     border: string;
     preference: string;
+    discord_id: string;
+    patreon: boolean;
     rank: number;
     qp: number;
 }
