@@ -1,7 +1,7 @@
-import { ChallengeHistory } from "../../models/challengeHistory";
-import type { Request, Response } from "express";
-import db from "../../db";
-import { GET } from "../../router";
+// import { ChallengeHistory } from "../../models/challengeHistory";
+// import type { Request, Response } from "express";
+// import db from "../../db";
+// import { GET } from "../../router";
 
 // export class ChallengeHistoryEndpoint {
 //     @GET("/challenge/history/:id")

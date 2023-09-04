@@ -8,4 +8,4 @@ interface IToken {
 
 export const verifyJWT = (token: string): IToken => {
     return jwt.verify(token, process.env.JWT_SECRET) as IToken;
-}
+};

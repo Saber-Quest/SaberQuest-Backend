@@ -46,7 +46,7 @@ export class PlayerProfile {
             .select("*")
             .where("platform_id", req.params.id)
             .first()
-            .then(user => {
+            .then((user) => {
                 if (!user) {
                     return res.status(404).json({ message: "User not found." });
                 }

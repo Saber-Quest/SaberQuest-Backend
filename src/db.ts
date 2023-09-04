@@ -1,9 +1,4 @@
 import knex, { Knex } from "knex";
-import { User } from "./models/user";
-import { Challenge } from "./models/challenge";
-import { Item } from "./models/item";
-import { ShopItem } from "./models/shopItem";
-import { ChallengeHistory } from "./models/challengeHistory";
 import config from "./config.json";
 
 const db: Knex = knex({
