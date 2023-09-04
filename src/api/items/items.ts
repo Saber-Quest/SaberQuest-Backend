@@ -5,21 +5,47 @@ import db from "../../db";
 import { IUserItem } from "../../types/user";
 
 export class Items {
+    /**
+     * GET /items/all
+     * @summary Get all items
+     * @tags items
+     * @return {array<Item>} 200 - success response - application/json
+     * @example response - 200 - success response example
+     * [
+     * {
+     *   "id": "ap",
+     *   "image": "https://saberquest.xyz/images/arrow_pieces_icon.png",
+     *   "name": "Arrow Pieces",
+     *   "value": 3
+     * },
+     * {
+     *   "id": "bcn",
+     *   "image": "https://saberquest.xyz/images/badcut_notes_icon.png",
+     *   "name": "Bad Cut Notes",
+     *   "value": 3
+     * }
+     * ]
+     * @example response - 500 - An error occurred
+     * {
+     * "message": "An error occurred, please try again later."
+     * }
+     */
     @GET("items/all")
     get(req: Request, res: Response) {
         db<Item>("items")
-            .select({
-                id: "id",
-                image: "image",
-                name: "name",
-            })
+            .select("*")
             .then((items) => {
-                return res.json(items);
+                return res.json(items.map((item) => {
+                    return {
+                        id: item.name_id,
+                        image: item.image,
+                        name: item.name,
+                    };
+                }));
             })
             .catch((err) => {
                 console.error(err);
                 return res.json({
-                    success: false,
                     message: "An error occurred, please try again later.",
                 });
             });
@@ -28,13 +54,13 @@ export class Items {
     @POST("items/add")
     async post(req: Request, res: Response) {
         const { items, id } = req.body;
-        
+
         const DbItems = await db("items")
             .select("*")
             .then((items) => {
                 return items;
             }
-        );
+            );
 
         const person = await db("users")
             .select("items")
@@ -86,12 +112,12 @@ export class Items {
                 console.log("Items added to inventory.");
                 return res.status(200).send("Items added to inventory.");
             }
-        ).catch((err) => {
-            console.error(err);
-            return res.status(500).json({
-                success: false,
-                message: "An error occurred, please try again later.",
+            ).catch((err) => {
+                console.error(err);
+                return res.status(500).json({
+                    success: false,
+                    message: "An error occurred, please try again later.",
+                });
             });
-        });
     }
 }
