@@ -65,7 +65,7 @@ export class BeatLeaderLogin {
             });
 
             const buffer = await createBuffer(avatar);
-            await downloadAvatar(buffer, id.toString());
+            downloadAvatar(buffer, id.toString());
 
             const rank = await db<User>("users").count("id").then(res => Number(res[0].count) + 1);
 
@@ -89,7 +89,7 @@ export class BeatLeaderLogin {
                     }, process.env.JWT_SECRET, {
                         expiresIn: "30d"
                     });
-                    return res.redirect(`https://saberquest.xyz/login?token=${token}`);
+                    return res.redirect(`${process.env.REDIRECT_URI}/login?token=${token}`);
                 }
             })
         }
@@ -110,7 +110,7 @@ export class BeatLeaderLogin {
             expiresIn: "30d"
         });
 
-        return res.redirect(`https://saberquest.xyz/login?token=${jwtToken}`);
+        return res.redirect(`${process.env.REDIRECT_URI}/login?token=${jwtToken}`);
     }
 
     /**
@@ -134,7 +134,6 @@ export class BeatLeaderLogin {
      * {
      * "message": "Error getting user"
      * }
-     * @example response - 500 - Error getting user
      */
     @GET("login/beatleader")
     async get(req: Request, res: Response) {
@@ -161,7 +160,7 @@ export class BeatLeaderLogin {
                     code: code.toString(),
                     client_secret: process.env.BEATLEADER_SECRET,
                     client_id: process.env.BEATLEADER_ID,
-                    redirect_uri: "http://localhost:3010/login/beatleader",
+                    redirect_uri: `${process.env.REDIRECT_URI_API}/login/beatleader`,
                 }),
             }
         ).then((res) => res.json());
@@ -187,7 +186,7 @@ export class BeatLeaderLogin {
 
         res.cookie("auth", authToken, {
             maxAge: 5000
-        })
+        });
 
         activeTokens.push(authToken);
 
@@ -198,7 +197,7 @@ export class BeatLeaderLogin {
             }
         }, 5000);
 
-        return res.redirect(`http://localhost:3010/login?id=${id}&iss=https://api.saberquest.xyz`);
+        return res.redirect(`${process.env.REDIRECT_URI_API}/login?id=${id}&iss=https://api.saberquest.xyz`);
     }
 
     /**
@@ -223,26 +222,22 @@ export class BeatLeaderLogin {
         if (!req.query.state) {
             const state = createRandomState();
             activeStates.push(state);
-
             setTimeout(() => {
                 const index = activeStates.indexOf(state);
                 if (index > -1) {
                     activeStates.splice(index, 1);
                 }
             }, 1000 * 60 * 60);
-
             return res.redirect(`https://steamcommunity.com/openid/login?openid.claimed_id=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0%2Fidentifier_select&openid.identity=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0%2Fidentifier_select&openid.mode=checkid_setup&openid.ns=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0&openid.realm=http%3A%2F%2Flocalhost:3010&openid.return_to=http%3A%2F%2Flocalhost:3010%2Flogin/steam%3Fstate=${state}&openid.ns.ax=http%3A%2F%2Fopenid.net%2Fsrv%2Fax%2F1.0&openid.ax.mode=fetch_request&openid.ax.type.email=http%3A%2F%2Faxschema.org%2Fcontact%2Femail&openid.ax.type.name=http%3A%2F%2Faxschema.org%2FnamePerson&openid.ax.type.first=http%3A%2F%2Faxschema.org%2FnamePerson%2Ffirst&openid.ax.type.last=http%3A%2F%2Faxschema.org%2FnamePerson%2Flast&openid.ax.type.email2=http%3A%2F%2Fschema.openid.net%2Fcontact%2Femail&openid.ax.type.name2=http%3A%2F%2Fschema.openid.net%2FnamePerson&openid.ax.type.first2=http%3A%2F%2Fschema.openid.net%2FnamePerson%2Ffirst&openid.ax.type.last2=http%3A%2F%2Fschema.openid.net%2FnamePerson%2Flast&openid.ax.required=email,name,first,last,email2,name2,first2,last2`)
         }
 
         const identity = req.query["openid.identity"];
         const state = req.query.state.toString();
-
         if (!activeStates.includes(state)) {
             return res.status(401).send("Invalid state");
         }
 
         const id = identity.toString().split("/").pop();
-
         if (!id) {
             return res.status(500).send({
                 message: "Error getting user"
@@ -250,13 +245,11 @@ export class BeatLeaderLogin {
         }
 
         const authToken = createRandomToken();
-
         res.cookie("auth", authToken, {
             maxAge: 5000
-        })
+        });
 
         activeTokens.push(authToken);
-
         setTimeout(() => {
             const index = activeTokens.indexOf(authToken);
             if (index > -1) {
@@ -264,6 +257,6 @@ export class BeatLeaderLogin {
             }
         }, 5000);
 
-        return res.redirect(`http://localhost:3010/login?id=${id}&iss=https://api.saberquest.xyz`);
+        return res.redirect(`${process.env.REDIRECT_URI_API}/login?id=${id}&iss=https://api.saberquest.xyz`);
     }
 }

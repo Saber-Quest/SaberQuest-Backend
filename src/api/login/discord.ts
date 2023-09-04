@@ -30,7 +30,7 @@ export class DiscordLogin {
                     code: code,
                     client_secret: process.env.DISCORD_SECRET,
                     client_id: process.env.DISCORD_ID,
-                    redirect_uri: "https://saberquest.xyz/link-discord",
+                    redirect_uri: `${process.env.REDIRECT_URI_API}/link`,
                 }),
             });
 
@@ -75,7 +75,7 @@ export class DiscordLogin {
                 res.status(200).send("Successfully linked your Discord account.\nYou will be redirected back to the website shortly.");
 
                 setTimeout(() => {
-                    res.redirect("https://saberquest.xyz");
+                    res.redirect(process.env.REDIRECT_URI);
                 }, 5000);
             } else {
                 res.status(400).send("Your Discord account is already linked to a user.");
