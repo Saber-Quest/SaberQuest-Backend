@@ -166,7 +166,7 @@ export class BeatLeaderLogin {
                     code: code.toString(),
                     client_secret: process.env.BEATLEADER_SECRET,
                     client_id: process.env.BEATLEADER_ID,
-                    redirect_uri: "https://saberquest.xyz/login/beatleader",
+                    redirect_uri: `${process.env.REDIRECT_URI_API}/login/beatleader`,
                 }),
             }
         ).then((res) => res.json());
