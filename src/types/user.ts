@@ -38,3 +38,10 @@ export type userRes = {
     stats: IUserStats;
     today: IUserToday;
 };
+
+export type userInventoryRes = {
+    id: string;
+    image: string;
+    name: string;
+    amount: number;
+};

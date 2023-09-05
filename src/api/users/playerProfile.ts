@@ -4,6 +4,8 @@ import db from "../../db";
 import { User } from "../../models/user";
 import { UserItem } from "../../models/userItem";
 import fs from "fs";
+import { Item } from "../../models/item";
+import { userInventoryRes } from "../../types/user";
 
 export class PlayerProfile {
     /**
@@ -16,20 +18,20 @@ export class PlayerProfile {
      * @return {object} 500 - An error occurred
      * @example response - 200 - Success
      * {
-     *  "userInfo": {
-     *     "platform_id": "76561199108042297",
-     *    "username": "Raine'); DROP TABLE users;--",
-     *   "images": {
-     *     "avatar": "https://cdn.discordapp.com/avatars/813176414692966432/0ce8808ab0435a25610ae7d045e9a03f.webp",
-     *    "banner": null,
-     *  "border": null
-     * },
-     * "preference": "ss"
+     * "userInfo": {
+     *  "platform_id": "76561199108042297",
+     *  "username": "Raine'); DROP TABLE users;--",
+     *  "images": {
+     *   "avatar": "https://cdn.discordapp.com/avatars/813176414692966432/0ce8808ab0435a25610ae7d045e9a03f.webp",
+     *   "banner": null,
+     *   "border": null
+     *  },
+     *  "preference": "ss"
      * },
      * "stats": {
      *  "rank": 3,
-     * "qp": 0
-     * }
+     *  "qp": 0
+     *  }
      * }
      * @example response - 404 - User not found
      * {
@@ -41,7 +43,7 @@ export class PlayerProfile {
      * }
      */
     @GET("profile/:id")
-    get(req: Request, res: Response) {
+    get(req: Request, res: Response): void {
         db<User>("users")
             .select("*")
             .where("platform_id", req.params.id)
@@ -79,11 +81,44 @@ export class PlayerProfile {
 
     @GET("profile/:id/inventory")
     async getPlayerInventory(req: Request, res: Response) {
-        const dbItems = await db<UserItem>("user_items")
-            .select("item_id")
-            .where("user_id", req.params.id);
+        await db<User>("users")
+            .select("id")
+            .where("platform_id", req.params.id)
+            .first()
+            .then(async (user) => {
+                if (!user.id) {
+                    return res.status(404).json({ message: "User not found." });
+                }
+                await db<UserItem>("user_items")
+                    .select("item_id", "amount")
+                    .where("user_id", user.id)
+                    .then(async (items) => {
+                        let itemsArray: userInventoryRes[] = [];
 
-        res.status(200).json(dbItems);
+                        for (const item of items) {
+                            await db<Item>("items")
+                                .select("name_id", "image", "name")
+                                .where("id", item.item_id)
+                                .first()
+                                .then((itemData) => {
+                                    itemsArray.push({
+                                        id: itemData.name_id,
+                                        image: itemData.image,
+                                        name: itemData.name,
+                                        amount: item.amount,
+                                    });
+                                });
+                        }
+
+                        return res.status(200).json(itemsArray);
+                    });
+            })
+            .catch((err) => {
+                console.error(err);
+                return res.status(500).json({
+                    message: "An error occurred, please try again later.",
+                });
+            });
     }
 
     /**
@@ -91,7 +126,7 @@ export class PlayerProfile {
      * @summary Get a player's avatar
      * @tags users
      * @param {string} id.path.required - The id of the player
-     * @return {object} 200 - Success
+     * @return {image/png} 200 - Success
      * @return {object} 404 - User not found
      * @return {object} 500 - An error occurred
      * @example response - 200 - Success
@@ -105,9 +140,11 @@ export class PlayerProfile {
      * }
      */
     @GET("profile/:id/avatar")
-    getPlayerAvatar(req: Request, res: Response) {
+    getPlayerAvatar(req: Request, res: Response): Response {
         const exists = fs.existsSync(`./data/avatars/${req.params.id}.png`);
-        if (!exists) return res.status(404).json({ message: "User not found." });
+        if (!exists) {
+            return res.status(404).json({ message: "User not found." });
+        }
         try {
             const file = fs.readFileSync(`./data/avatars/${req.params.id}.png`);
 
@@ -129,7 +166,9 @@ export class PlayerProfile {
     @PUT("profile/create")
     async createUser(req: Request, res: Response) {
         const userData = req.body;
-        if (userData.authorization_code !== process.env.AUTHORIZATION_CODE) return res.status(401).send("Invalid authorization code.");
+        if (userData.authorization_code !== process.env.AUTHORIZATION_CODE) {
+            return res.status(401).send("Invalid authorization code.");
+        }
         await db<User>("users")
             .insert({
                 platform_id: userData.platform_id,

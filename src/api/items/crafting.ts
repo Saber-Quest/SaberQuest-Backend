@@ -1,146 +1,111 @@
-// import { PATCH } from "../../router";
-// import db from "../../db";
-// import { Request, Response } from "express";
-// import { Item } from "../../models/item";
-// import { User } from "../../models/user";
-// import { Craft } from "../../functions/craft";
-// import { IUserItem } from "../../types/user";
+import { PATCH } from "../../router";
+import db from "../../db";
+import { Request, Response } from "express";
+import { verifyJWT } from "../../functions/jwtVerify";
+import { Craft } from "../../functions/craft";
 
-// export class Crafting {
-//     @PATCH("craft")
-//     async post(req: Request, res: Response) {
-//         const { id, used1, used2 } = req.body;
+export class Crafting {
+    /**
+     * PATCH /craft
+     * @summary Craft an item
+     * @tags items
+     */
+    @PATCH("craft")
+    async patch(req: Request, res: Response) {
+        const { used1, used2, token } = req.body;
 
-//         const person = await db<User>("users")
-//             .select("items")
-//             .where("id", id)
-//             .first();
+        if (!used1 || !used2 || !token) {
+            return res.status(400).json({ error: "Missing fields" });
+        }
 
-//         const personItems = person.items;
+        const jwt = verifyJWT(token);
 
-//         const used1Index = personItems.findIndex((personItem) => {
-//             const json = JSON.parse(personItem.toString());
-//             return json.id === used1;
-//         });
+        if (jwt.exp < Date.now() / 1000) {
+            return res.status(401).json({ error: "Token expired" });
+        }
 
-//         const used2Index = personItems.findIndex((personItem) => {
-//             const json = JSON.parse(personItem.toString());
-//             return json.id === used2;
-//         });
+        const user = await db("users")
+            .select("id")
+            .where("platform_id", jwt.id)
+            .first();
 
-//         if (used1Index === -1 || used2Index === -1) {
-//             return res.status(404).json({ message: "Item not found." });
-//         }
+        if (!user) {
+            return res.status(404).json({ error: "User not found" });
+        }
 
-//         const used1Data = JSON.parse(personItems[used1Index].toString());
-//         const used2Data = JSON.parse(personItems[used2Index].toString());
+        const userItems = await db("user_items")
+            .select("item_id", "amount")
+            .where("user_id", user.id)
+            .andWhere("amount", ">", 0);
 
-//         if (used1Data.amount < 1 || used2Data.amount < 1) {
-//             return res.status(400).json({ message: "Not enough items." });
-//         }
+        const itemsArray: string[] = [];
 
-//         used1Data.amount--;
-//         used2Data.amount--;
+        for (const item of userItems) {
+            itemsArray.push(item.item_id);
+        }
 
-//         const newItems: IUserItem[] = [...personItems];
+        const item1 = await db("items")
+            .select("id", "name_id")
+            .where("name_id", used1)
+            .first();
 
-//         for (const item in newItems) {
-//             newItems[item] = JSON.parse(newItems[item].toString());
-//         }
+        const item2 = await db("items")
+            .select("id", "name_id")
+            .where("name_id", used2)
+            .first();
 
-//         if (used1Data.amount === 0) {
-//             newItems.splice(used1Index, 1);
-//         } else {
-//             newItems[used1Index] = used1Data;
-//         }
+        if (!item1 || !item2) {
+            return res.status(404).json({ error: "Item not found" });
+        }
 
-//         if (used2Data.amount === 0) {
-//             newItems.splice(used2Index, 1);
-//         } else {
-//             newItems[used2Index] = used2Data;
-//         }
+        if (!itemsArray.includes(item1.id) || !itemsArray.includes(item2.id)) {
+            return res.status(404).json({ error: "Item not found" });
+        }
 
-//         const crafted = Craft(used1, used2);
+        const crafted = Craft(item1.name_id, item2.name_id);
 
-//         const craftedFiltered = newItems.filter(
-//             (item) => item.name_id === crafted
-//         );
+        if (!crafted) {
+            return res.status(400).json({ error: "Invalid items" });
+        }
 
-//         if (craftedFiltered.length === 0) {
-//             const allItems = await db<Item>("items")
-//                 .select("*")
-//                 .then((items) => {
-//                     return items;
-//                 });
+        const craftedItem = await db("items")
+            .select("id")
+            .where("name_id", crafted)
+            .first();
 
-//             const item = allItems.filter((item) => item.name_id === crafted)[0];
+        if (!craftedItem) {
+            return res.status(404).json({ error: "Item not found" });
+        }
 
-//             if (!item) {
-//                 return res.status(404).json({ message: "Item not found." });
-//             }
+        const userCraftedItem = await db("user_items")
+            .select("amount")
+            .where("user_id", user.id)
+            .andWhere("item_id", craftedItem.id)
+            .first();
 
-//             const newItem: IUserItem = {
-//                 ...item,
-//                 amount: 1,
-//             };
+        if (userCraftedItem) {
+            await db("user_items")
+                .where("user_id", user.id)
+                .andWhere("item_id", craftedItem.id)
+                .increment("amount", 1);
+        } else {
+            await db("user_items").insert({
+                user_id: user.id,
+                item_id: craftedItem.id,
+                amount: 1,
+            });
+        }
 
-//             const withCrafted: IUserItem[] = [...newItems, newItem];
+        await db("user_items")
+            .where("user_id", user.id)
+            .andWhere("item_id", item1.id)
+            .decrement("amount", 1);
 
-//             let newValue = 0;
+        await db("user_items")
+            .where("user_id", user.id)
+            .andWhere("item_id", item2.id)
+            .decrement("amount", 1);
 
-//             for (const item of withCrafted) {
-//                 const dbItem: Item[] = allItems.filter(
-//                     (dbItem) => dbItem.name_id === item.name_id
-//                 );
-//                 if (dbItem.length === 0) {
-//                     return res.status(404).json({ message: "Item not found." });
-//                 }
-
-//                 newValue += dbItem[0].value * item.amount;
-//             }
-
-//             await db<User>("users").where("id", id).update({
-//                 items: withCrafted,
-//                 value: newValue,
-//             });
-
-//             return res.status(200).json({ message: "Item crafted." });
-//         } else {
-//             const craftedData = craftedFiltered[0];
-
-//             craftedData.amount++;
-
-//             const craftedIndex = newItems.findIndex(
-//                 (item) => item.name_id === crafted
-//             );
-
-//             newItems[craftedIndex] = craftedData;
-
-//             const allItems = await db<Item>("items")
-//                 .select("*")
-//                 .then((items) => {
-//                     return items;
-//                 });
-
-//             let newValue = 0;
-
-//             for (const item of newItems) {
-//                 const dbItem: Item[] = allItems.filter(
-//                     (dbItem) => dbItem.name_id === item.name_id
-//                 );
-//                 if (dbItem.length === 0) {
-//                     return res.status(404).json({ message: "Item not found." });
-//                 }
-
-//                 newValue += dbItem[0].value * item.amount;
-//             }
-
-//             await db<User>("users").where("id", id).update({
-//                 items: newItems,
-//                 value: newValue,
-//             });
-
-//             return res.status(200).json({ message: "Item crafted." });
-//         }
-//     }
-// }
+        return res.status(200).json({ message: "Success" });
+    }
+}

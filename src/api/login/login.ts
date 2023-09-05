@@ -3,12 +3,12 @@ import type { Request, Response } from "express";
 import { GET } from "../../router";
 import { User } from "../../models/user";
 import db from "../../db";
+import { compareAvatars, downloadAvatar, createBuffer } from "../../functions/avatar";
+import { createRandomState, createRandomToken } from "../../functions/random";
 import jwt from "jsonwebtoken";
-import { downloadAvatar, compareAvatars, createBuffer } from "../../functions/avatar";
-import { createRandomToken, createRandomState } from "../../functions/random";
 
-const activeTokens: string[] = [];
 const activeStates: string[] = [];
+const activeTokens: string[] = [];
 
 export class BeatLeaderLogin {
     /**
@@ -41,10 +41,14 @@ export class BeatLeaderLogin {
             let username: string = "";
             let avatar: string = "";
 
-            const beatleader = await fetch(`https://api.beatleader.xyz/player/${id}`).then(res => res.json());
-            if (beatleader.id != null) hasBl = true;
-            const scoresaber = await fetch(`https://scoresaber.com/api/player/${id}/basic`).then(res => res.json());
-            if (!scoresaber.errorMessage) hasSs = true;
+            const beatleader = await fetch(`https://api.beatleader.xyz/player/${id}`).then((res) => res.json());
+            if (beatleader.id !== null) {
+                hasBl = true;
+            }
+            const scoresaber = await fetch(`https://scoresaber.com/api/player/${id}/basic`).then((res) => res.json());
+            if (!scoresaber.errorMessage) {
+                hasSs = true;
+            }
 
             let preference: string | undefined;
 
@@ -60,14 +64,16 @@ export class BeatLeaderLogin {
                 preference = undefined;
             }
 
-            if (preference == undefined) return res.status(401).json({
-                message: "User does not exist in any of the databases."
-            });
+            if (preference === undefined) {
+                return res.status(401).json({
+                    message: "User does not exist in any of the databases."
+                });
+            }
 
             const buffer = await createBuffer(avatar);
             downloadAvatar(buffer, id.toString());
 
-            const rank = await db<User>("users").count("id").then(res => Number(res[0].count) + 1);
+            const rank = await db<User>("users").count("id").then((res) => Number(res[0].count) + 1);
 
             await fetch(`http://localhost:3010/profile/create`, {
                 method: "PUT",
@@ -82,7 +88,7 @@ export class BeatLeaderLogin {
                     preference: preference,
                     rank: rank
                 })
-            }).then(response => {
+            }).then((response) => {
                 if (response.status === 200) {
                     const token = jwt.sign({
                         id: id
@@ -91,15 +97,15 @@ export class BeatLeaderLogin {
                     });
                     return res.redirect(`${process.env.REDIRECT_URI}/login?token=${token}`);
                 }
-            })
+            });
         }
 
         if (user.patreon === false) {
             if (user.preference === "bl") {
-                const beatleader = await fetch(`https://api.beatleader.xyz/player/${id}`).then(res => res.json());
+                const beatleader = await fetch(`https://api.beatleader.xyz/player/${id}`).then((res) => res.json());
                 compareAvatars(beatleader.avatar, id.toString());
             } else if (user.preference === "ss") {
-                const scoresaber = await fetch(`https://scoresaber.com/api/player/${id}/basic`).then(res => res.json());
+                const scoresaber = await fetch(`https://scoresaber.com/api/player/${id}/basic`).then((res) => res.json());
                 compareAvatars(scoresaber.profilePicture, id.toString());
             }
         }
@@ -160,7 +166,7 @@ export class BeatLeaderLogin {
                     code: code.toString(),
                     client_secret: process.env.BEATLEADER_SECRET,
                     client_id: process.env.BEATLEADER_ID,
-                    redirect_uri: `${process.env.REDIRECT_URI_API}/login/beatleader`,
+                    redirect_uri: "https://saberquest.xyz/login/beatleader",
                 }),
             }
         ).then((res) => res.json());
@@ -228,7 +234,7 @@ export class BeatLeaderLogin {
                     activeStates.splice(index, 1);
                 }
             }, 1000 * 60 * 60);
-            return res.redirect(`https://steamcommunity.com/openid/login?openid.claimed_id=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0%2Fidentifier_select&openid.identity=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0%2Fidentifier_select&openid.mode=checkid_setup&openid.ns=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0&openid.realm=http%3A%2F%2Flocalhost:3010&openid.return_to=http%3A%2F%2Flocalhost:3010%2Flogin/steam%3Fstate=${state}&openid.ns.ax=http%3A%2F%2Fopenid.net%2Fsrv%2Fax%2F1.0&openid.ax.mode=fetch_request&openid.ax.type.email=http%3A%2F%2Faxschema.org%2Fcontact%2Femail&openid.ax.type.name=http%3A%2F%2Faxschema.org%2FnamePerson&openid.ax.type.first=http%3A%2F%2Faxschema.org%2FnamePerson%2Ffirst&openid.ax.type.last=http%3A%2F%2Faxschema.org%2FnamePerson%2Flast&openid.ax.type.email2=http%3A%2F%2Fschema.openid.net%2Fcontact%2Femail&openid.ax.type.name2=http%3A%2F%2Fschema.openid.net%2FnamePerson&openid.ax.type.first2=http%3A%2F%2Fschema.openid.net%2FnamePerson%2Ffirst&openid.ax.type.last2=http%3A%2F%2Fschema.openid.net%2FnamePerson%2Flast&openid.ax.required=email,name,first,last,email2,name2,first2,last2`)
+            return res.redirect(`https://steamcommunity.com/openid/login?openid.claimed_id=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0%2Fidentifier_select&openid.identity=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0%2Fidentifier_select&openid.mode=checkid_setup&openid.ns=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0&openid.realm=http%3A%2F%2Flocalhost:3010&openid.return_to=http%3A%2F%2Flocalhost:3010%2Flogin/steam%3Fstate=${state}&openid.ns.ax=http%3A%2F%2Fopenid.net%2Fsrv%2Fax%2F1.0&openid.ax.mode=fetch_request&openid.ax.type.email=http%3A%2F%2Faxschema.org%2Fcontact%2Femail&openid.ax.type.name=http%3A%2F%2Faxschema.org%2FnamePerson&openid.ax.type.first=http%3A%2F%2Faxschema.org%2FnamePerson%2Ffirst&openid.ax.type.last=http%3A%2F%2Faxschema.org%2FnamePerson%2Flast&openid.ax.type.email2=http%3A%2F%2Fschema.openid.net%2Fcontact%2Femail&openid.ax.type.name2=http%3A%2F%2Fschema.openid.net%2FnamePerson&openid.ax.type.first2=http%3A%2F%2Fschema.openid.net%2FnamePerson%2Ffirst&openid.ax.type.last2=http%3A%2F%2Fschema.openid.net%2FnamePerson%2Flast&openid.ax.required=email,name,first,last,email2,name2,first2,last2`);
         }
 
         const identity = req.query["openid.identity"];
@@ -241,7 +247,7 @@ export class BeatLeaderLogin {
         if (!id) {
             return res.status(500).send({
                 message: "Error getting user"
-            })
+            });
         }
 
         const authToken = createRandomToken();

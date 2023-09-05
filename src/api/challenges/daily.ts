@@ -6,13 +6,13 @@ import db from "../../db";
 export class Daily {
     @GET("challenge/daily")
     async get(req: Request, res: Response) {
-        const challenge = await db.select<ChallengeHistory>("challenge_history").first();
+        const challenge = await db.select<ChallengeHistory>("challenge_histories").first();
         return res.json(challenge);
     }
 
     @POST("challenge/daily/new")
     async post(req: Request, res: Response) {
-       await db<ChallengeHistory>("challenge_history")
+       await db<ChallengeHistory>("challenge_histories")
             .insert({
                 challenges: req.body.challenge,
                 date: new Date(),
