@@ -1,34 +1,60 @@
 import type { Request, Response } from "express";
 import { GET, PUT } from "../../router";
 import db from "../../db";
-import { userRes } from "../../types/user";
 import { User } from "../../models/user";
+import { UserItem } from "../../models/userItem";
+import fs from "fs";
+import { Item } from "../../models/item";
+import { userInventoryRes } from "../../types/user";
 
 export class PlayerProfile {
+    /**
+     * GET /profile/{id}
+     * @summary Get a player's profile
+     * @tags users
+     * @param {string} id.path.required - The id of the player
+     * @return {object} 200 - Success
+     * @return {object} 404 - User not found
+     * @return {object} 500 - An error occurred
+     * @example response - 200 - Success
+     * {
+     * "userInfo": {
+     *  "platform_id": "76561199108042297",
+     *  "username": "Raine'); DROP TABLE users;--",
+     *  "images": {
+     *   "avatar": "https://cdn.discordapp.com/avatars/813176414692966432/0ce8808ab0435a25610ae7d045e9a03f.webp",
+     *   "banner": null,
+     *   "border": null
+     *  },
+     *  "preference": "ss"
+     * },
+     * "stats": {
+     *  "rank": 3,
+     *  "qp": 0
+     *  }
+     * }
+     * @example response - 404 - User not found
+     * {
+     * "message": "User not found."
+     * }
+     * @example response - 500 - An error occurred
+     * {
+     * "message": "An error occurred, please try again later."
+     * }
+     */
     @GET("profile/:id")
-    get(req: Request, res: Response) {
+    get(req: Request, res: Response): void {
         db<User>("users")
             .select("*")
             .where("platform_id", req.params.id)
-            .then((users) => {
-                let user = users[0];
+            .first()
+            .then((user) => {
                 if (!user) {
                     return res.status(404).json({ message: "User not found." });
                 }
 
-                const items = user.items.map((item) => {
-                    const json = JSON.parse(item.toString());
-                    return {
-                        name_id: json.id,
-                        image: json.image,
-                        name: json.name,
-                        amount: json.amount,
-                    };
-                });
-
-                const JsonResponse: userRes = {
+                const JsonResponse = {
                     userInfo: {
-                        id: user.platform_id,
                         platform_id: user.platform_id,
                         username: user.username,
                         images: {
@@ -38,17 +64,9 @@ export class PlayerProfile {
                         },
                         preference: user.preference,
                     },
-                    chistory: user.challenge_history,
-                    items: items,
                     stats: {
-                        challengesCompleted: user.challenges_completed,
                         rank: user.rank,
                         qp: user.qp,
-                        value: user.value,
-                    },
-                    today: {
-                        diff: user.diff,
-                        completed: user.completed,
                     },
                 };
                 return res.status(200).json(JsonResponse);
@@ -56,38 +74,118 @@ export class PlayerProfile {
             .catch((err) => {
                 console.error(err);
                 return res.status(500).json({
-                    success: false,
                     message: "An error occurred, please try again later.",
                 });
             });
     }
 
+    @GET("profile/:id/inventory")
+    async getPlayerInventory(req: Request, res: Response) {
+        await db<User>("users")
+            .select("id")
+            .where("platform_id", req.params.id)
+            .first()
+            .then(async (user) => {
+                if (!user.id) {
+                    return res.status(404).json({ message: "User not found." });
+                }
+                await db<UserItem>("user_items")
+                    .select("item_id", "amount")
+                    .where("user_id", user.id)
+                    .then(async (items) => {
+                        let itemsArray: userInventoryRes[] = [];
+
+                        for (const item of items) {
+                            await db<Item>("items")
+                                .select("name_id", "image", "name")
+                                .where("id", item.item_id)
+                                .first()
+                                .then((itemData) => {
+                                    itemsArray.push({
+                                        id: itemData.name_id,
+                                        image: itemData.image,
+                                        name: itemData.name,
+                                        amount: item.amount,
+                                    });
+                                });
+                        }
+
+                        return res.status(200).json(itemsArray);
+                    });
+            })
+            .catch((err) => {
+                console.error(err);
+                return res.status(500).json({
+                    message: "An error occurred, please try again later.",
+                });
+            });
+    }
+
+    /**
+     * GET /profile/{id}/avatar
+     * @summary Get a player's avatar
+     * @tags users
+     * @param {string} id.path.required - The id of the player
+     * @return {image/png} 200 - Success
+     * @return {object} 404 - User not found
+     * @return {object} 500 - An error occurred
+     * @example response - 200 - Success
+     * @example response - 404 - User not found
+     * {
+     * "message": "User not found."
+     * }
+     * @example response - 500 - An error occurred
+     * {
+     * "message": "An error occurred, please try again later."
+     * }
+     */
+    @GET("profile/:id/avatar")
+    getPlayerAvatar(req: Request, res: Response): Response {
+        const exists = fs.existsSync(`./data/avatars/${req.params.id}.png`);
+        if (!exists) {
+            return res.status(404).json({ message: "User not found." });
+        }
+        try {
+            const file = fs.readFileSync(`./data/avatars/${req.params.id}.png`);
+
+            res.setHeader("Content-Type", "image/png");
+            res.setHeader("Content-Length", file.length);
+            res.status(200).end(file);
+        } catch (err) {
+            return res.status(500).json({
+                message: "An error occurred, please try again later.",
+            });
+        }
+    }
+
+    /**
+     * PUT /profile/create
+     * @summary Create a player's profile
+     * @tags users
+     */
     @PUT("profile/create")
-    async post(req: Request, res: Response) {
+    async createUser(req: Request, res: Response) {
         const userData = req.body;
+        if (userData.authorization_code !== process.env.AUTHORIZATION_CODE) {
+            return res.status(401).send("Invalid authorization code.");
+        }
         await db<User>("users")
             .insert({
-                platform_id: userData.id,
+                platform_id: userData.platform_id,
                 username: userData.username,
                 avatar: userData.avatar,
                 banner: null,
                 border: null,
                 preference: userData.preference,
-                items: [],
-                challenges_completed: 0,
                 rank: userData.rank,
                 qp: 0,
-                value: 0,
-                diff: 4,
-                completed: false,
             })
             .then(() => {
-                res.status(200).send("User created!");
+                res.sendStatus(200);
             })
             .catch((err) => {
                 console.error(err);
                 return res.status(500).json({
-                    success: false,
                     message: `An error occurred, did you include all the data?!`,
                 });
             });

@@ -4,6 +4,7 @@ import express from "express";
 import { setupRoutes } from "./router";
 import { Server } from "socket.io";
 import path from "path";
+import cookieParser from "cookie-parser";
 const folders = readdirSync(path.join(__dirname, "api"));
 for (let i = 0; i < folders.length; i++) {
     const files = readdirSync(path.join(__dirname, "api", folders[i]));
@@ -13,23 +14,7 @@ for (let i = 0; i < folders.length; i++) {
 }
 import * as dotenv from "dotenv";
 dotenv.config();
-// import {  } from "swagger-jsdoc";
-// import swagger "swagger-ui-express";
-
-// const swaggerDefinition = {
-//     openapi: "3.0.0",
-//     info: {
-//         title: "SaberQuest API Documentation",
-//         version: "1.0.0",
-//     },
-// };
-
-// const options = {
-//     swaggerDefinition,
-//     apis: ["./api/**/*.ts"],
-// };
-
-// const swaggerSpec = jsDoc(options);
+import expressJSDocSwagger from "express-jsdoc-swagger";
 
 async function main() {
     const httpPort = parseInt(process.env.PORT) || 5000;
@@ -39,12 +24,32 @@ async function main() {
 
     console.log(`Web socket started on port ${socketPort}.`);
 
+    const options = {
+        info: {
+            version: "1.0.0",
+            title: "SaberQuest API",
+            description: "SaberQuest API",
+            license: {
+                name: "Apache 2.0",
+            }
+        },
+        baseDir: __dirname,
+        filesPattern: "./api/**/*.ts",
+        swaggerUIPath: "/docs",
+        exposeSwaggerUI: true,
+        exposeApiDocs: false,
+        apiDocsPath: "/docs.json",
+        notRequiredAsNullable: false,
+        swaggerUiOptions: {},
+    };
+
+    expressJSDocSwagger(app)(options);
+
+    app.use(cookieParser());
     app.use(express.json());
     app.use(express.urlencoded());
 
     app.disable("x-powered-by");
-
-    // app.use("/api", swagger.serve, swagger.setup(swaggerSpec));
 
     setupRoutes(app);
 

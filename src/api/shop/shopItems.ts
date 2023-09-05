@@ -1,16 +1,15 @@
 import type { Request, Response } from "express";
 import { GET } from "../../router";
-import { Shop } from "../../models/shop";
+import { ShopItem } from "../../models/shopItem";
 import db from "../../db";
 
 export class ShopItems {
     @GET("shop/items")
     get(req: Request, res: Response) {
-        db<Shop>("shop")
+        db<ShopItem>("shop")
             .select({
                 id: "id",
                 price: "price",
-                rarity: "rarity",
                 value: "value",
             })
             .then((users) => {
