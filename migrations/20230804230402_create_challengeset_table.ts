@@ -24,7 +24,7 @@ export async function up(knex: Knex): Promise<void> {
             .references("id")
             .inTable("challenge_sets")
             .onDelete("CASCADE");
-        table.specificType("challenge", "integer ARRAY");
+        table.specificType("challenge", "float ARRAY");
         table.integer("diff");
         table.string("color");
     });

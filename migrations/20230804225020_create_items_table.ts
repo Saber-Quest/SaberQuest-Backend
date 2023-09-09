@@ -8,17 +8,14 @@ export async function up(knex: Knex): Promise<void> {
         table.string("name");
         table.integer("value");
         table.string("rarity");
+        table.integer("price");
     });
 
     await knex.schema.createTable("shop_items", (table) => {
         table.uuid("id").defaultTo(knex.raw("gen_random_uuid()")).primary();
-        table.uuid("item_id");
-        table
-            .foreign("item_id")
-            .references("id")
-            .inTable("items")
-            .onDelete("CASCADE");
+        table.string("item_ids");
         table.integer("price");
+        table.string("date")
     });
 }
 
