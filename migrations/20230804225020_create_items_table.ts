@@ -7,6 +7,7 @@ export async function up(knex: Knex): Promise<void> {
         table.string("image");
         table.string("name");
         table.integer("value");
+        table.string("rarity");
     });
 
     await knex.schema.createTable("shop_items", (table) => {

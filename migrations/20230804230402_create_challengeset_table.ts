@@ -1,25 +1,33 @@
 import { Knex } from "knex";
 
 export async function up(knex: Knex): Promise<void> {
-    await knex.schema.createTable("difficulty", (table) => {
+    await knex.schema.createTable("challenge_sets", async (table) => {
         table.uuid("id").defaultTo(knex.raw("gen_random_uuid()")).primary();
-        table.json("difficulty");
-        table.string("color");
-    });
-
-    await knex.schema.createTable("challenge_sets", (table) => {
-        table.uuid("id").defaultTo(knex.raw("gen_random_uuid()")).primary();
-        table.string("name");
         table.string("type");
+        table.string("name");
+        table.string("description");
         table.string("image");
-        table.date("reset_time");
     });
 
     // id: string;
     // name: string;
-    // type: string;
+    // description: string;
     // image: string;
-    // reset_time: Date;
+    // reset_time: number;
+
+
+    await knex.schema.createTable("difficulties", (table) => {
+        table.uuid("id").defaultTo(knex.raw("gen_random_uuid()")).primary();
+        table.uuid("challenge_id");
+        table
+            .foreign("challenge_id")
+            .references("id")
+            .inTable("challenge_sets")
+            .onDelete("CASCADE");
+        table.specificType("challenge", "integer ARRAY");
+        table.integer("diff");
+        table.string("color");
+    });
 
     await knex.schema.createTable("users", (table) => {
         table.uuid("id").defaultTo(knex.raw("gen_random_uuid()")).primary();
@@ -35,7 +43,7 @@ export async function up(knex: Knex): Promise<void> {
         table.integer("qp");
     });
 
-        // id: string;
+    // id: string;
     // username: string;
     // avatar: string;
     // banner: string;
@@ -67,23 +75,6 @@ export async function up(knex: Knex): Promise<void> {
         table.integer("amount");
     });
 
-    await knex.schema.createTable("challenges", (table) => {
-        table.uuid("id").defaultTo(knex.raw("gen_random_uuid()")).primary();
-        table.uuid("challenge_set_id");
-        table
-            .foreign("challenge_set_id")
-            .references("id")
-            .inTable("challenge_sets")
-            .onDelete("CASCADE");
-        table.string("type");
-        table.uuid("difficulty_id");
-        table
-            .foreign("difficulty_id")
-            .references("id")
-            .inTable("difficulty")
-            .onDelete("CASCADE");
-    });
-
     // id: string;
     // challenge_set: ChallengeSet;
     // challenge_set_id: string;
@@ -106,20 +97,16 @@ export async function up(knex: Knex): Promise<void> {
         table
             .foreign("challenge_id")
             .references("id")
-            .inTable("challenges")
+            .inTable("challenge_sets")
             .onDelete("CASCADE");
-        table.uuid("item_id");
-        table
-            .foreign("item_id")
-            .references("id")
-            .inTable("items")
-            .onDelete("CASCADE");
-        table.date("date");
+        table.string("item_ids")
+        table.integer("difficulty");
+        table.integer("qp");
+        table.string("date");
     });
 
     // id: string;
     // challenges: Challenge[];
-    // date: Date; // UTC ISO string formatted.
 }
 
 export async function down(knex: Knex): Promise<void> {
