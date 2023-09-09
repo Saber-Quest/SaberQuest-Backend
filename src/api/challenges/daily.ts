@@ -5,7 +5,7 @@ import { ChallengeSet } from "../../models/challengeSet";
 import { GET, POST } from "../../router";
 import db from "../../db";
 import { ChallengeResponse } from "../../types/challenges";
-import { cache } from "../../functions/cache";
+import { cache, setCache } from "../../functions/cache";
 
 enum DifficultyEnum {
     Normal = 1,
@@ -49,6 +49,7 @@ export class Daily {
     async get(req: Request, res: Response) {
         const challenge = await db<ChallengeHistory>("challenge_histories")
             .select("challenge_id", "date")
+            .orderBy("date", "desc")
             .first();
 
         const challengeSet = await db<ChallengeSet>("challenge_sets")
@@ -92,30 +93,8 @@ export class Daily {
             reset_time: new Date(challenge.date).getTime() + 86400000,
         };
 
-        // @ts-ignore
-        req.apicacheGroup = `daily`;
+        setCache(req, "daily");
 
         res.status(200).json(response);
-    }
-
-    @POST("challenge/daily/new")
-    async post(req: Request, res: Response) {
-        await db<ChallengeHistory>("challenge_histories")
-            .insert({
-                challenge_id: req.body.challenge,
-                date: new Date().toISOString(),
-            })
-            .then(() => {
-                res.status(200).send("Challenge created!!");
-            })
-            .catch(() => {
-                console.error(
-                    "An error occured. Yell at Storm to check out the error (most likely his fault xd)"
-                );
-                res.status(500).json({
-                    success: false,
-                    message: `An error occured. Either try again later, or fix your body.`,
-                });
-            });
     }
 }
