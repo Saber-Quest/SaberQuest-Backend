@@ -6,6 +6,7 @@ import db from "../../db";
 import { compareAvatars, downloadAvatar, createBuffer } from "../../functions/avatar";
 import { createRandomState, createRandomToken } from "../../functions/random";
 import jwt from "jsonwebtoken";
+import socketServer from "../../websocket";
 
 const activeStates: string[] = [];
 const activeTokens: string[] = [];
@@ -95,8 +96,16 @@ export class BeatLeaderLogin {
                     }, process.env.JWT_SECRET, {
                         expiresIn: "30d"
                     });
+
+                    socketServer.emit("newUser", {
+                        id: id,
+                        username: username
+                    });
+
                     return res.redirect(`${process.env.REDIRECT_URI}/login?token=${token}`);
                 }
+
+                return res.sendStatus(500);
             });
         }
 

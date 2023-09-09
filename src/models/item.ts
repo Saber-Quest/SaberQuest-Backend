@@ -5,6 +5,7 @@ export class Item {
     value: number;
     image: string;
     rarity: string;
+    price: number | null
 }
 
 export class ItemShop {

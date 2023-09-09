@@ -4,6 +4,7 @@ import { GET } from "../../router";
 import db from "../../db";
 import { User } from "../../models/user";
 import { verifyJWT } from "../../functions/jwtVerify";
+import socketServer from "../../websocket";
 export class DiscordLogin {
     /**
      * GET /link
@@ -69,6 +70,11 @@ export class DiscordLogin {
                 }
 
                 await db<User>("users").where("id", user.id).update({
+                    discord_id: String(userData.id)
+                });
+
+                socketServer.emit("discord", {
+                    id: user.id,
                     discord_id: String(userData.id)
                 });
 

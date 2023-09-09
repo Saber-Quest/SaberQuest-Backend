@@ -42,6 +42,9 @@ export class Items {
                         id: item.name_id,
                         image: item.image,
                         name: item.name,
+                        rarity: item.rarity,
+                        value: item.value,
+                        price: item.price,
                     };
                 }));
             })

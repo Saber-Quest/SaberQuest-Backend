@@ -5,6 +5,7 @@ import { verifyJWT } from "../../functions/jwtVerify";
 import { Craft } from "../../functions/craft";
 import { clearUserCache } from "../../functions/cache";
 import { User } from "../../models/user";
+import socketServer from "../../websocket";
 
 export class Crafting {
     /**
@@ -107,6 +108,8 @@ export class Crafting {
             .where("user_id", user.id)
             .andWhere("item_id", item2.id)
             .decrement("amount", 1);
+
+        socketServer.emit("crafted", [item1.id, item2.id, craftedItem.id]);
 
         clearUserCache(user.platform_id);
 

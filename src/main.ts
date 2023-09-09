@@ -2,7 +2,6 @@ import "reflect-metadata";
 import { readdirSync } from "fs";
 import express from "express";
 import { setupRoutes } from "./router";
-import { Server } from "socket.io";
 import path from "path";
 import cookieParser from "cookie-parser";
 const folders = readdirSync(path.join(__dirname, "api"));
@@ -15,14 +14,13 @@ for (let i = 0; i < folders.length; i++) {
 import * as dotenv from "dotenv";
 dotenv.config();
 import expressJSDocSwagger from "express-jsdoc-swagger";
+import switchChallenge from "./functions/dailyChallenge";
+import switchShop from "./functions/shop";
+import socketServer from "./websocket";
 
 async function main() {
     const httpPort = parseInt(process.env.PORT) || 5000;
-    const socketPort = parseInt(process.env.SOCKET_PORT) || 5001;
     const app = express();
-    const socketServer = new Server(socketPort);
-
-    console.log(`Web socket started on port ${socketPort}.`);
 
     const options = {
         info: {
@@ -61,11 +59,18 @@ async function main() {
         );
     });
 
+    console.log(`Websocket server listening on port ${process.env.SOCKET_PORT || 5001}`);
+
     socketServer.on("connection", (socket: any) => {
         console.log(
             `New listener connected.\nID: ${socket.id}\nIP: ${socket.handshake.address} (${socket.handshake.headers["x-forwarded-for"]})\n\n`
         );
     });
+
+    setInterval(() => {
+        switchChallenge()
+        switchShop()
+    }, 1000 * 60);
 }
 
 main();
