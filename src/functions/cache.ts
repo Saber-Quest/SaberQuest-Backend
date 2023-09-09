@@ -21,4 +21,4 @@ function clearDailyCache() {
     apicache.clear("daily");
 }
 
-export { cache, setCache, clearGlobalCache, clearUserCache, clearDailyCache }
+export { cache, setCache, clearGlobalCache, clearUserCache, clearDailyCache };

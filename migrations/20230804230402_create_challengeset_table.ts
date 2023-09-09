@@ -99,7 +99,7 @@ export async function up(knex: Knex): Promise<void> {
             .references("id")
             .inTable("challenge_sets")
             .onDelete("CASCADE");
-        table.string("item_ids")
+        table.string("item_ids");
         table.integer("difficulty");
         table.integer("qp");
         table.string("date");

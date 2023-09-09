@@ -48,7 +48,7 @@ export class PlayerProfile {
 
         const id = req.params.id;
 
-        setCache(req, `profile:${id}`)
+        setCache(req, `profile:${id}`);
 
         await db<User>("users")
             .select("*")
@@ -85,7 +85,7 @@ export class PlayerProfile {
 
     @GET("profile/:id/inventory", cache)
     async getPlayerInventory(req: Request, res: Response) {
-        setCache(req, `profile:${req.params.id}`)
+        setCache(req, `profile:${req.params.id}`);
 
         try {
         const user = await db<User>("users")
@@ -98,7 +98,7 @@ export class PlayerProfile {
 
         const items = await db<UserItem>("user_items")
             .select("item_id", "amount")
-            .where("user_id", user.id)
+            .where("user_id", user.id);
 
         const itemsArray: userInventoryRes[] = [];
 
@@ -150,7 +150,7 @@ export class PlayerProfile {
         }
         try {
             // @ts-ignore
-            setCache(req, `profile:${req.params.id}`)
+            setCache(req, `profile:${req.params.id}`);
 
             const file = fs.readFileSync(`./data/avatars/${req.params.id}.png`);
 

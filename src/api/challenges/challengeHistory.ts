@@ -4,7 +4,7 @@ import { Difficulty } from "../../models/difficulty";
 import { ChallengeHistory } from "../../models/challengeHistory";
 import type { Request, Response } from "express";
 import db from "../../db";
-import { GET } from "../../router"
+import { GET } from "../../router";
 import { cache, setCache } from "../../functions/cache";
 import { User } from "../../models/user";
 import { ChallengeHistoryResponse } from "../../types/challenges";

@@ -39,4 +39,4 @@ export type ChallengeHistoryResponse = {
     items: IItem[],
     qp: number,
     challenge: IChallenge
-}
+};
