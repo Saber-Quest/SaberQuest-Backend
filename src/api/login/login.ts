@@ -240,7 +240,7 @@ export class BeatLeaderLogin {
         const identity = req.query["openid.identity"];
         const state = req.query.state.toString();
         if (!activeStates.includes(state)) {
-            return res.status(401).send("Invalid state");
+            return res.sendStatus(401);
         }
 
         const id = identity.toString().split("/").pop();

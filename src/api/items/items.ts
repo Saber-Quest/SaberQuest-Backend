@@ -4,6 +4,7 @@ import { Item } from "../../models/item";
 import db from "../../db";
 import { UserItem } from "../../models/userItem";
 import { User } from "../../models/user";
+import { clearUserCache } from "../../functions/cache";
 
 export class Items {
     /**
@@ -66,7 +67,7 @@ export class Items {
         }
 
         const user = await db<User>("users")
-            .select("id")
+            .select("id", "platform_id")
             .where("platform_id", id)
             .first();
 
@@ -103,6 +104,9 @@ export class Items {
                     });
             }
         }
+
+        clearUserCache(user.platform_id);
+
         return res.status(200).json({ message: "Success." });
     }
 }

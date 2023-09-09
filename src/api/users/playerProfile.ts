@@ -6,6 +6,7 @@ import { UserItem } from "../../models/userItem";
 import fs from "fs";
 import { Item } from "../../models/item";
 import { userInventoryRes } from "../../types/user";
+import { cache, setCache } from "../../functions/cache";
 
 export class PlayerProfile {
     /**
@@ -15,7 +16,7 @@ export class PlayerProfile {
      * @param {string} id.path.required - The id of the player
      * @return {object} 200 - Success
      * @return {object} 404 - User not found
-     * @return {object} 500 - An error occurred
+     * @return {string} 500 - Internal server error
      * @example response - 200 - Success
      * {
      * "userInfo": {
@@ -37,16 +38,21 @@ export class PlayerProfile {
      * {
      * "message": "User not found."
      * }
-     * @example response - 500 - An error occurred
-     * {
-     * "message": "An error occurred, please try again later."
-     * }
+     * @example response - 500 - Internal server error
      */
-    @GET("profile/:id")
-    get(req: Request, res: Response): void {
-        db<User>("users")
+    @GET("profile/:id", cache)
+    async get(req: Request, res: Response): Promise<void | Response> {
+        if (!req.params.id) {
+            return res.status(400).json({ message: "Missing fields" });
+        }
+
+        const id = req.params.id;
+
+        setCache(req, `profile:${id}`)
+
+        await db<User>("users")
             .select("*")
-            .where("platform_id", req.params.id)
+            .where("platform_id", id)
             .first()
             .then((user) => {
                 if (!user) {
@@ -55,7 +61,7 @@ export class PlayerProfile {
 
                 const JsonResponse = {
                     userInfo: {
-                        platform_id: user.platform_id,
+                        id: user.platform_id,
                         username: user.username,
                         images: {
                             avatar: user.avatar,
@@ -73,52 +79,49 @@ export class PlayerProfile {
             })
             .catch((err) => {
                 console.error(err);
-                return res.status(500).json({
-                    message: "An error occurred, please try again later.",
-                });
+                return res.sendStatus(500);
             });
     }
 
-    @GET("profile/:id/inventory")
+    @GET("profile/:id/inventory", cache)
     async getPlayerInventory(req: Request, res: Response) {
-        await db<User>("users")
+        setCache(req, `profile:${req.params.id}`)
+
+        try {
+        const user = await db<User>("users")
             .select("id")
             .where("platform_id", req.params.id)
-            .first()
-            .then(async (user) => {
-                if (!user.id) {
-                    return res.status(404).json({ message: "User not found." });
-                }
-                await db<UserItem>("user_items")
-                    .select("item_id", "amount")
-                    .where("user_id", user.id)
-                    .then(async (items) => {
-                        let itemsArray: userInventoryRes[] = [];
+            .first();
+        if (!user.id) {
+            return res.status(404).json({ message: "User not found." });
+        }
 
-                        for (const item of items) {
-                            await db<Item>("items")
-                                .select("name_id", "image", "name")
-                                .where("id", item.item_id)
-                                .first()
-                                .then((itemData) => {
-                                    itemsArray.push({
-                                        id: itemData.name_id,
-                                        image: itemData.image,
-                                        name: itemData.name,
-                                        amount: item.amount,
-                                    });
-                                });
-                        }
+        const items = await db<UserItem>("user_items")
+            .select("item_id", "amount")
+            .where("user_id", user.id)
 
-                        return res.status(200).json(itemsArray);
+        const itemsArray: userInventoryRes[] = [];
+
+        for (const item of items) {
+            await db<Item>("items")
+                .select("name_id", "image", "name")
+                .where("id", item.item_id)
+                .first()
+                .then((itemData) => {
+                    itemsArray.push({
+                        id: itemData.name_id,
+                        image: itemData.image,
+                        name: itemData.name,
+                        amount: item.amount,
                     });
-            })
-            .catch((err) => {
-                console.error(err);
-                return res.status(500).json({
-                    message: "An error occurred, please try again later.",
                 });
-            });
+        }
+
+        return res.status(200).json(itemsArray);
+        } catch (err) {
+            console.error(err);
+            return res.sendStatus(500);
+        }
     }
 
     /**
@@ -139,13 +142,16 @@ export class PlayerProfile {
      * "message": "An error occurred, please try again later."
      * }
      */
-    @GET("profile/:id/avatar")
+    @GET("profile/:id/avatar", cache)
     getPlayerAvatar(req: Request, res: Response): Response {
         const exists = fs.existsSync(`./data/avatars/${req.params.id}.png`);
         if (!exists) {
             return res.status(404).json({ message: "User not found." });
         }
         try {
+            // @ts-ignore
+            setCache(req, `profile:${req.params.id}`)
+
             const file = fs.readFileSync(`./data/avatars/${req.params.id}.png`);
 
             res.setHeader("Content-Type", "image/png");
@@ -167,7 +173,7 @@ export class PlayerProfile {
     async createUser(req: Request, res: Response) {
         const userData = req.body;
         if (userData.authorization_code !== process.env.AUTHORIZATION_CODE) {
-            return res.status(401).send("Invalid authorization code.");
+            return res.sendStatus(403);
         }
         await db<User>("users")
             .insert({

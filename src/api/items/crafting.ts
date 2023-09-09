@@ -3,6 +3,8 @@ import db from "../../db";
 import { Request, Response } from "express";
 import { verifyJWT } from "../../functions/jwtVerify";
 import { Craft } from "../../functions/craft";
+import { clearUserCache } from "../../functions/cache";
+import { User } from "../../models/user";
 
 export class Crafting {
     /**
@@ -24,8 +26,8 @@ export class Crafting {
             return res.status(401).json({ error: "Token expired" });
         }
 
-        const user = await db("users")
-            .select("id")
+        const user = await db<User>("users")
+            .select("id", "platform_id")
             .where("platform_id", jwt.id)
             .first();
 
@@ -105,6 +107,8 @@ export class Crafting {
             .where("user_id", user.id)
             .andWhere("item_id", item2.id)
             .decrement("amount", 1);
+
+        clearUserCache(user.platform_id);
 
         return res.status(200).json({ message: "Success" });
     }

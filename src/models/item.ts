@@ -1,8 +1,10 @@
 export class Item {
+    id: string;
     name_id: string;
     name: string;
     value: number;
     image: string;
+    rarity: string;
 }
 
 export class ItemShop {

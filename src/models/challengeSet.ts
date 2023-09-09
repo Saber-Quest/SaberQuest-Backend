@@ -1,7 +1,7 @@
 export class ChallengeSet {
     id: string;
-    name: string;
     type: string;
+    name: string;
+    description: string;
     image: string;
-    reset_time: Date;
 }

@@ -13,7 +13,6 @@ interface IUserImages {
 
 interface IUserInfo {
     id: string;
-    platform_id: string;
     username: string;
     images: IUserImages;
     preference: string;

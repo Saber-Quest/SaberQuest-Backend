@@ -1,6 +1,7 @@
 export class Difficulty {
-    easy: number[];
-    normal: number[];
-    hard: number[];
-    extreme: number[];
+    id: string;
+    challenge_id: string;
+    challenge: number[];
+    diff: number;
+    color: string;
 }
