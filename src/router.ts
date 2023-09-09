@@ -1,62 +1,68 @@
 import { Express, RequestHandler } from "express";
 const routes: IRoutes[] = [];
 
-export function GET(route: string) {
+export function GET(route: string, middleware?: RequestHandler) {
     return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
         routes.push({
             function: descriptor.value,
             type: "GET",
-            route
+            route,
+            middleware
         });
     };
 }
 
-export function PUT(route: string) {
+export function PUT(route: string, middleware?: RequestHandler) {
     return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
         routes.push({
             function: descriptor.value,
             type: "PUT",
-            route
+            route,
+            middleware
         });
     };
 }
 
-export function PATCH(route: string) {
+export function PATCH(route: string, middleware?: RequestHandler) {
     return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
         routes.push({
             function: descriptor.value,
             type: "PATCH",
-            route
+            route,
+            middleware
         });
     };
 }
 
-export function DEL(route: string) {
+export function DEL(route: string, middleware?: RequestHandler) {
     return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
         routes.push({
             function: descriptor.value,
             type: "DEL",
-            route
+            route,
+            middleware
         });
     };
 }
 
-export function POST(route: string) {
+export function POST(route: string, middleware?: RequestHandler) {
     return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
         routes.push({
             function: descriptor.value,
             type: "POST",
-            route
+            route,
+            middleware
         });
     };
 }
 
-export function AllRoute(route: string) {
+export function AllRoute(route: string, middleware?: RequestHandler) {
     return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
         routes.push({
             function: descriptor.value,
             type: "ALL",
-            route
+            route,
+            middleware
         });
     };
 }
@@ -64,6 +70,9 @@ export function AllRoute(route: string) {
 export function setupRoutes(app: Express) {
     for (let i = 0; i < routes.length; i++) {
         const route = routes[i];
+        if (route.middleware) {
+            app.use("/" + route.route, route.middleware);
+        }
         console.log(route);
         switch (route.type) {
             case "ALL":
@@ -95,4 +104,5 @@ interface IRoutes {
     route: string;
     type: string;
     function: RequestHandler;
+    middleware?: RequestHandler;
 }
