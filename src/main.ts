@@ -19,7 +19,7 @@ import switchShop from "./functions/items/shop";
 import socketServer from "./websocket";
 
 async function main() {
-    const httpPort = parseInt(process.env.PORT) || 5000;
+    const httpPort = parseInt(process.env.PORT) || 3010;
     const app = express();
 
     const options = {
@@ -32,7 +32,7 @@ async function main() {
             }
         },
         baseDir: __dirname,
-        filesPattern: "./api/**/*.js",
+        filesPattern: "./api/**/*.{ts,js}",
         swaggerUIPath: "/docs",
         exposeSwaggerUI: true,
         exposeApiDocs: false,
