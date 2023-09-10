@@ -71,7 +71,7 @@ export class ShopItems {
                     image: itemObject.image,
                     rarity: itemObject.rarity,
                     price: itemObject.price
-                }
+                };
             });
 
             const items = await Promise.all(itemMap);

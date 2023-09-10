@@ -15,7 +15,7 @@ export async function up(knex: Knex): Promise<void> {
         table.uuid("id").defaultTo(knex.raw("gen_random_uuid()")).primary();
         table.string("item_ids");
         table.integer("price");
-        table.string("date")
+        table.string("date");
     });
 }
 

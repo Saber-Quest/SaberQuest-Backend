@@ -1,4 +1,4 @@
-export interface BeatLeader {
+export interface BeatLeaderRes {
     metadata: Metadata
     data: Daum[]
 }

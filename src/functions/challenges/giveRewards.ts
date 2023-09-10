@@ -31,7 +31,7 @@ const itemChances = {
         rare: 0.93,
         epic: 0.99,
     }
-}
+};
 
 async function Normal() {
     const qp = randomInt(5, 15);
@@ -63,7 +63,7 @@ async function Normal() {
         qp: qp,
         items: itemArray,
         value: itemArray.reduce((a, b) => a + b.value, 0)
-    }
+    };
 }
 
 async function Hard() {
@@ -101,7 +101,7 @@ async function Hard() {
         qp: qp,
         items: itemArray,
         value: itemArray.reduce((a, b) => a + b.value, 0)
-    }
+    };
 }
 
 async function Expert() {
@@ -140,7 +140,7 @@ async function Expert() {
         qp: qp,
         items: itemArray,
         value: itemArray.reduce((a, b) => a + b.value, 0)
-    }
+    };
 }
 
 export default async function giveRewards(id: string, diff: number, challengeId: string) {
