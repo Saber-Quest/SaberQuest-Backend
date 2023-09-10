@@ -164,16 +164,13 @@ export class PlayerProfile {
      * "message": "An error occurred, please try again later."
      * }
      */
-    @GET("profile/:id/avatar", cache)
+    @GET("profile/:id/avatar")
     getPlayerAvatar(req: Request, res: Response): Response {
         const exists = fs.existsSync(`./data/avatars/${req.params.id}.png`);
         if (!exists) {
             return res.status(404).json({ message: "User not found." });
         }
         try {
-            // @ts-ignore
-            setCache(req, `profile:${req.params.id}`);
-
             const file = fs.readFileSync(`./data/avatars/${req.params.id}.png`);
 
             res.setHeader("Content-Type", "image/png");
