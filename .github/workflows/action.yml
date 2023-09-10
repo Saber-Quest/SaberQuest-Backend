@@ -4,6 +4,10 @@ on:
   push:
     branches: 
       - next
+      - dev/challenges
+  pull_request:
+    branches:
+      - next
       
     paths:
       - "./**/*.ts"
