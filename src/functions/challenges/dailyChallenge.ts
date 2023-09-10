@@ -1,8 +1,10 @@
-import db from "../db";
-import { ChallengeHistory } from "../models/challengeHistory";
-import { ChallengeSet } from "../models/challengeSet";
-import { clearDailyCache } from "./cache";
-import socketServer from "../websocket";
+import db from "../../db";
+import { ChallengeHistory } from "../../models/challengeHistory";
+import { ChallengeSet } from "../../models/challengeSet";
+import { clearDailyCache, clearGlobalCache, clearUserCache } from "../cache";
+import socketServer from "../../websocket";
+import { User } from "../../models/user";
+import knex from "knex";
 
 async function switchChallenge() {
     const date = new Date().getTime();
@@ -25,11 +27,19 @@ async function switchChallenge() {
                 date: new Date().toISOString(),
             });
 
-        clearDailyCache();
-
         socketServer.emit("daily", filtered[random].id);
 
         console.log("[LOG] Switched daily challenge.");
+
+        await db<User>("users")
+            .where("diff", ">", 0)
+            .update({
+                diff: 0
+            });
+
+        clearGlobalCache();
+
+        console.log("[LOG] Reset difficulty.");
     }
 }
 

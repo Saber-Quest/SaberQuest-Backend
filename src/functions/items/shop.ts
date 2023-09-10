@@ -1,7 +1,7 @@
-import db from "../db";
-import { Item } from "../models/item";
-import { ShopItem } from "../models/shopItem";
-import socketServer from "../websocket";
+import db from "../../db";
+import { Item } from "../../models/item";
+import { ShopItem } from "../../models/shopItem";
+import socketServer from "../../websocket";
 
 async function switchShop() {
     const date = new Date().getTime();

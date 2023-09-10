@@ -14,8 +14,8 @@ for (let i = 0; i < folders.length; i++) {
 import * as dotenv from "dotenv";
 dotenv.config();
 import expressJSDocSwagger from "express-jsdoc-swagger";
-import switchChallenge from "./functions/dailyChallenge";
-import switchShop from "./functions/shop";
+import switchChallenge from "./functions/challenges/dailyChallenge";
+import switchShop from "./functions/items/shop";
 import socketServer from "./websocket";
 
 async function main() {

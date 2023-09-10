@@ -11,4 +11,6 @@ export class User {
     patreon: boolean;
     rank: number;
     qp: number;
+    value: number;
+    diff: number;
 }

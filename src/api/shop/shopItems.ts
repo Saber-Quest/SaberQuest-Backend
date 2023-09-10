@@ -6,6 +6,49 @@ import { Item } from "../../models/item";
 import { cache, setCache } from "../../functions/cache";
 
 export class ShopItems {
+    /**
+     * GET /items/shop
+     * @summary Get items currently in the shop
+     * @tags Items
+     * @return {object} 200 - Success
+     * @return {string} 500 - Internal server error
+     * @example response - 200 - Success
+     * {
+     * "items": [
+     * {
+     *     "id": "bs",
+     *     "name": "Blue Saber",
+     *     "image": "https://saberquest.xyz/images/blue_saber_icon.png",
+     *     "rarity": "Rare",
+     *     "price": 5
+     * },
+     * {
+     *     "id": "bpp",
+     *     "name": "Blue Poodle",
+     *     "image": "https://saberquest.xyz/images/blue_poodle_icon.png",
+     *     "rarity": "Epic",
+     *     "price": 5
+     * },
+     * {
+     *     "id": "dn",
+     *     "name": "Double Notes",
+     *     "image": "https://saberquest.xyz/images/double_notes_icon.png",
+     *     "rarity": "Uncommon",
+     *     "price": 5
+     * },
+     * {
+     *     "id": "gn",
+     *     "name": "Golden Note",
+     *     "image": "https://saberquest.xyz/images/golden_note_icon.png",
+     *     "rarity": "Legendary",
+     *     "price": 5
+     * }
+     * ],
+     * "reset_time": 1694435645081
+     * }
+     * @example response - 500 - Internal server error
+     * "Internal server error"
+     */
     @GET("items/shop", cache)
     async get(req: Request, res: Response) {
         try {

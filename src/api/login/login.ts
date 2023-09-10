@@ -3,7 +3,7 @@ import type { Request, Response } from "express";
 import { GET } from "../../router";
 import { User } from "../../models/user";
 import db from "../../db";
-import { compareAvatars, downloadAvatar, createBuffer } from "../../functions/avatar";
+import { compareAvatars, downloadAvatar, createBuffer } from "../../functions/users/avatar";
 import { createRandomState, createRandomToken } from "../../functions/random";
 import jwt from "jsonwebtoken";
 import socketServer from "../../websocket";
@@ -15,7 +15,33 @@ export class BeatLeaderLogin {
     /**
      * GET /login
      * @summary Login with BeatLeader/Steam
-     * @tags login
+     * @tags Login
+     * @param {string} id.query.required - The id of the user
+     * @return {object} 400 - No id provided
+     * @return {object} 401 - No token provided
+     * @return {object} 401 - Invalid token
+     * @return {object} 401 - User does not exist in any of the databases.
+     * @return {object} 500 - Error getting user
+     * @example response - 400 - No id provided
+     * {
+     * "message": "No id provided"
+     * }
+     * @example response - 401 - No token provided
+     * {
+     * "message": "No token provided"
+     * }
+     * @example response - 401 - Invalid token
+     * {
+     * "message": "Invalid token"
+     * }
+     * @example response - 401 - User does not exist in any of the databases.
+     * {
+     * "message": "User does not exist in any of the databases."
+     * }
+     * @example response - 500 - Error getting user
+     * {
+     * "message": "Error getting user"
+     * }
      */
     @GET("login")
     async getLogin(req: Request, res: Response) {
@@ -76,7 +102,7 @@ export class BeatLeaderLogin {
 
             const rank = await db<User>("users").count("id").then((res) => Number(res[0].count) + 1);
 
-            await fetch(`http://localhost:3010/profile/create`, {
+            await fetch(`${process.env.REDIRECT_URI_API}/profile/create`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json"
@@ -131,7 +157,7 @@ export class BeatLeaderLogin {
     /**
      * GET /login/beatleader
      * @summary Login with BeatLeader
-     * @tags login
+     * @tags Login
      * @param {string} code.query.required - The code provided by BeatLeader
      * @param {string} iss.query.required - The issuer of the code
      * @return {object} 400 - No code provided
@@ -218,7 +244,7 @@ export class BeatLeaderLogin {
     /**
      * GET /login/steam
      * @summary Login with Steam
-     * @tags login
+     * @tags Login
      * @param {string} openid.identity.query.required - The id of the user
      * @param {string} state.query.required - The state of the login
      * @return {object} 401 - Invalid state

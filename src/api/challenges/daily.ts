@@ -17,7 +17,7 @@ export class Daily {
     /**
      * GET /challenge/daily
      * @summary Get the daily challenge
-     * @tags challenges
+     * @tags Challenges
      * @return {object} 200 - Success
      * @return {string} 500 - Internal server error
      * @example response - 200 - Success

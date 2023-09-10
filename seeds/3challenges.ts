@@ -206,11 +206,14 @@ export async function seed(knex: Knex): Promise<void> {
 
     const items = await knex<Item>("items").select("*");
 
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+
     await knex<ChallengeHistory>("challenge_histories").insert([
         {
             user_id: user.id,
             challenge_id: pp.id,
-            date: new Date().toISOString(),
+            date: yesterday.toISOString(),
             item_ids: `${items[10].name_id},${items[15].name_id}`,
             difficulty: 2,
             qp: 10
@@ -218,7 +221,7 @@ export async function seed(knex: Knex): Promise<void> {
         {
             user_id: user.id,
             challenge_id: pp.id,
-            date: new Date().toISOString(),
+            date: yesterday.toISOString(),
             item_ids: `${items[3].name_id},${items[7].name_id},${items[9].name_id}`,
             difficulty: 1,
             qp: 5
@@ -226,7 +229,7 @@ export async function seed(knex: Knex): Promise<void> {
         {
             user_id: user.id,
             challenge_id: pp.id,
-            date: new Date().toISOString(),
+            date: yesterday.toISOString(),
             item_ids: `${items[1].name_id},${items[2].name_id},${items[4].name_id}`,
             difficulty: 3,
             qp: 15
@@ -234,10 +237,14 @@ export async function seed(knex: Knex): Promise<void> {
         {
             user_id: user.id,
             challenge_id: map.id,
-            date: new Date().toISOString(),
+            date: yesterday.toISOString(),
             item_ids: `${items[1].name_id},${items[2].name_id},${items[4].name_id}`,
             difficulty: 3,
             qp: 15
+        },
+        {
+            challenge_id: map.id,
+            date: new Date().toISOString(),
         }
     ]);
 }

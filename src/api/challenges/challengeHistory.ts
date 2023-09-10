@@ -20,7 +20,7 @@ export class ChallengeHistoryEndpoint {
     /**
      * GET /challenge/history/{id}
      * @summary Get a player's challenge history
-     * @tags challenges
+     * @tags Challenges
      * @param {string} id.path.required - The id of the player
      * @return {object} 200 - Success
      * @return {object} 404 - User not found

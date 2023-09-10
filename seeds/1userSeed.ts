@@ -20,6 +20,7 @@ export async function seed(knex: Knex): Promise<void> {
             preference: "bl",
             rank: 2,
             qp: 0,
+            diff: 2
         }
     ]);
 }

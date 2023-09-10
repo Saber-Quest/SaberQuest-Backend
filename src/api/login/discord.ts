@@ -3,13 +3,35 @@ import type { Request, Response } from "express";
 import { GET } from "../../router";
 import db from "../../db";
 import { User } from "../../models/user";
-import { verifyJWT } from "../../functions/jwtVerify";
+import { verifyJWT } from "../../functions/users/jwtVerify";
 import socketServer from "../../websocket";
 export class DiscordLogin {
     /**
      * GET /link
      * @summary Link your Discord account
-     * @tags login
+     * @tags Login
+     * @param {string} code.query.required - The code returned from Discord
+     * @return {string} 200 - Success
+     * @return {string} 400 - No code provided
+     * @return {string} 400 - Your Discord account is already linked to a user.
+     * @return {string} 401 - Invalid JWT
+     * @return {string} 404 - User not found
+     * @return {string} 500 - Failed to fetch the token
+     * @return {string} 500 - Error getting user.
+     * @example response - 200 - Success
+     * "Successfully linked your Discord account.\nYou will be redirected back to the website shortly."
+     * @example response - 400 - No code provided
+     * "No code provided"
+     * @example response - 400 - Your Discord account is already linked to a user.
+     * "Your Discord account is already linked to a user."
+     * @example response - 401 - Invalid JWT
+     * "Invalid JWT"
+     * @example response - 404 - User not found
+     * "User not found"
+     * @example response - 500 - Failed to fetch the token
+     * "Failed to fetch the token"
+     * @example response - 500 - Error getting user.
+     * "Error getting user."
      */
     @GET("link")
     async get(req: Request, res: Response): Promise<void | Response> {

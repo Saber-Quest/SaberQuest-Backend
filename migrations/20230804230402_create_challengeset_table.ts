@@ -41,6 +41,8 @@ export async function up(knex: Knex): Promise<void> {
         table.boolean("patreon");
         table.integer("rank");
         table.integer("qp");
+        table.integer("value");
+        table.integer("diff");
     });
 
     // id: string;

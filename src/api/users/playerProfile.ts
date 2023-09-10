@@ -12,7 +12,7 @@ export class PlayerProfile {
     /**
      * GET /profile/{id}
      * @summary Get a player's profile
-     * @tags users
+     * @tags Users
      * @param {string} id.path.required - The id of the player
      * @return {object} 200 - Success
      * @return {object} 404 - User not found
@@ -83,10 +83,32 @@ export class PlayerProfile {
             });
     }
 
-    @GET("profile/:id/inventory", cache)
+    /**
+     * GET /profile/{id}/inventory
+     * @summary Get a player's inventory
+     * @tags Users
+     * @param {string} id.path.required - The id of the player
+     * @return {object} 200 - Success
+     * @return {object} 404 - User not found
+     * @return {string} 500 - An error occurred
+     * @example response - 200 - Success
+     *[
+     *    {
+     *        "id": "sp",
+     *        "image": "https://saberquest.xyz/images/silver_pieces_icon.png",
+     *        "name": "Silver Pieces",
+     *        "amount": 1
+     *    }
+     *]
+     * @example response - 404 - User not found
+     * {
+     * "message": "User not found."
+     * }
+     * @example response - 500 - An error occurred
+     * "An error occurred, please try again later."
+     */
+    @GET("profile/:id/inventory")
     async getPlayerInventory(req: Request, res: Response) {
-        setCache(req, `profile:${req.params.id}`);
-
         try {
         const user = await db<User>("users")
             .select("id")
@@ -127,7 +149,7 @@ export class PlayerProfile {
     /**
      * GET /profile/{id}/avatar
      * @summary Get a player's avatar
-     * @tags users
+     * @tags Users
      * @param {string} id.path.required - The id of the player
      * @return {image/png} 200 - Success
      * @return {object} 404 - User not found
@@ -165,9 +187,66 @@ export class PlayerProfile {
     }
 
     /**
+     * GET /profile/{id}/difficulty
+     * @summary Get the player's selected difficulty
+     * @tags Users
+     * @param {string} id.path.required - The id of the player
+     * @return {object} 200 - Success
+     * @return {object} 404 - User not found
+     * @return {string} 500 - Internal server error
+     * @example response - 200 - Success
+     * {
+     * "difficulty": 1
+     * }
+     * @example response - 404 - User not found
+     * {
+     * "message": "User not found."
+     * }
+     * @example response - 500 - Internal server error
+     * "Internal server error"
+     */
+    @GET("profile/:id/difficulty")
+    async getPlayerDifficulty(req: Request, res: Response) {
+        try {
+            const user = await db<User>("users")
+                .select("diff")
+                .where("platform_id", req.params.id)
+                .first();
+            if (!user) {
+                return res.status(404).json({ message: "User not found." });
+            }
+            return res.status(200).json({ difficulty: user.diff });
+        } catch (err) {
+            console.error(err);
+            return res.sendStatus(500);
+        }
+    }
+
+    /**
+     * Create
+     * @typedef {object} createUser
+     * @property {string} authorization_code.required - The authorization code
+     * @property {string} platform_id.required - The player's platform id
+     * @property {string} username.required - The player's username
+     * @property {string} avatar.required - The player's avatar
+     * @property {string} preference.required - The player's preference
+     * @property {number} rank.required - The player's rank
+     */
+
+    /**
      * PUT /profile/create
      * @summary Create a player's profile
-     * @tags users
+     * @tags Users
+     * @security BasicAuth
+     * @param {createUser} request.body.required - The player's profile data
+     * @return {object} 200 - Success
+     * @return {string} 403 - Forbidden
+     * @return {string} 500 - Internal server error
+     * @example response - 200 - Success
+     * @example response - 403 - Forbidden
+     * "Forbidden"
+     * @example response - 500 - Internal server error
+     * "Internal server error"
      */
     @PUT("profile/create")
     async createUser(req: Request, res: Response) {
@@ -191,9 +270,7 @@ export class PlayerProfile {
             })
             .catch((err) => {
                 console.error(err);
-                return res.status(500).json({
-                    message: `An error occurred, did you include all the data?!`,
-                });
+                return res.sendStatus(500);
             });
     }
 }
