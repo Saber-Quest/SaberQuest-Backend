@@ -32,7 +32,7 @@ async function main() {
             }
         },
         baseDir: __dirname,
-        filesPattern: "./api/**/*.ts",
+        filesPattern: "./api/**/*.js",
         swaggerUIPath: "/docs",
         exposeSwaggerUI: true,
         exposeApiDocs: false,
