@@ -12,6 +12,7 @@ export async function seed(knex: Knex): Promise<void> {
             preference: "ss",
             rank: 3,
             qp: 0,
+            value: 0
         },
         {
             platform_id: "76561198343533017",
@@ -19,8 +20,9 @@ export async function seed(knex: Knex): Promise<void> {
             avatar: "http://localhost:3010/avatar/76561198343533017",
             preference: "bl",
             rank: 2,
-            qp: 0,
-            diff: 2
+            qp: 14,
+            diff: 2,
+            value: 32
         }
     ]);
 }

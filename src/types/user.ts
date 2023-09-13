@@ -32,8 +32,6 @@ interface IUserToday {
 
 export type userRes = {
     userInfo: IUserInfo;
-    chistory: string[];
-    items: IUserItem[];
     stats: IUserStats;
     today: IUserToday;
 };

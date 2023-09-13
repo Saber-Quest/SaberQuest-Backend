@@ -1,4 +1,6 @@
 import "reflect-metadata";
+import * as dotenv from "dotenv";
+dotenv.config({ path: __dirname + "/../../.env"});
 import { readdirSync } from "fs";
 import express from "express";
 import { setupRoutes } from "./router";
@@ -11,15 +13,13 @@ for (let i = 0; i < folders.length; i++) {
         require(`./api/${folders[i]}/${files[j]}`);
     }
 }
-import * as dotenv from "dotenv";
-dotenv.config();
 import expressJSDocSwagger from "express-jsdoc-swagger";
 import switchChallenge from "./functions/challenges/dailyChallenge";
 import switchShop from "./functions/items/shop";
 import socketServer from "./websocket";
 
 async function main() {
-    const httpPort = parseInt(process.env.PORT) || 3010;
+    const httpPort = parseInt(process.env.PORT) || 5000;
     const app = express();
 
     const options = {

@@ -23,6 +23,7 @@ export class ChallengeHistoryEndpoint {
      * @tags Challenges
      * @param {string} id.path.required - The id of the player
      * @return {object} 200 - Success
+     * @return {string} 400 - Invalid page
      * @return {object} 404 - User not found
      * @return {string} 500 - Internal server error
      * @example response - 200 - Success
@@ -55,6 +56,10 @@ export class ChallengeHistoryEndpoint {
      * ]
      * @example response - 200 - No challenge history
      * []
+     * @example response - 400 - Invalid page
+     * {
+     * "error": "Invalid page"
+     * }
      * @example response - 404 - User not found
      * {
      * "error": "User not found"
@@ -62,15 +67,23 @@ export class ChallengeHistoryEndpoint {
      * @example response - 500 - Internal server error
      * "Internal server error"
      */
-    @GET("challenge/history/:id", cache)
+    @GET("challenge/history/:id/:page", cache)
     async getChallengeHistoryId(req: Request, res: Response) {
         try {
             const id = req.params.id;
+            const page = parseInt(req.params.page);
+
+            if (page < 1) {
+                return res.status(400).json({ error: "Invalid page" });
+            }
 
             const challengeHistory = await db<User>("users")
                 .join("challenge_histories", "users.id", "=", "challenge_histories.user_id")
                 .select("challenge_histories.*")
-                .where("users.platform_id", id);
+                .where("users.platform_id", id)
+                .orderBy("date", "desc")
+                .limit(10)
+                .offset((page - 1) * 10);
 
             if (challengeHistory.length === 0) {
                 return res.status(200).json([]);

@@ -46,4 +46,4 @@ jobs:
           yarn actions
           cd dist/src
           pm2 delete main -s
-          pm2 start main.js -s
+          NODE_ENV=production pm2 start main.js -s

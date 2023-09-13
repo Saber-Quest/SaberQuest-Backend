@@ -5,8 +5,11 @@ import { User } from "../../models/user";
 import { UserItem } from "../../models/userItem";
 import fs from "fs";
 import { Item } from "../../models/item";
-import { userInventoryRes } from "../../types/user";
+import { userInventoryRes, userRes } from "../../types/user";
 import { cache, setCache } from "../../functions/cache";
+import dotenv from "dotenv";
+import { ChallengeHistory } from "../../models/challengeHistory";
+dotenv.config();
 
 export class PlayerProfile {
     /**
@@ -18,22 +21,28 @@ export class PlayerProfile {
      * @return {object} 404 - User not found
      * @return {string} 500 - Internal server error
      * @example response - 200 - Success
-     * {
+     *{
      * "userInfo": {
-     *  "platform_id": "76561199108042297",
-     *  "username": "Raine'); DROP TABLE users;--",
-     *  "images": {
-     *   "avatar": "https://cdn.discordapp.com/avatars/813176414692966432/0ce8808ab0435a25610ae7d045e9a03f.webp",
-     *   "banner": null,
-     *   "border": null
-     *  },
-     *  "preference": "ss"
+     *     "id": "76561198343533017",
+     *     "username": "StormPacer",
+     *     "images": {
+     *         "avatar": "https://api.saberquest.xyz/profile/76561198343533017/avatar",
+     *         "banner": null,
+     *         "border": null
+     *     },
+     *     "preference": "bl"
      * },
      * "stats": {
-     *  "rank": 3,
-     *  "qp": 0
-     *  }
+     *     "challengesCompleted": 4,
+     *     "rank": 2,
+     *     "qp": 10,
+     *     "value": 41
+     * },
+     * "today": {
+     *     "diff": 2,
+     *     "completed": false
      * }
+     *}
      * @example response - 404 - User not found
      * {
      * "message": "User not found."
@@ -42,45 +51,72 @@ export class PlayerProfile {
      */
     @GET("profile/:id", cache)
     async get(req: Request, res: Response): Promise<void | Response> {
-        if (!req.params.id) {
-            return res.status(400).json({ message: "Missing fields" });
-        }
+        try {
+            if (!req.params.id) {
+                return res.status(400).json({ message: "Missing fields" });
+            }
 
-        const id = req.params.id;
+            const id = req.params.id;
 
-        setCache(req, `profile:${id}`);
+            setCache(req, `profile:${id}`);
 
-        await db<User>("users")
-            .select("*")
-            .where("platform_id", id)
-            .first()
-            .then((user) => {
-                if (!user) {
-                    return res.status(404).json({ message: "User not found." });
+            const user = await db<User>("users")
+                .select("*")
+                .where("platform_id", id)
+                .first();
+
+            if (!user) {
+                return res.status(404).json({ message: "User not found." });
+            }
+
+            let completed = false;
+
+            const challenges = await db<ChallengeHistory>("challenge_histories")
+                .select("date")
+                .where("user_id", user.id)
+                .orderBy("date", "desc")
+                .first();
+
+            if (challenges.date.slice(0, 10) === new Date().toISOString().slice(0, 10)) {
+                completed = true;
+            }
+
+            const challengeCount = await db<ChallengeHistory>("challenge_histories")
+                .count("user_id as count")
+                .where("user_id", user.id)
+                .first();
+
+            const object = challengeCount as unknown as { count: string };
+
+            const JsonResponse: userRes = {
+                userInfo: {
+                    id: user.platform_id,
+                    username: user.username,
+                    images: {
+                        avatar: user.avatar,
+                        banner: user.banner,
+                        border: user.border,
+                    },
+                    preference: user.preference,
+                },
+                stats: {
+                    challengesCompleted: parseInt(object.count),
+                    rank: user.rank,
+                    qp: user.qp,
+                    value: user.value
+                },
+                today: {
+                    diff: user.diff,
+                    completed: completed
                 }
+            };
 
-                const JsonResponse = {
-                    userInfo: {
-                        id: user.platform_id,
-                        username: user.username,
-                        images: {
-                            avatar: user.avatar,
-                            banner: user.banner,
-                            border: user.border,
-                        },
-                        preference: user.preference,
-                    },
-                    stats: {
-                        rank: user.rank,
-                        qp: user.qp,
-                    },
-                };
-                return res.status(200).json(JsonResponse);
-            })
-            .catch((err) => {
-                console.error(err);
-                return res.sendStatus(500);
-            });
+            return res.status(200).json(JsonResponse);
+
+        } catch (err) {
+            console.error(err);
+            return res.sendStatus(500);
+        }
     }
 
     /**
@@ -110,36 +146,36 @@ export class PlayerProfile {
     @GET("profile/:id/inventory")
     async getPlayerInventory(req: Request, res: Response) {
         try {
-        const user = await db<User>("users")
-            .select("id")
-            .where("platform_id", req.params.id)
-            .first();
-        if (!user.id) {
-            return res.status(404).json({ message: "User not found." });
-        }
+            const user = await db<User>("users")
+                .select("id")
+                .where("platform_id", req.params.id)
+                .first();
+            if (!user.id) {
+                return res.status(404).json({ message: "User not found." });
+            }
 
-        const items = await db<UserItem>("user_items")
-            .select("item_id", "amount")
-            .where("user_id", user.id);
+            const items = await db<UserItem>("user_items")
+                .select("item_id", "amount")
+                .where("user_id", user.id);
 
-        const itemsArray: userInventoryRes[] = [];
+            const itemsArray: userInventoryRes[] = [];
 
-        for (const item of items) {
-            await db<Item>("items")
-                .select("name_id", "image", "name")
-                .where("id", item.item_id)
-                .first()
-                .then((itemData) => {
-                    itemsArray.push({
-                        id: itemData.name_id,
-                        image: itemData.image,
-                        name: itemData.name,
-                        amount: item.amount,
+            for (const item of items) {
+                await db<Item>("items")
+                    .select("name_id", "image", "name")
+                    .where("id", item.item_id)
+                    .first()
+                    .then((itemData) => {
+                        itemsArray.push({
+                            id: itemData.name_id,
+                            image: itemData.image,
+                            name: itemData.name,
+                            amount: item.amount,
+                        });
                     });
-                });
-        }
+            }
 
-        return res.status(200).json(itemsArray);
+            return res.status(200).json(itemsArray);
         } catch (err) {
             console.error(err);
             return res.sendStatus(500);
@@ -261,6 +297,7 @@ export class PlayerProfile {
                 preference: userData.preference,
                 rank: userData.rank,
                 qp: 0,
+                value: 0
             })
             .then(() => {
                 res.sendStatus(200);

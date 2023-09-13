@@ -68,6 +68,7 @@ export class Items {
      * POST /items/add
      * @summary Add items to a player's inventory
      * @tags Items
+     * @security BasicAuth
      * @param {AddItems} request.body.required - The items to add
      * @return {object} 200 - Success
      * @return {object} 400 - Missing parameters

@@ -9,6 +9,12 @@ interface IDifficulties {
     expert: IDifficulty;
 }
 
+interface IDifficultiesMod {
+    name: string;
+    challenge: string;
+    color: string;
+}
+
 export type ChallengeResponse = {
     type: string;
     name: string;
@@ -17,6 +23,15 @@ export type ChallengeResponse = {
     difficulties: IDifficulties;
     reset_time: number;
 };
+
+export type ChallengeModResponse = {
+    type: string;
+    name: string;
+    description: string;
+    image: string;
+    difficulties: IDifficultiesMod[];
+    reset_time: number;
+}
 
 interface IItem {
     name: string,
