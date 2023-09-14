@@ -6,6 +6,8 @@ import { Craft } from "../../functions/items/craft";
 import { clearUserCache } from "../../functions/cache";
 import { User } from "../../models/user";
 import socketServer from "../../websocket";
+import { Item } from "../../models/item";
+import setRanks from "../../functions/users/ranks";
 
 export class Crafting {
     /**
@@ -91,13 +93,13 @@ export class Crafting {
                 itemsArray.push(item.item_id);
             }
 
-            const item1 = await db("items")
-                .select("id", "name_id")
+            const item1 = await db<Item>("items")
+                .select("id", "name_id", "value")
                 .where("name_id", used1)
                 .first();
 
-            const item2 = await db("items")
-                .select("id", "name_id")
+            const item2 = await db<Item>("items")
+                .select("id", "name_id", "value")
                 .where("name_id", used2)
                 .first();
 
@@ -115,8 +117,8 @@ export class Crafting {
                 return res.status(400).json({ error: "Invalid items" });
             }
 
-            const craftedItem = await db("items")
-                .select("id")
+            const craftedItem = await db<Item>("items")
+                .select("id", "value")
                 .where("name_id", crafted)
                 .first();
 
@@ -152,6 +154,19 @@ export class Crafting {
                 .where("user_id", user.id)
                 .andWhere("item_id", item2.id)
                 .decrement("amount", 1);
+
+            // The combined value of the two items
+
+            const lostValue = item1.value + item2.value;
+            const gainedValue = craftedItem.value;
+
+            const valueDifference = gainedValue - lostValue;
+
+            await db("users")
+                .where("id", user.id)
+                .increment("value", valueDifference);
+
+            setRanks(user.id);
 
             socketServer.emit("crafted", [item1.id, item2.id, craftedItem.id]);
 

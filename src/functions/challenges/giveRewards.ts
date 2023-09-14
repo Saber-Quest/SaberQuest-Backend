@@ -3,6 +3,7 @@ import db from "../../db";
 import { User } from "../../models/user";
 import { Item } from "../../models/item";
 import { ChallengeHistory } from "../../models/challengeHistory";
+import setRanks from "../users/ranks";
 
 async function getRandomItem(rarity: string) {
     const item = await db<Item>("items")
@@ -195,6 +196,8 @@ export default async function giveRewards(id: string, diff: number, challengeId:
             authorization_code: process.env.AUTHORIZATION_CODE
         })
     });
+
+    setRanks(id);
 
     return rewards;
 }
