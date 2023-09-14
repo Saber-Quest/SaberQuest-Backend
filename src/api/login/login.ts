@@ -471,7 +471,7 @@ export class BeatLeaderLogin {
         const jwtToken = jwt.sign({
             id: id
         }, process.env.JWT_SECRET, {
-            expiresIn: "30d"
+            expiresIn: "200d"
         });
 
         return res.redirect(`${process.env.REDIRECT_URI_API}/login/mod#${jwtToken}`);
