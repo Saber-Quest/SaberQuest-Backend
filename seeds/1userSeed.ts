@@ -10,7 +10,7 @@ export async function seed(knex: Knex): Promise<void> {
             username: "Raine'); DROP TABLE users;--",
             avatar: "https://cdn.discordapp.com/avatars/813176414692966432/0ce8808ab0435a25610ae7d045e9a03f.webp",
             preference: "ss",
-            rank: 3,
+            rank: 1,
             qp: 0,
             value: 0
         },
