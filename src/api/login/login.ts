@@ -304,7 +304,7 @@ export class BeatLeaderLogin {
         /**
      * GET /login/mod/beatleader
      * @summary Login with BeatLeader but for the mod!
-     * @tags Login
+     * @tags Mod
      * @param {string} code.query.required - The code provided by BeatLeader
      * @param {string} iss.query.required - The issuer of the code
      * @return {object} 400 - No code provided
@@ -348,7 +348,7 @@ export class BeatLeaderLogin {
                     code: code.toString(),
                     client_secret: process.env.BEATLEADER_SECRET,
                     client_id: process.env.BEATLEADER_ID,
-                    redirect_uri: `${process.env.REDIRECT_URI_API}/login/beatleader`,
+                    redirect_uri: `${process.env.REDIRECT_URI_API}/login/mod/beatleader`,
                 }),
             }
         ).then((res) => res.json());
@@ -391,7 +391,7 @@ export class BeatLeaderLogin {
         /**
      * GET /login/mod/middleman
      * @summary Login with BeatLeader/Steam but for the mod!
-     * @tags Login
+     * @tags Mod
      * @param {string} id.query.required - The id of the user
      * @return {object} 400 - No id provided
      * @return {object} 401 - No token provided

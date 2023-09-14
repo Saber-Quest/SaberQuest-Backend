@@ -6,7 +6,7 @@ export class Mod {
     /**
      * GET /login/mod
      * @summary Made only for the mod login (not for the user login)
-     * @tags Login
+     * @tags Mod
      */
     @GET("login/mod")
     get(req: Request, res: Response) {
