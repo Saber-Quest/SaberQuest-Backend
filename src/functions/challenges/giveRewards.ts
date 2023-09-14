@@ -192,7 +192,7 @@ export default async function giveRewards(id: string, diff: number, challengeId:
         },
         body: JSON.stringify({
             id: id,
-            items: rewards.items.map(item => item.id),
+            items: rewards.items.map((item) => item.id),
             authorization_code: process.env.AUTHORIZATION_CODE
         })
     });

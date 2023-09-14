@@ -30,7 +30,7 @@ async function switchShop() {
                 item_ids: newItems.join(",")
             });
 
-        socketServer.emit("shop", newItems)
+        socketServer.emit("shop", newItems);
 
         console.log("[LOG] Switched shop.");
     }

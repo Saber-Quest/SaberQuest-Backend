@@ -68,8 +68,8 @@ async function main() {
     });
 
     setInterval(() => {
-        switchChallenge()
-        switchShop()
+        switchChallenge();
+        switchShop();
     }, 1000 * 60);
 }
 

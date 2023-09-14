@@ -109,7 +109,7 @@ export class Leaderboard {
             .select("*")
             .where("rank", "<=", page * limit + 1)
             .andWhere("rank", ">", (page - 1) * limit + 1)
-            .orderBy("rank", "asc")
+            .orderBy("rank", "asc");
 
         const responseArray: userRes[] = [];
 

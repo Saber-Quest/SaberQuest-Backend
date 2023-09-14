@@ -31,7 +31,7 @@ export type ChallengeModResponse = {
     image: string;
     difficulties: IDifficultiesMod[];
     reset_time: number;
-}
+};
 
 interface IItem {
     name: string,

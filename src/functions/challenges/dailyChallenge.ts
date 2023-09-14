@@ -1,10 +1,9 @@
 import db from "../../db";
 import { ChallengeHistory } from "../../models/challengeHistory";
 import { ChallengeSet } from "../../models/challengeSet";
-import { clearDailyCache, clearGlobalCache, clearUserCache } from "../cache";
+import { clearGlobalCache } from "../cache";
 import socketServer from "../../websocket";
 import { User } from "../../models/user";
-import knex from "knex";
 
 async function switchChallenge() {
     const date = new Date().getTime();
