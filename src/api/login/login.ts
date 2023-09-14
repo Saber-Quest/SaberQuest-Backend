@@ -111,7 +111,7 @@ export class BeatLeaderLogin {
                     authorization_code: process.env.AUTHORIZATION_CODE,
                     platform_id: id,
                     username: username,
-                    avatar: `http://localhost:3010/profile/${id}/avatar`,
+                    avatar: `${process.env.REDIRECT_URI_API}/profile/${id}/avatar`,
                     preference: preference,
                     rank: rank
                 })
@@ -434,7 +434,7 @@ export class BeatLeaderLogin {
                     authorization_code: process.env.AUTHORIZATION_CODE,
                     platform_id: id,
                     username: username,
-                    avatar: `http://localhost:3010/profile/${id}/avatar`,
+                    avatar: `${process.env.REDIRECT_URI_API}/profile/${id}/avatar`,
                     preference: preference,
                     rank: rank
                 })
