@@ -10,7 +10,7 @@ export class Mod {
      */
     @GET("login/mod")
     get(req: Request, res: Response) {
-        const htmlFile = fs.readFileSync("./data/html/modLogin.html", "utf8");
+        const htmlFile = fs.readFileSync("../../data/html/modLogin.html", "utf8");
 
         res.send(htmlFile);
     }

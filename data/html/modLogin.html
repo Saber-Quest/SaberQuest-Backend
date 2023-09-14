@@ -4,25 +4,19 @@
     <title>Mod Login</title>
 </head>
 <body>
-    <p>You have successfully logged in!<br>This tab will close in 5 seconds.</p>
+    <p>You have successfully logged in!<br>You can now close this tab!</p>
     <script>
         window.onload = async () => {
             const token = window.location.hash.substring(1);
             window.location.hash = "";
-            fetch('http://localhost:3000/', {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    token: token
-                })
-            });
-        };
+            const socket = new WebSocket("ws://localhost:8080");
 
-        setTimeout(() => {
-            window.close();
-        }, 5000);
+            socket.onopen = () => {
+                socket.send(JSON.stringify({
+                    token: token
+                }));
+            };
+        };
     </script>
 </body>
 </html>
