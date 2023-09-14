@@ -301,6 +301,28 @@ export class BeatLeaderLogin {
         return res.redirect(`${process.env.REDIRECT_URI_API}/login?id=${id}&iss=https://api.saberquest.xyz`);
     }
 
+        /**
+     * GET /login/mod/beatleader
+     * @summary Login with BeatLeader but for the mod!
+     * @tags Login
+     * @param {string} code.query.required - The code provided by BeatLeader
+     * @param {string} iss.query.required - The issuer of the code
+     * @return {object} 400 - No code provided
+     * @return {object} 403 - Invalid issuer
+     * @return {object} 500 - Error getting user
+     * @example response - 400 - No code provided
+     * {
+     * "message": "No code provided"
+     * }
+     * @example response - 403 - Invalid issuer
+     * {
+     * "message": "Invalid issuer"
+     * }
+     * @example response - 500 - Error getting user
+     * {
+     * "message": "Error getting user"
+     * }
+     */
     @GET("login/mod/beatleader")
     async getMod(req: Request, res: Response) {
         const code = req.query.code;
@@ -366,6 +388,37 @@ export class BeatLeaderLogin {
         return res.redirect(`${process.env.REDIRECT_URI_API}/login/mod/middleman?id=${id}&iss=https://api.saberquest.xyz`);
     }
 
+        /**
+     * GET /login/mod/middleman
+     * @summary Login with BeatLeader/Steam but for the mod!
+     * @tags Login
+     * @param {string} id.query.required - The id of the user
+     * @return {object} 400 - No id provided
+     * @return {object} 401 - No token provided
+     * @return {object} 401 - Invalid token
+     * @return {object} 401 - User does not exist in any of the databases.
+     * @return {object} 500 - Error getting user
+     * @example response - 400 - No id provided
+     * {
+     * "message": "No id provided"
+     * }
+     * @example response - 401 - No token provided
+     * {
+     * "message": "No token provided"
+     * }
+     * @example response - 401 - Invalid token
+     * {
+     * "message": "Invalid token"
+     * }
+     * @example response - 401 - User does not exist in any of the databases.
+     * {
+     * "message": "User does not exist in any of the databases."
+     * }
+     * @example response - 500 - Error getting user
+     * {
+     * "message": "Error getting user"
+     * }
+     */
     @GET("login/mod/middleman")
     async getModLogin(req: Request, res: Response) {
         const id = req.query.id;
