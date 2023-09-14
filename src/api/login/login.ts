@@ -300,4 +300,180 @@ export class BeatLeaderLogin {
 
         return res.redirect(`${process.env.REDIRECT_URI_API}/login?id=${id}&iss=https://api.saberquest.xyz`);
     }
+
+    @GET("login/mod/beatleader")
+    async getMod(req: Request, res: Response) {
+        const code = req.query.code;
+        const iss = req.query.iss;
+
+        if (iss !== "https://api.beatleader.xyz/") {
+            return res.status(403).send("Invalid issuer");
+        }
+
+        if (!code) {
+            return res.status(400).send("No code provided");
+        }
+
+        const response = await fetch(
+            "https://api.beatleader.xyz/oauth2/token",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                },
+                body: querystring.stringify({
+                    grant_type: "authorization_code",
+                    code: code.toString(),
+                    client_secret: process.env.BEATLEADER_SECRET,
+                    client_id: process.env.BEATLEADER_ID,
+                    redirect_uri: `${process.env.REDIRECT_URI_API}/login/beatleader`,
+                }),
+            }
+        ).then((res) => res.json());
+
+        const token = response.access_token;
+
+        const user = await fetch("https://api.beatleader.xyz/oauth2/identity", {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        if (user.status !== 200) {
+            return res.status(500).send("Error getting user");
+        }
+
+        const userJson = await user.json();
+
+        const id = userJson.id;
+
+        const authToken = createRandomToken();
+
+        res.cookie("auth", authToken, {
+            maxAge: 5000
+        });
+
+        activeTokens.push(authToken);
+
+        setTimeout(() => {
+            const index = activeTokens.indexOf(authToken);
+            if (index > -1) {
+                activeTokens.splice(index, 1);
+            }
+        }, 5000);
+
+        return res.redirect(`${process.env.REDIRECT_URI_API}/login/mod/middleman?id=${id}&iss=https://api.saberquest.xyz`);
+    }
+
+    @GET("login/mod/middleman")
+    async getModLogin(req: Request, res: Response) {
+        const id = req.query.id;
+        const token = req.cookies.auth;
+
+        if (!token) {
+            return res.status(401).send("No token provided");
+        }
+
+        if (!activeTokens.includes(token)) {
+            return res.status(401).send("Invalid token");
+        }
+
+        if (!id) {
+            return res.status(400).send("No id provided");
+        }
+
+        const user = await db<User>("users").where("platform_id", id).first();
+
+        if (!user) {
+            let hasBl = false;
+            let hasSs = false;
+            let username: string = "";
+            let avatar: string = "";
+
+            const beatleader = await fetch(`https://api.beatleader.xyz/player/${id}`).then((res) => res.json());
+            if (beatleader.id !== null) {
+                hasBl = true;
+            }
+            const scoresaber = await fetch(`https://scoresaber.com/api/player/${id}/basic`).then((res) => res.json());
+            if (!scoresaber.errorMessage) {
+                hasSs = true;
+            }
+
+            let preference: string | undefined;
+
+            if (hasBl) {
+                preference = "bl";
+                avatar = beatleader.avatar;
+                username = beatleader.name;
+            } else if (hasSs) {
+                preference = "ss";
+                avatar = scoresaber.profilePicture;
+                username = scoresaber.name;
+            } else {
+                preference = undefined;
+            }
+
+            if (preference === undefined) {
+                return res.status(401).json({
+                    message: "User does not exist in any of the databases."
+                });
+            }
+
+            const buffer = await createBuffer(avatar);
+            downloadAvatar(buffer, id.toString());
+
+            const rank = await db<User>("users").count("id").then((res) => Number(res[0].count) + 1);
+
+            await fetch(`${process.env.REDIRECT_URI_API}/profile/create`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    authorization_code: process.env.AUTHORIZATION_CODE,
+                    platform_id: id,
+                    username: username,
+                    avatar: `http://localhost:3010/profile/${id}/avatar`,
+                    preference: preference,
+                    rank: rank
+                })
+            }).then((response) => {
+                if (response.status === 200) {
+                    const token = jwt.sign({
+                        id: id
+                    }, process.env.JWT_SECRET, {
+                        expiresIn: "30d"
+                    });
+
+                    socketServer.emit("newUser", {
+                        id: id,
+                        username: username
+                    });
+
+                    return res.redirect(`${process.env.REDIRECT_URI_API}/login/mod?token=${token}`);
+                }
+
+                return res.sendStatus(500);
+            });
+        }
+
+        if (user.patreon === false) {
+            if (user.preference === "bl") {
+                const beatleader = await fetch(`https://api.beatleader.xyz/player/${id}`).then((res) => res.json());
+                compareAvatars(beatleader.avatar, id.toString());
+            } else if (user.preference === "ss") {
+                const scoresaber = await fetch(`https://scoresaber.com/api/player/${id}/basic`).then((res) => res.json());
+                compareAvatars(scoresaber.profilePicture, id.toString());
+            }
+        }
+
+        const jwtToken = jwt.sign({
+            id: id
+        }, process.env.JWT_SECRET, {
+            expiresIn: "30d"
+        });
+
+        return res.redirect(`${process.env.REDIRECT_URI_API}/login/mod#${jwtToken}`);
+    }
 }
