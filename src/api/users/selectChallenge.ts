@@ -14,7 +14,7 @@ export class SelectChallenge {
     /**
      * PATCH /profile/select
      * @summary Select a challenge
-     * @tags Profile
+     * @tags Users
      * @security JWT
      * @param {SelectChallenge} request.body.required - The challenge to select
      * @return {object} 200 - Success
