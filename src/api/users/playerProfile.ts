@@ -52,6 +52,7 @@ export class PlayerProfile {
     @GET("profile/:id", cache)
     async get(req: Request, res: Response): Promise<void | Response> {
         try {
+            res.setHeader("Access-Control-Allow-Origin", "*");
             if (!req.params.id) {
                 return res.status(400).json({ message: "Missing fields" });
             }
@@ -146,6 +147,7 @@ export class PlayerProfile {
     @GET("profile/:id/inventory")
     async getPlayerInventory(req: Request, res: Response) {
         try {
+            res.setHeader("Access-Control-Allow-Origin", "*");
             const user = await db<User>("users")
                 .select("id")
                 .where("platform_id", req.params.id)
@@ -202,6 +204,7 @@ export class PlayerProfile {
      */
     @GET("profile/:id/avatar")
     getPlayerAvatar(req: Request, res: Response): Response {
+        res.setHeader("Access-Control-Allow-Origin", "*");
         const exists = fs.existsSync(`./data/avatars/${req.params.id}.png`);
         if (!exists) {
             return res.status(404).json({ message: "User not found." });
@@ -241,6 +244,7 @@ export class PlayerProfile {
     @GET("profile/:id/difficulty")
     async getPlayerDifficulty(req: Request, res: Response) {
         try {
+            res.setHeader("Access-Control-Allow-Origin", "*");
             const user = await db<User>("users")
                 .select("diff")
                 .where("platform_id", req.params.id)

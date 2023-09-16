@@ -52,6 +52,7 @@ export class ShopItems {
     @GET("items/shop", cache)
     async get(req: Request, res: Response) {
         try {
+            res.setHeader("Access-Control-Allow-Origin", "*");
             setCache(req, "daily");
 
             const shop = await db<ShopItem>("shop_items")

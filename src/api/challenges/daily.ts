@@ -69,6 +69,7 @@ export class Daily {
      */
     @GET("challenge/daily", cache)
     async get(req: Request, res: Response) {
+        res.setHeader("Access-Control-Allow-Origin", "*");
         const challenge = await db<ChallengeHistory>("challenge_histories")
             .select("challenge_id", "date")
             .orderBy("date", "desc")
@@ -156,6 +157,7 @@ export class Daily {
      */
     @GET("challenge/daily/mod")
     async getMod(req: Request, res: Response) {
+        res.setHeader("Access-Control-Allow-Origin", "*");
         const challenge = await db<ChallengeHistory>("challenge_histories")
         .select("challenge_id", "date")
         .orderBy("date", "desc")

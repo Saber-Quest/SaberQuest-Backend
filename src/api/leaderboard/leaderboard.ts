@@ -84,6 +84,7 @@ export class Leaderboard {
      */
     @GET("leaderboard", cache)
     async get(req: Request, res: Response) {
+        res.setHeader("Access-Control-Allow-Origin", "*");
         const page = Number(req.query.page);
         let limit = Number(req.query.limit);
 
@@ -214,6 +215,7 @@ export class Leaderboard {
      */
     @GET("leaderboard/:id")
     async getAroundUser(req: Request, res: Response) {
+        res.setHeader("Access-Control-Allow-Origin", "*");
         const id = req.params.id;
 
         const rank = await db<User>("users")

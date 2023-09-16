@@ -34,6 +34,7 @@ export class Items {
      */
     @GET("items/all")
     get(req: Request, res: Response) {
+        res.setHeader("Access-Control-Allow-Origin", "*");
         db<Item>("items")
             .select("*")
             .then((items) => {
