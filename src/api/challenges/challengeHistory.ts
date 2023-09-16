@@ -22,6 +22,8 @@ export class ChallengeHistoryEndpoint {
      * @summary Get a player's challenge history
      * @tags Challenges
      * @param {string} id.path.required - The id of the player
+     * @param {number} page.query.required - Page number
+     * @param {number} limit.query.required - Number of challengess the per page (max 50)
      * @return {object} 200 - Success
      * @return {string} 400 - Invalid page
      * @return {object} 404 - User not found
@@ -67,14 +69,23 @@ export class ChallengeHistoryEndpoint {
      * @example response - 500 - Internal server error
      * "Internal server error"
      */
-    @GET("challenge/history/:id/:page", cache)
+    @GET("challenge/history/:id", cache)
     async getChallengeHistoryId(req: Request, res: Response) {
         try {
             const id = req.params.id;
-            const page = parseInt(req.params.page);
+            const page = Number(req.query.page);
+            let limit = Number(req.query.limit);
 
-            if (page < 1) {
+            if (page < 1 || isNaN(page)) {
                 return res.status(400).json({ error: "Invalid page" });
+            }
+
+            if (isNaN(limit) || limit < 1) {
+                limit = 10;
+            }
+
+            if (limit > 50) {
+                limit = 50
             }
 
             const challengeHistory = await db<User>("users")
@@ -82,8 +93,8 @@ export class ChallengeHistoryEndpoint {
                 .select("challenge_histories.*")
                 .where("users.platform_id", id)
                 .orderBy("date", "desc")
-                .limit(10)
-                .offset((page - 1) * 10);
+                .limit(50)
+                .offset((page - 1) * limit);
 
             if (challengeHistory.length === 0) {
                 return res.status(200).json([]);
