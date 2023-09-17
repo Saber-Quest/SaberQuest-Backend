@@ -17,6 +17,7 @@ import expressJSDocSwagger from "express-jsdoc-swagger";
 import switchChallenge from "./functions/challenges/dailyChallenge";
 import switchShop from "./functions/items/shop";
 import socketServer from "./websocket";
+import autoComplete from "./functions/challenges/autoComplete";
 
 async function main() {
     const httpPort = parseInt(process.env.PORT) || 5000;
@@ -70,6 +71,7 @@ async function main() {
     setInterval(() => {
         switchChallenge();
         switchShop();
+        autoComplete();
     }, 1000 * 60);
 }
 
