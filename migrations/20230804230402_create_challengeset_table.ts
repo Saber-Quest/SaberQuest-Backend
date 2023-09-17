@@ -43,6 +43,7 @@ export async function up(knex: Knex): Promise<void> {
         table.integer("qp");
         table.integer("value");
         table.integer("diff");
+        table.boolean("auto_complete");
     });
 
     // id: string;

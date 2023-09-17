@@ -6,13 +6,13 @@ import Complete from "./complete";
 export default async function autoComplete() {
     const time = Date.now();
 
-    if (time >= (new Date().setHours(23, 58, 0, 0) - 120000)) {
+    if (time >= (new Date().setUTCHours(23, 58, 0, 0) - 120000)) {
         await new Promise((resolve) => setTimeout(resolve, 1000));
 
         const people = await db<User>("challenges")
             .select("*")
             .where("complete", false)
-            .andWhere("autoComplete", true);
+            .andWhere("auto_complete", true);
 
         for (const player of people) {
 
