@@ -14,9 +14,9 @@ export interface BeatSaverRes {
     updatedAt: string
     lastPublishedAt: string
     tags: string[]
-  }
-  
-  export interface Uploader {
+}
+
+export interface Uploader {
     id: number
     name: string
     avatar: string
@@ -24,27 +24,27 @@ export interface BeatSaverRes {
     admin: boolean
     curator: boolean
     playlistUrl: string
-  }
-  
-  export interface Metadata {
+}
+
+export interface Metadata {
     bpm: number
     duration: number
     songName: string
     songSubName: string
     songAuthorName: string
     levelAuthorName: string
-  }
-  
-  export interface Stats {
+}
+
+export interface Stats {
     plays: number
     downloads: number
     upvotes: number
     downvotes: number
     score: number
     reviews: number
-  }
-  
-  export interface Version {
+}
+
+export interface Version {
     hash: string
     state: string
     createdAt: string
@@ -53,9 +53,9 @@ export interface BeatSaverRes {
     downloadURL: string
     coverURL: string
     previewURL: string
-  }
-  
-  export interface Diff {
+}
+
+export interface Diff {
     njs: number
     offset: number
     notes: number
@@ -74,11 +74,10 @@ export interface BeatSaverRes {
     paritySummary: ParitySummary
     maxScore: number
     label: string
-  }
-  
-  export interface ParitySummary {
+}
+
+export interface ParitySummary {
     errors: number
     warns: number
     resets: number
-  }
-  
+}

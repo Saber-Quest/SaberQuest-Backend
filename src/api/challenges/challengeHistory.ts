@@ -85,7 +85,7 @@ export class ChallengeHistoryEndpoint {
             }
 
             if (limit > 50) {
-                limit = 50
+                limit = 50;
             }
 
             const challengeHistory = await db<User>("users")

@@ -6,7 +6,7 @@ export default async function Complete(type: string, challenge: number[], prefer
     if (preference === "ss") {
         const bool = await ScoreSaber(type, challenge, id);
         if (bool === true) {
-            return giveRewards(id, diff, challengeId)
+            return giveRewards(id, diff, challengeId);
         } else {
             return false;
         }
