@@ -65,6 +65,7 @@ export interface Leaderboard {
     reweight: any
     leaderboardGroup: any
     plays: number
+    stars: number
 }
 
 export interface Song {
