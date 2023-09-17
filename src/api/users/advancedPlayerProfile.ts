@@ -16,13 +16,201 @@ enum DifficultyEnum {
     Expert = 3,
 }
 
+/**
+ * GET /profile/{id}/advanced
+ * @summary Get a player's advanced profile
+ * @tags Users
+ * @param {string} id.path.required - The id of the player
+ * @return {object} 200 - Success
+ * @return {string} 400 - Missing fields
+ * @return {object} 404 - User not found
+ * @return {string} 500 - Internal server error
+ * @example response - 200 - Success
+ * {
+ *    "userInfo": {
+ *        "id": "76561198343533017",
+ *        "username": "StormPacer",
+ *        "images": {
+ *            "avatar": "http://localhost:3010/avatar/76561198343533017",
+ *            "banner": null,
+ *            "border": null
+ *        },
+ *        "preference": "bl",
+ *        "patreon": null,
+ *        "autoComplete": null
+ *    },
+ *    "stats": {
+ *        "challengesCompleted": 4,
+ *        "rank": 2,
+ *        "qp": 14,
+ *        "value": 32
+ *    },
+ *    "today": {
+ *        "diff": 2,
+ *        "completed": false
+ *    },
+ *    "inventory": [
+ *        {
+ *            "id": "bs",
+ *            "image": "https://saberquest.xyz/images/blue_saber_icon.png",
+ *            "name": "Blue Saber",
+ *            "amount": 11
+ *        },
+ *        {
+ *            "id": "bn",
+ *            "image": "https://saberquest.xyz/images/blue_notes_icon.png",
+ *            "name": "Blue Notes",
+ *            "amount": 7
+ *        }
+ *    ],
+ *    "challengeHistory": [
+ *        {
+ *            "date": "2023-09-16T12:14:20.553Z",
+ *            "items": [
+ *                {
+ *                    "name": "CC Token",
+ *                    "image": "https://saberquest.xyz/images/cube_community_token.png",
+ *                    "rarity": "Legendary"
+ *                },
+ *                {
+ *                    "name": "Red Notes",
+ *                    "image": "https://saberquest.xyz/images/red_notes_icon.png",
+ *                    "rarity": "Common"
+ *                }
+ *            ],
+ *            "qp": 10,
+ *            "challenge": {
+ *                "name": "PP Challenge",
+ *                "description": "Get a certain amount of PP on a single map.",
+ *                "type": "pp",
+ *                "difficulty": {
+ *                    "name": "Hard",
+ *                    "challenge": [
+ *                        200,
+ *                        250
+ *                    ]
+ *                }
+ *            }
+ *        },
+ *        {
+ *            "date": "2023-09-16T12:14:20.553Z",
+ *            "items": [
+ *                {
+ *                    "name": "Blue Debris",
+ *                    "image": "https://saberquest.xyz/images/blue_debris_icon.png",
+ *                    "rarity": "Uncommon"
+ *                },
+ *                {
+ *                    "name": "BSMG Token",
+ *                    "image": "https://saberquest.xyz/images/bsmg_token.png",
+ *                    "rarity": "Legendary"
+ *                },
+ *                {
+ *                    "name": "Crouch Wall",
+ *                    "image": "https://saberquest.xyz/images/crouch_wall_icon.png",
+ *                    "rarity": "Rare"
+ *                }
+ *            ],
+ *            "qp": 5,
+ *            "challenge": {
+ *                "name": "PP Challenge",
+ *                "description": "Get a certain amount of PP on a single map.",
+ *                "type": "pp",
+ *                "difficulty": {
+ *                    "name": "Normal",
+ *                    "challenge": [
+ *                        50,
+ *                        70
+ *                    ]
+ *                }
+ *            }
+ *        },
+ *        {
+ *            "date": "2023-09-16T12:14:20.553Z",
+ *            "items": [
+ *                {
+ *                    "name": "Bad Cut Notes",
+ *                    "image": "https://saberquest.xyz/images/badcut_notes_icon.png",
+ *                    "rarity": "Common"
+ *                },
+ *                {
+ *                    "name": "Blue Note Pieces",
+ *                    "image": "https://saberquest.xyz/images/blue_cube_pieces_icon.png",
+ *                    "rarity": "Common"
+ *                },
+ *                {
+ *                    "name": "Blue Notes",
+ *                    "image": "https://saberquest.xyz/images/blue_notes_icon.png",
+ *                    "rarity": "Common"
+ *                }
+ *            ],
+ *            "qp": 15,
+ *            "challenge": {
+ *                "name": "PP Challenge",
+ *                "description": "Get a certain amount of PP on a single map.",
+ *                "type": "pp",
+ *                "difficulty": {
+ *                    "name": "Expert",
+ *                    "challenge": [
+ *                        400,
+ *                        500
+ *                    ]
+ *                }
+ *            }
+ *        },
+ *        {
+ *            "date": "2023-09-16T12:14:20.553Z",
+ *            "items": [
+ *                {
+ *                    "name": "Bad Cut Notes",
+ *                    "image": "https://saberquest.xyz/images/badcut_notes_icon.png",
+ *                    "rarity": "Common"
+ *                },
+ *                {
+ *                    "name": "Blue Note Pieces",
+ *                    "image": "https://saberquest.xyz/images/blue_cube_pieces_icon.png",
+ *                    "rarity": "Common"
+ *                },
+ *                {
+ *                    "name": "Blue Notes",
+ *                    "image": "https://saberquest.xyz/images/blue_notes_icon.png",
+ *                    "rarity": "Common"
+ *                }
+ *            ],
+ *            "qp": 15,
+ *            "challenge": {
+ *                "name": "Play X Maps Challenge",
+ *                "description": "Play a certain amount of maps.",
+ *                "type": "map",
+ *                "difficulty": {
+ *                    "name": "Expert",
+ *                    "challenge": [
+ *                        15
+ *                    ]
+ *                }
+ *            }
+ *        }
+ *    ]
+ *}
+ * @example response - 400 - Missing fields
+ * {
+ *   "error": "Missing fields"
+ * }
+ * @example response - 404 - User not found
+ * {
+ *  "error": "User not found."
+ * }
+ * @example response - 500 - Internal server error
+ * "Internal server error"
+ */
+
 export class AdvancedPlayerProfile {
     @GET("profile/:id/advanced")
     async get(req: Request, res: Response): Promise<void | Response> {
         try {
             res.setHeader("Access-Control-Allow-Origin", "*");
             if (!req.params.id) {
-                return res.status(400).json({ message: "Missing fields" });
+                return res.status(400).json({ error: "Missing fields" });
             }
 
             const id = req.params.id;
@@ -33,7 +221,7 @@ export class AdvancedPlayerProfile {
                 .first();
 
             if (!user) {
-                return res.status(404).json({ message: "User not found." });
+                return res.status(404).json({ error: "User not found." });
             }
 
             let completed = false;
