@@ -23,7 +23,7 @@ export class ChallengeHistoryEndpoint {
      * @tags Challenges
      * @param {string} id.path.required - The id of the player
      * @param {number} page.query.required - Page number
-     * @param {number} limit.query.required - Number of challengess the per page (max 50)
+     * @param {number} limit.query.required - Number of challenges per page (max 50)
      * @return {object} 200 - Success
      * @return {string} 400 - Invalid page
      * @return {object} 404 - User not found
@@ -73,7 +73,7 @@ export class ChallengeHistoryEndpoint {
     async getChallengeHistoryId(req: Request, res: Response) {
         try {
             const id = req.params.id;
-            const page = Number(req.query.page);
+            const page = Number(req.query.page) + 1;
             let limit = Number(req.query.limit);
 
             if (page < 1 || isNaN(page)) {
