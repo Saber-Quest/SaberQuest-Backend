@@ -26,6 +26,10 @@ function formatMod(type: string, challenge: number[]) {
         return `<line-height=70%><color=#FFAAAA>BL: ${challenge[1]} PP<br><color=#FFFF55>SS: ${challenge[0]} PP<br><color=#5555FF>ACC: ${challenge[2]}%`;
     }
 
+    else if (type === "xaccuracynotes") {
+        return `<line-height=70%><color=#FFAAAA>${challenge[0]} notes<br>ACC: ${challenge[1]}%`;
+    }
+
     else if (type === "pp") {
         return `<line-height=70%><color=#FFAAAA>BL: ${challenge[1]} PP<br><color=#FFFF55>SS: ${challenge[0]} PP`;
     }

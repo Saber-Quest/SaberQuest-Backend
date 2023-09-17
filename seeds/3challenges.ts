@@ -45,6 +45,11 @@ export async function seed(knex: Knex): Promise<void> {
             type: "xaccuracypp",
             name: "X Accuracy PP Challenge",
             description: "Get a certain amount of accuracy on a map while gaining a certain amount of pp."
+        },
+        {
+            type: "xaccuracynotes",
+            name: "X Accuracy Notes Challenge",
+            description: "Get a certain amount of accuracy on a map with a certain amount of notes."
         }
     ]);
 
@@ -55,6 +60,7 @@ export async function seed(knex: Knex): Promise<void> {
     const fcstars = await knex<ChallengeSet>("challenge_sets").select("*").where("type", "fcstars").first();
     const xaccuracystars = await knex<ChallengeSet>("challenge_sets").select("*").where("type", "xaccuracystars").first();
     const xaccuracypp = await knex<ChallengeSet>("challenge_sets").select("*").where("type", "xaccuracypp").first();
+    const xaccuracynotes = await knex<ChallengeSet>("challenge_sets").select("*").where("type", "xaccuracynotes").first();
 
     await knex<Difficulty>("difficulties").insert([
         // -------------------------------- SET PP DIFFICULTIES --------------------------------
@@ -190,6 +196,25 @@ export async function seed(knex: Knex): Promise<void> {
             diff: 3,
             color: "#B74BF5"
         },
+        // -------------------------------- SET X ACCURACY NOTES DIFFICULTIES --------------------------------
+        {
+            challenge_id: xaccuracynotes.id,
+            challenge: [600, 75],
+            diff: 1,
+            color: "#FFD941"
+        },
+        {
+            challenge_id: xaccuracynotes.id,
+            challenge: [1000, 85],
+            diff: 2,
+            color: "#E93B3B"
+        },
+        {
+            challenge_id: xaccuracynotes.id,
+            challenge: [2000, 94],
+            diff: 3,
+            color: "#B74BF5"
+        }
     ]);
 
     await knex<ChallengeHistory>("challenge_histories").insert([
