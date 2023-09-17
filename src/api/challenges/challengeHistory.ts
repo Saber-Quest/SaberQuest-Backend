@@ -73,7 +73,7 @@ export class ChallengeHistoryEndpoint {
     async getChallengeHistoryId(req: Request, res: Response) {
         try {
             const id = req.params.id;
-            const page = Number(req.query.page) + 1;
+            const page = Number(req.query.page);
             let limit = Number(req.query.limit);
 
             if (page < 1 || isNaN(page)) {
@@ -93,7 +93,7 @@ export class ChallengeHistoryEndpoint {
                 .select("challenge_histories.*")
                 .where("users.platform_id", id)
                 .orderBy("date", "desc")
-                .limit(50)
+                .limit(limit)
                 .offset((page - 1) * limit);
 
             if (challengeHistory.length === 0) {
