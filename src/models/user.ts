@@ -13,4 +13,5 @@ export class User {
     qp: number;
     value: number;
     diff: number;
+    auto_complete: boolean;
 }

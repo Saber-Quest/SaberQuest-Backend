@@ -9,7 +9,6 @@ import { cache, setCache } from "../../functions/cache";
 import { User } from "../../models/user";
 import { ChallengeHistoryResponse } from "../../types/challenges";
 
-// 1 = normal, 2 = hard, 3 = expert
 enum DifficultyEnum {
     Normal = 1,
     Hard = 2,

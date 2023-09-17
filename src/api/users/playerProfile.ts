@@ -99,6 +99,8 @@ export class PlayerProfile {
                         border: user.border,
                     },
                     preference: user.preference,
+                    patreon: user.patreon,
+                    autoComplete: user.auto_complete
                 },
                 stats: {
                     challengesCompleted: parseInt(object.count),

@@ -16,6 +16,8 @@ interface IUserInfo {
     username: string;
     images: IUserImages;
     preference: string;
+    autoComplete: boolean;
+    patreon: boolean;
 }
 
 interface IUserStats {

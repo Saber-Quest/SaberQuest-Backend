@@ -131,7 +131,9 @@ export class Leaderboard {
                         banner: user.banner,
                         border: user.border,
                     },
+                    patreon: user.patreon,
                     preference: user.preference,
+                    autoComplete: user.auto_complete
                 },
                 stats: {
                     challengesCompleted: parseInt(object.count),
@@ -252,7 +254,9 @@ export class Leaderboard {
                         banner: user.banner,
                         border: user.border,
                     },
+                    patreon: user.patreon,
                     preference: user.preference,
+                    autoComplete: user.auto_complete
                 },
                 stats: {
                     challengesCompleted: parseInt(object.count),
