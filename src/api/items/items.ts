@@ -131,16 +131,25 @@ export class Items {
                     .first();
 
                 if (itemsArray.includes(itemData.id)) {
+                    let increment = 1;
+                    if (item === "bs" || item === "rs") {
+                        increment = 5;
+                    }
+
                     await db<UserItem>("user_items")
                         .where("user_id", user.id)
                         .andWhere("item_id", itemData.id)
-                        .increment("amount", 1);
+                        .increment("amount", increment);
                 } else {
+                    let amount = 1;
+                    if (item === "bs" || item === "rs") {
+                        amount = 5;
+                    }
                     await db<UserItem>("user_items")
                         .insert({
                             user_id: user.id,
                             item_id: itemData.id,
-                            amount: 1,
+                            amount: amount,
                         });
                 }
             }
