@@ -14,6 +14,7 @@ export class Leaderboard {
      * @param {number} page.query.required - Page number
      * @param {number} limit.query.required - Number of users per page (max 50)
      * @return {object} 200 - Success
+     * @return {object} 204 - No more users
      * @return {string} 400 - Invalid request
      * @return {string} 400 - Invalid page
      * @return {string} 400 - Invalid limit
@@ -67,6 +68,10 @@ export class Leaderboard {
      *    }
      * ]
      *}
+     * @example response - 204 - No more users
+     * {
+     * "error": "No more users."
+     * }
      * @example response - 400 - Invalid request
      * {
      *  "error": "Invalid request"
@@ -111,6 +116,10 @@ export class Leaderboard {
             .where("rank", "<=", page * limit + 1)
             .andWhere("rank", ">", (page - 1) * limit + 1)
             .orderBy("rank", "asc");
+
+        if (!users) {
+            return res.status(204).json({ error: "No more users." });
+        }
 
         const responseArray: userRes[] = [];
 
@@ -219,6 +228,12 @@ export class Leaderboard {
     async getAroundUser(req: Request, res: Response) {
         res.setHeader("Access-Control-Allow-Origin", "*");
         const id = req.params.id;
+
+        if (!id) {
+            return res.status(400).json({ error: "Invalid request" });
+        }
+
+        setCache(req, "leaderboard");
 
         const rank = await db<User>("users")
             .select("rank")
