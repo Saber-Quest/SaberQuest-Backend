@@ -15,6 +15,8 @@ function clearGlobalCache() {
 
 function clearUserCache(id: string) {
     apicache.clear(`profile:${id}`);
+    apicache.clear(`inventory:${id}`);
+    apicache.clear(`leaderboard:${id}`);
     apicache.clear("leaderboard");
 }
 

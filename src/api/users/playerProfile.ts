@@ -53,11 +53,12 @@ export class PlayerProfile {
     async get(req: Request, res: Response): Promise<void | Response> {
         try {
             res.setHeader("Access-Control-Allow-Origin", "*");
-            if (!req.params.id) {
-                return res.status(400).json({ message: "Missing fields" });
-            }
 
             const id = req.params.id;
+
+            if (!id) {
+                return res.status(400).json({ error: "Invalid request" });
+            }
 
             setCache(req, `profile:${id}`);
 
@@ -150,9 +151,18 @@ export class PlayerProfile {
     async getPlayerInventory(req: Request, res: Response) {
         try {
             res.setHeader("Access-Control-Allow-Origin", "*");
+
+            const id = req.params.id;
+
+            if (!id) {
+                return res.status(400).json({ error: "Invalid request" });
+            }
+
+            setCache(req, `inventory:${id}`);
+
             const user = await db<User>("users")
                 .select("id")
-                .where("platform_id", req.params.id)
+                .where("platform_id", id)
                 .first();
             if (!user.id) {
                 return res.status(404).json({ message: "User not found." });

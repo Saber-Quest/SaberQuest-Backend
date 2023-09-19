@@ -9,6 +9,7 @@ import { ChallengeHistory } from "../../models/challengeHistory";
 import { ChallengeSet } from "../../models/challengeSet";
 import { Difficulty } from "../../models/difficulty";
 import { ChallengeHistoryResponse } from "../../types/challenges";
+import { cache, setCache } from "../../functions/cache";
 
 enum DifficultyEnum {
     Normal = 1,
@@ -214,6 +215,8 @@ export class AdvancedPlayerProfile {
             }
 
             const id = req.params.id;
+
+            setCache(req, `profile:${id}`);
 
             const user = await db<User>("users")
                 .select("*")

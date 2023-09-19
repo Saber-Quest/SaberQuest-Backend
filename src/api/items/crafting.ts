@@ -1,4 +1,4 @@
-import { PATCH } from "../../router";
+import { PATCH, GET } from "../../router";
 import db from "../../db";
 import { Request, Response } from "express";
 import { verifyJWT } from "../../functions/users/jwtVerify";
@@ -111,9 +111,9 @@ export class Crafting {
                 return res.status(404).json({ error: "Item not found" });
             }
 
-            const crafted = Craft(item1.name_id, item2.name_id);
+            const crafted = await Craft(item1.name_id, item2.name_id);
 
-            if (!crafted) {
+            if (crafted === "") {
                 return res.status(400).json({ error: "Invalid items" });
             }
 
@@ -155,8 +155,6 @@ export class Crafting {
                 .andWhere("item_id", item2.id)
                 .decrement("amount", 1);
 
-            // The combined value of the two items
-
             const lostValue = item1.value + item2.value;
             const gainedValue = craftedItem.value;
 
@@ -173,6 +171,41 @@ export class Crafting {
             clearUserCache(user.platform_id);
 
             return res.status(200).json({ message: "Success" });
+        } catch (err) {
+            console.error(err);
+            return res.sendStatus(500);
+        }
+    }
+
+    /**
+     * GET /crafting/recipes
+     * @summary Get all crafting recipes
+     * @tags Items
+     * @return {object} 200 - Success
+     * @return {string} 500 - Internal server error
+     * @example response - 200 - Success
+     * [
+     * {
+     *    "item1_id": "ap",
+     *    "item2_id": "bp",
+     *    "crafted_id": "bn"
+     * },
+     * {
+     *    "item1_id": "ap",
+     *    "item2_id": "rcp",
+     *    "crafted_id": "rn"
+     * }
+     * ]
+     * @example response - 500 - Internal server error
+     * "Internal server error"
+     */
+    @GET("crafting/recipes")
+    async get(req: Request, res: Response) {
+        res.setHeader("Access-Control-Allow-Origin", "*");
+        try {
+            const recipes = await db("crafting").select("*");
+
+            return res.status(200).json(recipes);
         } catch (err) {
             console.error(err);
             return res.sendStatus(500);

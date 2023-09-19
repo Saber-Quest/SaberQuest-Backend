@@ -1,269 +1,47 @@
 import { Knex } from "knex";
 import { Item } from "../src/models/item";
+import { Crafting } from "../src/models/crafting";
 
 export async function seed(knex: Knex): Promise<void> {
     // Deletes ALL existing entries
     await knex("items").del();
     await knex("shop_items").del();
+    await knex("crafting").del();
 
     // Inserts seed entries
-    await knex("items").insert([
-        {
-            name_id: "ap",
-            image: "https://saberquest.xyz/images/arrow_pieces_icon.png",
-            name: "Arrow Pieces",
-            value: 3,
-            price: 5,
-            rarity: "Common"
-        },
-        {
-            name_id: "bcn",
-            image: "https://saberquest.xyz/images/badcut_notes_icon.png",
-            name: "Bad Cut Notes",
-            value: 3,
-            price: 5,
-            rarity: "Common"
-        },
-        {
-            name_id: "bp",
-            image: "https://saberquest.xyz/images/blue_cube_pieces_icon.png",
-            name: "Blue Note Pieces",
-            value: 3,
-            price: 5,
-            rarity: "Common"
-        },
-        {
-            name_id: "bd",
-            image: "https://saberquest.xyz/images/blue_debris_icon.png",
-            name: "Blue Debris",
-            value: 3,
-            price: 5,
-            rarity: "Uncommon"
-        },
-        {
-            name_id: "bn",
-            image: "https://saberquest.xyz/images/blue_notes_icon.png",
-            name: "Blue Notes",
-            value: 1,
-            price: 5,
-            rarity: "Common"
-        },
-        {
-            name_id: "bs",
-            image: "https://saberquest.xyz/images/blue_saber_icon.png",
-            name: "Blue Saber",
-            value: 0,
-            price: 5,
-            rarity: "Rare"
-        },
-        {
-            name_id: "b",
-            image: "https://saberquest.xyz/images/bombs_icon.png",
-            name: "Bombs",
-            value: 3,
-            price: 5,
-            rarity: "Uncommon"
-        },
-        {
-            name_id: "bt",
-            image: "https://saberquest.xyz/images/bsmg_token.png",
-            name: "BSMG Token",
-            value: 3,
-            price: 5,
-            rarity: "Legendary"
-        },
-        {
-            name_id: "ht",
-            image: "https://saberquest.xyz/images/hitbloq_token.png",
-            name: "Hitbloq Token",
-            value: 3,
-            price: 5,
-            rarity: "Legendary"
-        },
-        {
-            name_id: "cw",
-            image: "https://saberquest.xyz/images/crouch_wall_icon.png",
-            name: "Crouch Wall",
-            value: 3,
-            price: 5,
-            rarity: "Rare"
-        },
-        {
-            name_id: "ct",
-            image: "https://saberquest.xyz/images/cube_community_token.png",
-            name: "CC Token",
-            value: 3,
-            price: 5,
-            rarity: "Legendary"
-        },
-        {
-            name_id: "gn",
-            image: "https://saberquest.xyz/images/golden_note_icon.png",
-            name: "Golden Note",
-            value: 3,
-            price: 5,
-            rarity: "Legendary"
-        },
-        {
-            name_id: "gp",
-            image: "https://saberquest.xyz/images/golden_pieces_icon.png",
-            name: "Golden Pieces",
-            value: 3,
-            price: 5,
-            rarity: "Legendary"
-        },
-        {
-            name_id: "rcp",
-            image: "https://saberquest.xyz/images/red_cube_pieces_icon.png",
-            name: "Red Note Pieces",
-            value: 3,
-            price: 5,
-            rarity: "Common"
-        },
-        {
-            name_id: "rd",
-            image: "https://saberquest.xyz/images/red_debris_icon.png",
-            name: "Red Debris",
-            value: 3,
-            price: 5,
-            rarity: "Uncommon"
-        },
-        {
-            name_id: "rn",
-            image: "https://saberquest.xyz/images/red_notes_icon.png",
-            name: "Red Notes",
-            value: 3,
-            price: 5,
-            rarity: "Common"
-        },
-        {
-            name_id: "rs",
-            image: "https://saberquest.xyz/images/red_saber_icon.png",
-            name: "Red Saber",
-            value: 3,
-            price: 5,
-            rarity: "Rare"
-        },
-        {
-            name_id: "st",
-            image: "https://saberquest.xyz/images/scoresaber_token.png",
-            name: "ScoreSaber Token",
-            value: 3,
-            price: 5,
-            rarity: "Legendary"
-        },
-        {
-            name_id: "sn",
-            image: "https://saberquest.xyz/images/silver_note_icon.png",
-            name: "Silver Note",
-            value: 3,
-            price: 5,
-            rarity: "Epic"
-        },
-        {
-            name_id: "sp",
-            image: "https://saberquest.xyz/images/silver_pieces_icon.png",
-            name: "Silver Pieces",
-            value: 3,
-            price: 5,
-            rarity: "Epic"
-        },
-        {
-            name_id: "w",
-            image: "https://saberquest.xyz/images/wall_icon.png",
-            name: "Wall",
-            value: 3,
-            price: 5,
-            rarity: "Rare"
-        },
-        {
-            name_id: "115",
-            image: "https://saberquest.xyz/images/115.png",
-            name: "115",
-            value: 3,
-            price: 5,
-            rarity: "Legendary"
-        },
-        {
-            name_id: "bpp",
-            image: "https://saberquest.xyz/images/blue_poodle_icon.png",
-            name: "Blue Poodle",
-            value: 3,
-            price: 5,
-            rarity: "Epic"
-        },
-        {
-            name_id: "bsl",
-            image: "https://saberquest.xyz/images/blue_slname_ider_icon.png",
-            name: "Blue Slider",
-            value: 3,
-            price: 5,
-            rarity: "Rare"
-        },
-        {
-            name_id: "bst",
-            image: "https://saberquest.xyz/images/blue_stack.png",
-            name: "Blue Stack",
-            value: 3,
-            price: 5,
-            rarity: "Rare"
-        },
-        {
-            name_id: "bto",
-            image: "https://saberquest.xyz/images/blue_tower.png",
-            name: "Blue Tower",
-            value: 3,
-            price: 5,
-            rarity: "Epic"
-        },
-        {
-            name_id: "br",
-            image: "https://saberquest.xyz/images/bomb_reset_icon.png",
-            name: "Bomb Reset",
-            value: 3,
-            price: 5,
-            rarity: "Rare"
-        },
-        {
-            name_id: "dn",
-            image: "https://saberquest.xyz/images/double_notes_icon.png",
-            name: "Double Notes",
-            value: 3,
-            price: 5,
-            rarity: "Uncommon"
-        },
-        {
-            name_id: "rpp",
-            image: "https://saberquest.xyz/images/red_poodle_icon.png",
-            name: "Red Poodle",
-            value: 3,
-            price: 5,
-            rarity: "Epic"
-        },
-        {
-            name_id: "rsl",
-            image: "https://saberquest.xyz/images/red_slname_ider_icon.png",
-            name: "Red Slider",
-            value: 3,
-            price: 5,
-            rarity: "Rare"
-        },
-        {
-            name_id: "rst",
-            image: "https://saberquest.xyz/images/red_stack.png",
-            name: "Red Stack",
-            value: 3,
-            price: 5,
-            rarity: "Rare"
-        },
-        {
-            name_id: "rto",
-            image: "https://saberquest.xyz/images/red_tower.png",
-            name: "Red Tower",
-            value: 3,
-            price: 5,
-            rarity: "Epic"
-        }
+    await knex<Item>("items").insert([
+        new Item("ap", "Arrow Pieces", 3, "https://saberquest.xyz/images/arrow_pieces_icon.png", "Common", 3),
+        new Item("bcn", "Bad Cut Notes", 3, "https://saberquest.xyz/images/badcut_notes_icon.png", "Common", 3),
+        new Item("bp", "Blue Note Pieces", 3, "https://saberquest.xyz/images/blue_cube_pieces_icon.png", "Common", 3),
+        new Item("bd", "Blue Debris", 3, "https://saberquest.xyz/images/blue_debris_icon.png", "Uncommon", 3),
+        new Item("bn", "Blue Notes", 3, "https://saberquest.xyz/images/blue_notes_icon.png", "Common", 3),
+        new Item("bs", "Blue Saber", 3, "https://saberquest.xyz/images/blue_saber_icon.png", "Rare", 3),
+        new Item("b", "Bombs", 3, "https://saberquest.xyz/images/bombs_icon.png", "Uncommon", 3),
+        new Item("bt", "BSMG Token", 3, "https://saberquest.xyz/images/bsmg_token.png", "Legendary", 3),
+        new Item("ht", "Hitbloq Token", 3, "https://saberquest.xyz/images/hitbloq_token.png", "Legendary", 3),
+        new Item("cw", "Crouch Wall", 3, "https://saberquest.xyz/images/crouch_wall_icon.png", "Rare", 3),
+        new Item("ct", "CC Token", 3, "https://saberquest.xyz/images/cube_community_token.png", "Legendary", 3),
+        new Item("gn", "Golden Note", 3, "https://saberquest.xyz/images/golden_note_icon.png", "Legendary", 3),
+        new Item("gp", "Golden Pieces", 3, "https://saberquest.xyz/images/golden_pieces_icon.png", "Legendary", 3),
+        new Item("rcp", "Red Note Pieces", 3, "https://saberquest.xyz/images/red_cube_pieces_icon.png", "Common", 3),
+        new Item("rd", "Red Debris", 3, "https://saberquest.xyz/images/red_debris_icon.png", "Uncommon", 3),
+        new Item("rn", "Red Notes", 3, "https://saberquest.xyz/images/red_notes_icon.png", "Common", 3),
+        new Item("rs", "Red Saber", 3, "https://saberquest.xyz/images/red_saber_icon.png", "Rare", 3),
+        new Item("st", "ScoreSaber Token", 3, "https://saberquest.xyz/images/scoresaber_token.png", "Legendary", 3),
+        new Item("sn", "Silver Note", 3, "https://saberquest.xyz/images/silver_note_icon.png", "Epic", 3),
+        new Item("sp", "Silver Pieces", 3, "https://saberquest.xyz/images/silver_pieces_icon.png", "Epic", 3),
+        new Item("w", "Wall", 3, "https://saberquest.xyz/images/wall_icon.png", "Rare", 3),
+        new Item("115", "115", 3, "https://saberquest.xyz/images/115.png", "Legendary", 3),
+        new Item("bpp", "Blue Poodle", 3, "https://saberquest.xyz/images/blue_poodle_icon.png", "Epic", 3),
+        new Item("bsl", "Blue Slider", 3, "https://saberquest.xyz/images/blue_slname_ider_icon.png", "Rare", 3),
+        new Item("bst", "Blue Stack", 3, "https://saberquest.xyz/images/blue_stack.png", "Rare", 3),
+        new Item("bto", "Blue Tower", 3, "https://saberquest.xyz/images/blue_tower.png", "Epic", 3),
+        new Item("br", "Bomb Reset", 3, "https://saberquest.xyz/images/bomb_reset_icon.png", "Rare", 3),
+        new Item("dn", "Double Notes", 3, "https://saberquest.xyz/images/double_notes_icon.png", "Uncommon", 3),
+        new Item("rpp", "Red Poodle", 3, "https://saberquest.xyz/images/red_poodle_icon.png", "Epic", 3),
+        new Item("rsl", "Red Slider", 3, "https://saberquest.xyz/images/red_slname_ider_icon.png", "Rare", 3),
+        new Item("rst", "Red Stack", 3, "https://saberquest.xyz/images/red_stack.png", "Rare", 3),
+        new Item("rto", "Red Tower", 3, "https://saberquest.xyz/images/red_tower.png", "Epic", 3),
     ]);
 
     const items = [];
@@ -279,4 +57,26 @@ export async function seed(knex: Knex): Promise<void> {
         date: new Date().toISOString(),
         item_ids: items.join(",")
     });
+
+    await knex<Crafting>("crafting").insert([
+        new Crafting("ap", "bp", "bn"),
+        new Crafting("ap", "rcp", "rn"),
+        new Crafting("ap", "bto", "bsl"),
+        new Crafting("ap", "rto", "rsl"),
+        new Crafting("bn", "rn", "dn"),
+        new Crafting("bn", "bn", "bst"),
+        new Crafting("bn", "bst", "bto"),
+        new Crafting("bn", "bs", "bd"),
+        new Crafting("bn", "rs", "bcn"),
+        new Crafting("bn", "sp", "sn"),
+        new Crafting("b", "dn", "br"),
+        new Crafting("rn", "rn", "rst"),
+        new Crafting("rn", "rs", "rsl"),
+        new Crafting("rn", "bs", "bd"),
+        new Crafting("rn", "bn", "bst"),
+        new Crafting("rn", "sp", "sn"),
+        new Crafting("gp", "sn", "gn"),
+        new Crafting("rsl", "rsl", "rpp"),
+        new Crafting("bsl", "bsl", "bpp"),
+    ]);
 }
