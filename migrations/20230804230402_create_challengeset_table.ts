@@ -18,9 +18,7 @@ export async function up(knex: Knex): Promise<void> {
 
     await knex.schema.createTable("difficulties", (table) => {
         table.uuid("id").defaultTo(knex.raw("gen_random_uuid()")).primary();
-        table.uuid("challenge_id");
-        table
-            .foreign("challenge_id")
+        table.uuid("challenge_id")
             .references("id")
             .inTable("challenge_sets")
             .onDelete("CASCADE");
@@ -63,9 +61,7 @@ export async function up(knex: Knex): Promise<void> {
     // completed: boolean;
 
     await knex.schema.createTable("user_items", (table) => {
-        table.uuid("user_id");
-        table
-            .foreign("user_id")
+        table.uuid("user_id")
             .references("id")
             .inTable("users")
             .onDelete("CASCADE");
@@ -90,15 +86,11 @@ export async function up(knex: Knex): Promise<void> {
     // }
 
     await knex.schema.createTable("challenge_histories", (table) => {
-        table.uuid("user_id");
-        table
-            .foreign("user_id")
+        table.uuid("user_id")
             .references("id")
             .inTable("users")
             .onDelete("CASCADE");
-        table.uuid("challenge_id");
-        table
-            .foreign("challenge_id")
+        table.uuid("challenge_id")
             .references("id")
             .inTable("challenge_sets")
             .onDelete("CASCADE");

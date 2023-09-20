@@ -117,7 +117,7 @@ export class Leaderboard {
             .andWhere("rank", ">", (page - 1) * limit + 1)
             .orderBy("rank", "asc");
 
-        if (!users) {
+        if (users.length === 0) {
             return res.status(204).json({ error: "No more users." });
         }
 
