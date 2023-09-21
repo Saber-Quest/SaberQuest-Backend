@@ -17,7 +17,7 @@ export async function seed(knex: Knex): Promise<void> {
         {
             platform_id: "76561198343533017",
             username: "StormPacer",
-            avatar: "http://localhost:3010/avatar/76561198343533017",
+            avatar: "https://dev.saberquest.xyz/profile/76561198343533017/avatar",
             preference: "bl",
             rank: 2,
             qp: 14,
