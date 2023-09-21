@@ -9,17 +9,32 @@ export async function createBuffer(url: string): Promise<Buffer> {
 }
 
 export function downloadAvatar(buffer: Buffer, id: string): void {
+    if (process.env.NODE_ENV === "production") {
+        fs.writeFileSync(`./../../data/avatars/${id}.png`, buffer);
+        return;
+    }
     fs.writeFileSync(`./data/avatars/${id}.png`, buffer);
 }
 
 export async function compareAvatars(url: string, id: string): Promise<void> {
     const buffer = await createBuffer(url);
-    const exists = fs.existsSync(`./data/avatars/${id}.png`);
+    let exists: boolean;
+    if (process.env.NODE_ENV === "production") {
+        exists = fs.existsSync(`./../../data/avatars/${id}.png`);
+    } else {
+        exists = fs.existsSync(`./data/avatars/${id}.png`);
+    }
     if (!exists) {
         downloadAvatar(buffer, id);
         return;
     }
-    const file = fs.readFileSync(`./data/avatars/${id}.png`);
+    let file: Buffer;
+
+    if (process.env.NODE_ENV === "production") {
+        file = fs.readFileSync(`./../../data/avatars/${id}.png`);
+    } else {
+        file = fs.readFileSync(`./data/avatars/${id}.png`);
+    }
     if (file.toString() !== buffer.toString()) {
         downloadAvatar(buffer, id);
     }
