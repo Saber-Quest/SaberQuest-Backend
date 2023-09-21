@@ -135,7 +135,9 @@ export class BeatLeaderLogin {
             });
         }
 
-        if (user.patreon === false) {
+        console.log(user);
+
+        if (user.patreon !== true) {
             if (user.preference === "bl") {
                 const beatleader = await fetch(`https://api.beatleader.xyz/player/${id}`).then((res) => res.json());
                 compareAvatars(beatleader.avatar, id.toString());

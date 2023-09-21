@@ -14,6 +14,11 @@ export function downloadAvatar(buffer: Buffer, id: string): void {
 
 export async function compareAvatars(url: string, id: string): Promise<void> {
     const buffer = await createBuffer(url);
+    const exists = fs.existsSync(`./data/avatars/${id}.png`);
+    if (!exists) {
+        downloadAvatar(buffer, id);
+        return;
+    }
     const file = fs.readFileSync(`./data/avatars/${id}.png`);
     if (file.toString() !== buffer.toString()) {
         downloadAvatar(buffer, id);
