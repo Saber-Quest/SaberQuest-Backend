@@ -5,4 +5,5 @@ export class ChallengeHistory {
     date: string;
     difficulty: number;
     qp: number;
+    preference: string;
 }

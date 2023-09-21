@@ -144,7 +144,8 @@ export class ChallengeHistoryEndpoint {
                         difficulty: {
                             name: DifficultyEnum[history.difficulty],
                             challenge: difficulty.challenge,
-                        }
+                        },
+                        preference: history.preference
                     }
                 };
 

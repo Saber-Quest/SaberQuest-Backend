@@ -280,7 +280,8 @@ export class AdvancedPlayerProfile {
                         difficulty: {
                             name: DifficultyEnum[history.difficulty],
                             challenge: difficulty.challenge,
-                        }
+                        },
+                        preference: history.preference
                     }
                 };
 

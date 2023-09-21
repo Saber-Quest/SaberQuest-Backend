@@ -46,7 +46,8 @@ interface IChallenge {
     difficulty: {
         name: string,
         challenge: number[]
-    }
+    },
+    preference: string
 }
 
 export type ChallengeHistoryResponse = {

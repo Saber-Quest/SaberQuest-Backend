@@ -98,6 +98,7 @@ export async function up(knex: Knex): Promise<void> {
         table.integer("difficulty");
         table.integer("qp");
         table.string("date");
+        table.string("preference");
     });
 
     // id: string;

@@ -6,14 +6,14 @@ export default async function Complete(type: string, challenge: number[], prefer
     if (preference === "ss") {
         const bool = await ScoreSaber(type, challenge, id);
         if (bool === true) {
-            return giveRewards(id, diff, challengeId);
+            return giveRewards(id, diff, challengeId, "ss");
         } else {
             return false;
         }
     } else {
         const bool = await BeatLeader(type, challenge, id);
         if (bool === true) {
-            return giveRewards(id, diff, challengeId);
+            return giveRewards(id, diff, challengeId, "bl");
         } else {
             return false;
         }

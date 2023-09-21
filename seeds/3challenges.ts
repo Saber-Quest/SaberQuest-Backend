@@ -241,7 +241,8 @@ export async function seed(knex: Knex): Promise<void> {
             date: yesterday.toISOString(),
             item_ids: `${items[10].name_id},${items[15].name_id}`,
             difficulty: 2,
-            qp: 10
+            qp: 10,
+            preference: "bl"
         },
         {
             user_id: user.id,
@@ -249,7 +250,8 @@ export async function seed(knex: Knex): Promise<void> {
             date: yesterday.toISOString(),
             item_ids: `${items[3].name_id},${items[7].name_id},${items[9].name_id}`,
             difficulty: 1,
-            qp: 5
+            qp: 5,
+            preference: "bl"
         },
         {
             user_id: user.id,
@@ -257,7 +259,8 @@ export async function seed(knex: Knex): Promise<void> {
             date: yesterday.toISOString(),
             item_ids: `${items[1].name_id},${items[2].name_id},${items[4].name_id}`,
             difficulty: 3,
-            qp: 15
+            qp: 15,
+            preference: "bl"
         },
         {
             user_id: user.id,
@@ -265,7 +268,8 @@ export async function seed(knex: Knex): Promise<void> {
             date: yesterday.toISOString(),
             item_ids: `${items[1].name_id},${items[2].name_id},${items[4].name_id}`,
             difficulty: 3,
-            qp: 15
+            qp: 15,
+            preference: "bl"
         },
         {
             challenge_id: map.id,

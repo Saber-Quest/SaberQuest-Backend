@@ -144,7 +144,7 @@ async function Expert() {
     };
 }
 
-export default async function giveRewards(id: string, diff: number, challengeId: string) {
+export default async function giveRewards(id: string, diff: number, challengeId: string, preference: string) {
     const user = await db<User>("users")
         .select("id", "qp", "value")
         .where("platform_id", id)
@@ -182,7 +182,8 @@ export default async function giveRewards(id: string, diff: number, challengeId:
             date: new Date().toISOString(),
             item_ids: rewards.items.join(","),
             difficulty: diff,
-            qp: rewards.qp
+            qp: rewards.qp,
+            preference: preference
         });
 
     await fetch(`${process.env.REDIRECT_URI_API}/items/add`, {
