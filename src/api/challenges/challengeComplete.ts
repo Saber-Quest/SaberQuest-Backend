@@ -19,8 +19,8 @@ export class ChallengeComplete {
      * @summary Complete a challenge
      * @tags Challenges
      * @security JWT
-     * @param {string} request.body.required - The user's JWT token
-     * @return {Token} 200 - Success
+     * @param {Token} request.body.required - The user's JWT token
+     * @return {object} 200 - Success
      * @return {string} 400 - Missing token
      * @return {string} 400 - Invalid token
      * @return {string} 400 - Missing difficulty
