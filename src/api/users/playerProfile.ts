@@ -217,12 +217,29 @@ export class PlayerProfile {
     @GET("profile/:id/avatar")
     getPlayerAvatar(req: Request, res: Response): Response {
         res.setHeader("Access-Control-Allow-Origin", "*");
-        const exists = fs.existsSync(`./data/avatars/${req.params.id}.png`);
+
+        const id = req.params.id;
+        let exists: boolean;
+
+        if (process.env.NODE_ENV === "production") {
+            exists = fs.existsSync(`./../../data/avatars/${id}.png`);
+        }
+        else {
+            exists = fs.existsSync(`./data/avatars/${id}.png`);
+        }
+
         if (!exists) {
             return res.status(404).json({ message: "User not found." });
         }
         try {
-            const file = fs.readFileSync(`./data/avatars/${req.params.id}.png`);
+            let file: Buffer;
+
+            if (process.env.NODE_ENV === "production") {
+                file = fs.readFileSync(`./../../data/avatars/${id}.png`);
+            }
+            else {
+                file = fs.readFileSync(`./data/avatars/${id}.png`);
+            }
 
             res.setHeader("Content-Type", "image/png");
             res.setHeader("Content-Length", file.length);
