@@ -1,7 +1,6 @@
 export class User {
     id: string;
     platform_id: string;
-    steam_id: string;
     username: string;
     avatar: string;
     banner: string;
