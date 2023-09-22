@@ -5,7 +5,7 @@ import db from "../../db";
 
 export class Search {
     /**
-     * GET search
+     * GET /search
      * @summary Search for a user
      * @tags Users
      * @param {string} q.query.required - The search query
