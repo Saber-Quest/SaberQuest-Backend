@@ -317,6 +317,7 @@ export class AdvancedPlayerProfile {
                 userInfo: {
                     id: user.platform_id,
                     username: user.username,
+                    about: user.about,
                     images: {
                         avatar: user.avatar,
                         banner: user.banner,

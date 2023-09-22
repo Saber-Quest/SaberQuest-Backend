@@ -31,6 +31,7 @@ export async function up(knex: Knex): Promise<void> {
         table.uuid("id").defaultTo(knex.raw("gen_random_uuid()")).primary();
         table.string("platform_id");
         table.string("username");
+        table.string("about");
         table.string("avatar");
         table.string("banner");
         table.string("border");

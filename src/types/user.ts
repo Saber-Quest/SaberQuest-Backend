@@ -14,6 +14,7 @@ interface IUserImages {
 interface IUserInfo {
     id: string;
     username: string;
+    about: string;
     images: IUserImages;
     preference: string;
     autoComplete: boolean;

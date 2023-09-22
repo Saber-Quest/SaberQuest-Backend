@@ -2,6 +2,7 @@ export class User {
     id: string;
     platform_id: string;
     username: string;
+    about: string;
     avatar: string;
     banner: string;
     border: string;
