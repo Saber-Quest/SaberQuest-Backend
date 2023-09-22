@@ -79,8 +79,12 @@ export class PlayerProfile {
                 .orderBy("date", "desc")
                 .first();
 
-            if (challenges.date.slice(0, 10) === new Date().toISOString().slice(0, 10)) {
-                completed = true;
+            if (!challenges) {
+                completed = false;
+            } else {
+                if (challenges.date.slice(0, 10) === new Date().toISOString().slice(0, 10)) {
+                    completed = true;
+                }
             }
 
             const challengeCount = await db<ChallengeHistory>("challenge_histories")
