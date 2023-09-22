@@ -126,6 +126,97 @@ export class Daily {
     }
 
     /**
+     * GET /challenge/all
+     * @summary Get all challenges
+     * @tags Challenges
+     * @return {object} 200 - Success
+     * @return {string} 500 - Internal server error
+     * @example response - 200 - Success
+     * {
+     *  "challenges": [
+     *   {
+     *   "name": "PP Challenge",
+     *  "description": "Get a certain amount of PP on a single map.",
+     * "type": "pp",
+     * "difficulties": {
+     * "normal": {
+     * "challenge": [50, 70],
+     * "color": "#FFD941"
+     * },
+     * "hard": {
+     * "challenge": [200, 250],
+     * "color": "#E93B3B"
+     * },
+     * "expert": {
+     * "challenge": [400, 500],
+     * "color": "#B74BF5"
+     * }
+     * },
+     * "image": null,
+     * "reset_time": null
+     * }
+     * }
+     * @example response - 500 - Internal server error
+     * "Internal server error"
+     */
+
+    @GET("challenge/all", cache)
+    async getAll(req: Request, res: Response) {
+        res.setHeader("Access-Control-Allow-Origin", "*");
+
+        try {
+
+            const challenges = await db<ChallengeSet>("challenge_sets")
+                .select("*");
+
+            const response: ChallengeResponse[] = [];
+
+            for (const challenge of challenges) {
+                const difficulties = await db<Difficulty>("difficulties")
+                    .select("diff", "challenge", "color")
+                    .where("challenge_id", challenge.id);
+
+                const normal = difficulties.find(
+                    (difficulty) => difficulty.diff === DifficultyEnum.Normal
+                );
+                const hard = difficulties.find(
+                    (difficulty) => difficulty.diff === DifficultyEnum.Hard
+                );
+                const expert = difficulties.find(
+                    (difficulty) => difficulty.diff === DifficultyEnum.Expert
+                );
+
+                response.push({
+                    name: challenge.name,
+                    description: challenge.description,
+                    type: challenge.type,
+                    difficulties: {
+                        normal: {
+                            challenge: normal.challenge,
+                            color: normal.color,
+                        },
+                        hard: {
+                            challenge: hard.challenge,
+                            color: hard.color,
+                        },
+                        expert: {
+                            challenge: expert.challenge,
+                            color: expert.color,
+                        }
+                    },
+                    image: challenge.image,
+                    reset_time: null
+                });
+            }
+
+            res.status(200).send({ challenges: response })
+        } catch (err) {
+            console.log(err);
+            res.sendStatus(500);
+        }
+    }
+
+    /**
      * GET /challenge/daily/mod
      * @summary Get the daily challenge but formatted for the mod
      * @tags Challenges
@@ -163,56 +254,56 @@ export class Daily {
     async getMod(req: Request, res: Response) {
         res.setHeader("Access-Control-Allow-Origin", "*");
         const challenge = await db<ChallengeHistory>("challenge_histories")
-        .select("challenge_id", "date")
-        .orderBy("date", "desc")
-        .first();
+            .select("challenge_id", "date")
+            .orderBy("date", "desc")
+            .first();
 
-    const challengeSet = await db<ChallengeSet>("challenge_sets")
-        .select("*")
-        .where("id", challenge.challenge_id)
-        .first();
+        const challengeSet = await db<ChallengeSet>("challenge_sets")
+            .select("*")
+            .where("id", challenge.challenge_id)
+            .first();
 
-    const difficulties = await db<Difficulty>("difficulties")
-        .select("diff", "challenge", "color")
-        .where("challenge_id", challenge.challenge_id);
+        const difficulties = await db<Difficulty>("difficulties")
+            .select("diff", "challenge", "color")
+            .where("challenge_id", challenge.challenge_id);
 
-    const normal = difficulties.find(
-        (difficulty) => difficulty.diff === DifficultyEnum.Normal
-    );
-    const hard = difficulties.find(
-        (difficulty) => difficulty.diff === DifficultyEnum.Hard
-    );
-    const expert = difficulties.find(
-        (difficulty) => difficulty.diff === DifficultyEnum.Expert
-    );
+        const normal = difficulties.find(
+            (difficulty) => difficulty.diff === DifficultyEnum.Normal
+        );
+        const hard = difficulties.find(
+            (difficulty) => difficulty.diff === DifficultyEnum.Hard
+        );
+        const expert = difficulties.find(
+            (difficulty) => difficulty.diff === DifficultyEnum.Expert
+        );
 
-    const response: ChallengeModResponse = {
-        name: challengeSet.name,
-        description: challengeSet.description,
-        type: challengeSet.type,
-        difficulties: [
-            {
-                name: "Normal",
-                challenge: formatMod(challengeSet.type, normal.challenge),
-                color: normal.color,
-            },
-            {
-                name: "Hard",
-                challenge: formatMod(challengeSet.type, hard.challenge),
-                color: hard.color,
-            },
-            {
-                name: "Expert",
-                challenge: formatMod(challengeSet.type, expert.challenge),
-                color: expert.color,
-            }
-        ],
-        image: challengeSet.image,
-        reset_time: new Date(challenge.date).getTime() + 86400000,
-    };
+        const response: ChallengeModResponse = {
+            name: challengeSet.name,
+            description: challengeSet.description,
+            type: challengeSet.type,
+            difficulties: [
+                {
+                    name: "Normal",
+                    challenge: formatMod(challengeSet.type, normal.challenge),
+                    color: normal.color,
+                },
+                {
+                    name: "Hard",
+                    challenge: formatMod(challengeSet.type, hard.challenge),
+                    color: hard.color,
+                },
+                {
+                    name: "Expert",
+                    challenge: formatMod(challengeSet.type, expert.challenge),
+                    color: expert.color,
+                }
+            ],
+            image: challengeSet.image,
+            reset_time: new Date(challenge.date).getTime() + 86400000,
+        };
 
-    setCache(req, "daily");
+        setCache(req, "daily");
 
-    res.status(200).json(response);
+        res.status(200).json(response);
     }
 }
