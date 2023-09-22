@@ -113,7 +113,7 @@ export class Leaderboard {
 
         const users = await db<User>("users")
             .select("*")
-            .where("rank", "<=", page * limit + 1)
+            .where("rank", "<=", page * limit)
             .andWhere("rank", ">=", (page - 1) * limit + 1)
             .orderBy("rank", "asc");
 
@@ -139,6 +139,7 @@ export class Leaderboard {
                 userInfo: {
                     id: user.platform_id,
                     username: user.username,
+                    about: user.about,
                     images: {
                         avatar: user.avatar,
                         banner: user.banner,
@@ -268,6 +269,7 @@ export class Leaderboard {
                 userInfo: {
                     id: user.platform_id,
                     username: user.username,
+                    about: user.about,
                     images: {
                         avatar: user.avatar,
                         banner: user.banner,
