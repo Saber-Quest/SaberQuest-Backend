@@ -129,7 +129,11 @@ export class Leaderboard {
                 .where("user_id", user.id)
                 .first();
 
-            const object = challengeCount as unknown as { count: string };
+            let object = { count: "0" };
+
+            if (challengeCount) {
+                object = challengeCount as unknown as { count: string };
+            }
 
             responseArray.push({
                 userInfo: {

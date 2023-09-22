@@ -235,8 +235,10 @@ export class AdvancedPlayerProfile {
                 .orderBy("date", "desc")
                 .limit(10);
 
-            if (challenges[0].date.slice(0, 10) === new Date().toISOString().slice(0, 10)) {
-                completed = true;
+            if (challenges.length > 0) {
+                if (challenges[0].date.slice(0, 10) === new Date().toISOString().slice(0, 10)) {
+                    completed = true;
+                }
             }
 
             const challengeCount = challenges.length;
