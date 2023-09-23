@@ -248,7 +248,6 @@ export class Update {
             clearUserCache(decoded.id);
 
             res.sendStatus(200);
-
         } catch (err) {
             console.error(err);
             return res.sendStatus(500);
