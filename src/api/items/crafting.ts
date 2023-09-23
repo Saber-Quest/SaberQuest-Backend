@@ -1,4 +1,4 @@
-import { PATCH, GET } from "../../router";
+import { GET, POST } from "../../router";
 import db from "../../db";
 import { Request, Response } from "express";
 import { verifyJWT } from "../../functions/users/jwtVerify";
@@ -19,7 +19,7 @@ export class Crafting {
      */
 
     /**
-     * PATCH /craft
+     * POST /craft
      * @summary Craft an item
      * @tags Items
      * @security JWT
@@ -58,7 +58,7 @@ export class Crafting {
      * @example response - 500 - Internal server error
      * "Internal server error"
      */
-    @PATCH("craft")
+    @POST("craft")
     async patch(req: Request, res: Response) {
         try {
             const { used1, used2, token } = req.body;
