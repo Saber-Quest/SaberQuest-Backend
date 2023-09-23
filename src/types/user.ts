@@ -7,7 +7,7 @@ export interface IUserItem {
 
 interface IUserImages {
     avatar: string;
-    banner: string;
+    banner: boolean;
     border: string;
 }
 

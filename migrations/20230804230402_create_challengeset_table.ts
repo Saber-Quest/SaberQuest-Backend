@@ -33,11 +33,12 @@ export async function up(knex: Knex): Promise<void> {
         table.string("username");
         table.string("about");
         table.string("avatar");
-        table.string("banner");
+        table.boolean("banner");
         table.string("border");
         table.string("preference");
         table.string("discord_id");
         table.boolean("patreon");
+        table.string("patreon_token");
         table.integer("rank");
         table.integer("qp");
         table.integer("value");

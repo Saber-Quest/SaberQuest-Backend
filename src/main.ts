@@ -45,8 +45,8 @@ async function main() {
     expressJSDocSwagger(app)(options);
 
     app.use(cookieParser());
-    app.use(express.json());
-    app.use(express.urlencoded({ extended: true }));
+    app.use(express.json({ limit: "10mb" }));
+    app.use(express.urlencoded({ limit: "10mb", extended: true }));
 
     app.disable("x-powered-by");
 

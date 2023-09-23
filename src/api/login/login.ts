@@ -3,7 +3,7 @@ import type { Request, Response } from "express";
 import { GET } from "../../router";
 import { User } from "../../models/user";
 import db from "../../db";
-import { compareAvatars, downloadAvatar, createBuffer } from "../../functions/users/avatar";
+import { compareAvatars, downloadAvatar, createBuffer } from "../../functions/users/images";
 import { createRandomState, createRandomToken } from "../../functions/random";
 import jwt from "jsonwebtoken";
 import socketServer from "../../websocket";

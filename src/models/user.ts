@@ -4,7 +4,7 @@ export class User {
     username: string;
     about: string;
     avatar: string;
-    banner: string;
+    banner: boolean;
     border: string;
     preference: string;
     discord_id: string;

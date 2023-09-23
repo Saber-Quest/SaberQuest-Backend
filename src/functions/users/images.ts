@@ -16,6 +16,14 @@ export function downloadAvatar(buffer: Buffer, id: string): void {
     fs.writeFileSync(`./data/avatars/${id}.png`, buffer);
 }
 
+export function downloadBanner(buffer: Buffer, id: string, type: string): void {
+    if (process.env.NODE_ENV === "production") {
+        fs.writeFileSync(`./../../data/banners/${type}/${id}.png`, buffer);
+        return;
+    }
+    fs.writeFileSync(`./data/banners/${type}/${id}.png`, buffer);
+}
+
 export async function compareAvatars(url: string, id: string): Promise<void> {
     const buffer = await createBuffer(url);
     let exists: boolean;
