@@ -11,6 +11,10 @@ export const env = z.object({
     BEATLEADER_SECRET: z.string(),
     BEATLEADER_ID: z.string(),
     PROD_PATH: z.string(),
+    DISCORD_SECRET: z.string(),
+    DISCORD_ID: z.string(),
+    PATREON_SECRET: z.string(),
+    PATREON_ID: z.string(),
 });
 
 declare global {
