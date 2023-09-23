@@ -2,9 +2,12 @@ import apicache from "apicache";
 import { Request } from "express";
 
 const cache = apicache.options({
-    headers: {
-        "cache-control": "no-cache",
-    }
+    debug: false,
+    enabled: true,
+    statusCodes: {
+        exclude: [400, 401, 403, 404, 429, 500],
+        include: [200, 304],
+    },
 }).middleware("1 hour");
 
 function setCache(req: Request, name: string) {
