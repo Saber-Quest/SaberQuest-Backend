@@ -7,7 +7,7 @@ import { verifyJWT } from "../../functions/users/jwtVerify";
 import socketServer from "../../websocket";
 export class DiscordLogin {
     /**
-     * GET /link
+     * GET /link/discord
      * @summary Link your Discord account
      * @tags Login
      * @param {string} code.query.required - The code returned from Discord
@@ -33,7 +33,7 @@ export class DiscordLogin {
      * @example response - 500 - Error getting user.
      * "Error getting user."
      */
-    @GET("link")
+    @GET("link/discord")
     async get(req: Request, res: Response): Promise<void | Response> {
         try {
             const code = req.query.code.toString();
