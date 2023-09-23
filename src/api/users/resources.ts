@@ -1,6 +1,7 @@
 import { GET } from "../../router";
 import { Request, Response } from "express";
 import fs from "fs";
+import { setCache } from "../../functions/cache";
 
 export class Resources {
     /**
@@ -24,6 +25,8 @@ export class Resources {
     @GET("profile/:id/avatar")
     getPlayerAvatar(req: Request, res: Response): Response {
         res.setHeader("Access-Control-Allow-Origin", "*");
+
+        setCache(req, `avatar:${req.params.id}`)
 
         const id = req.params.id;
         let exists: boolean;
