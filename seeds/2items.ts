@@ -1,6 +1,7 @@
 import { Knex } from "knex";
 import { Item } from "../src/models/item";
 import { Crafting } from "../src/models/crafting";
+import { ShopItem } from "../src/models/shopItem";
 
 export async function seed(knex: Knex): Promise<void> {
     // Deletes ALL existing entries
@@ -47,16 +48,30 @@ export async function seed(knex: Knex): Promise<void> {
     const items = [];
     const possibleItems = await knex<Item>("items").select("*");
 
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < 5; i++) {
         const random = Math.floor(Math.random() * possibleItems.length);
-        items.push(possibleItems[random].name_id);
+        items.push({
+            id: possibleItems[random].id,
+            name_id: possibleItems[random].name_id,
+            name: possibleItems[random].name,
+            image: possibleItems[random].image,
+            rarity: possibleItems[random].rarity,
+            price: possibleItems[random].price
+        });
         possibleItems.splice(random, 1);
     }
 
-    await knex("shop_items").insert({
-        date: new Date().toISOString(),
-        item_ids: items.join(",")
-    });
+    for (const item of items) {
+        await knex<ShopItem>("shop_items").insert({
+            id: item.id,
+            name_id: item.name_id,
+            name: item.name,
+            rarity: item.rarity,
+            price: item.price,
+            image: item.image,
+            date: new Date().toISOString()
+        });
+    }
 
     await knex<Crafting>("crafting").insert([
         new Crafting("ap", "bp", "bn"),

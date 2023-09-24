@@ -12,8 +12,14 @@ export async function up(knex: Knex): Promise<void> {
     });
 
     await knex.schema.createTable("shop_items", (table) => {
-        table.uuid("id").defaultTo(knex.raw("gen_random_uuid()")).primary();
-        table.string("item_ids");
+        table.uuid("id")
+            .references("id")
+            .inTable("items")
+            .onDelete("CASCADE");
+        table.string("name_id")
+        table.string("image");
+        table.string("name");
+        table.string("rarity");
         table.integer("price");
         table.string("date");
     });

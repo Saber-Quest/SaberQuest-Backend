@@ -5,32 +5,44 @@ import socketServer from "../../websocket";
 
 async function switchShop() {
     const date = new Date().getTime();
+
     const shop = await db<ShopItem>("shop_items")
-        .select("date", "item_ids")
+        .select("date")
         .first();
 
     if (date >= new Date(shop.date).getTime() + (1000 * 60 * 60 * 24)) {
-        const items = await db<Item>("items")
-            .select("name_id");
 
-        const currentItems = shop.item_ids.split(",");
+        await db("shop_items").del();
 
-        const filtered = items.filter((item) => !currentItems.includes(item.name_id));
-        const newItems: string[] = [];
-
-        for (let i = 0; i < 4; i++) {
-            const random = Math.floor(Math.random() * filtered.length);
-            newItems.push(filtered[random].name_id);
-            filtered.splice(random, 1);
+        const items = [];
+        const possibleItems = await db<Item>("items").select("*");
+    
+        for (let i = 0; i < 5; i++) {
+            const random = Math.floor(Math.random() * possibleItems.length);
+            items.push({
+                id: possibleItems[random].id,
+                name_id: possibleItems[random].name_id,
+                name: possibleItems[random].name,
+                image: possibleItems[random].image,
+                rarity: possibleItems[random].rarity,
+                price: possibleItems[random].price
+            });
+            possibleItems.splice(random, 1);
+        }
+    
+        for (const item of items) {
+            await db<ShopItem>("shop_items").insert({
+                id: item.id,
+                name_id: item.name_id,
+                name: item.name,
+                rarity: item.rarity,
+                price: item.price,
+                image: item.image,
+                date: new Date().toISOString()
+            });
         }
 
-        await db("shop_items")
-            .update({
-                date: new Date().toISOString(),
-                item_ids: newItems.join(",")
-            });
-
-        socketServer.emit("shop", newItems);
+        socketServer.emit("shop", items);
 
         console.log("[LOG] Switched shop.");
     }

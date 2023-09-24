@@ -1,7 +1,10 @@
 export class ShopItem {
     id: string;
-    item_ids: string;
+    name_id: string;
+    item_id: string;
     name: string;
     price: number;
+    rarity: string;
+    image: string;
     date: string;
 }
