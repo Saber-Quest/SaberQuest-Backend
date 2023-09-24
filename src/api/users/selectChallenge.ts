@@ -1,4 +1,4 @@
-import { PATCH } from "../../router";
+import { POST } from "../../router";
 import db from "../../db";
 import { Request, Response } from "express";
 import { verifyJWT } from "../../functions/users/jwtVerify";
@@ -12,7 +12,7 @@ export class SelectChallenge {
      */
 
     /**
-     * PATCH /profile/select
+     * POST /profile/select
      * @summary Select a challenge
      * @tags Users
      * @security JWT
@@ -46,7 +46,7 @@ export class SelectChallenge {
      * @example response - 500 - Internal server error
      * "Internal server error"
      */
-    @PATCH("profile/select")
+    @POST("profile/select")
     async patch(req: Request, res: Response) {
         try {
             const jwt = verifyJWT(req.body.token);
