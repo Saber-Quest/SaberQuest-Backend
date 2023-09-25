@@ -10,6 +10,7 @@ import socketServer from "../../websocket";
 
 const activeStates: string[] = [];
 const activeTokens: string[] = [];
+let callbackUrl: string = "";
 
 export class BeatLeaderLogin {
     /**
@@ -128,7 +129,7 @@ export class BeatLeaderLogin {
                         username: username
                     });
 
-                    return res.redirect(`${process.env.REDIRECT_URI}/login?token=${token}`);
+                    return res.redirect(`${callbackUrl}?token=${token}&id=${id}`);
                 }
 
                 return res.sendStatus(500);
@@ -151,7 +152,7 @@ export class BeatLeaderLogin {
             expiresIn: "30d"
         });
 
-        return res.redirect(`${process.env.REDIRECT_URI}/login?token=${jwtToken}`);
+        return res.redirect(`${callbackUrl}?token=${jwtToken}`);
     }
 
     /**
@@ -160,6 +161,7 @@ export class BeatLeaderLogin {
      * @tags Login
      * @param {string} code.query.required - The code provided by BeatLeader
      * @param {string} iss.query.required - The issuer of the code
+     * @param {string} callback.query.required - The callback url
      * @return {object} 400 - No code provided
      * @return {object} 403 - Invalid issuer
      * @return {object} 500 - Error getting user
@@ -182,6 +184,7 @@ export class BeatLeaderLogin {
         const iss = req.query.iss;
 
         if (!code) {
+            callbackUrl = req.query.callback.toString();
             return res.redirect(`https://api.beatleader.xyz/oauth2/authorize?client_id=${process.env.BEATLEADER_ID}&response_type=code&redirect_uri=${process.env.REDIRECT_URI_API}/login/beatleader&scope=profile`)
         }
 
@@ -247,6 +250,7 @@ export class BeatLeaderLogin {
      * @tags Login
      * @param {string} openid.identity.query.required - The id of the user
      * @param {string} state.query.required - The state of the login
+     * @param {string} callback.query.required - The callback url
      * @return {object} 401 - Invalid state
      * @return {object} 500 - Error getting user
      * @example response - 401 - Invalid state
@@ -269,6 +273,7 @@ export class BeatLeaderLogin {
                     activeStates.splice(index, 1);
                 }
             }, 1000 * 60 * 60);
+            callbackUrl = req.query.callback.toString();
             return res.redirect(`https://steamcommunity.com/openid/login?openid.claimed_id=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0%2Fidentifier_select&openid.identity=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0%2Fidentifier_select&openid.mode=checkid_setup&openid.ns=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0&openid.realm=http%3A%2F%2Flocalhost:3010&openid.return_to=http%3A%2F%2Flocalhost:3010%2Flogin/steam%3Fstate=${state}&openid.ns.ax=http%3A%2F%2Fopenid.net%2Fsrv%2Fax%2F1.0&openid.ax.mode=fetch_request&openid.ax.type.email=http%3A%2F%2Faxschema.org%2Fcontact%2Femail&openid.ax.type.name=http%3A%2F%2Faxschema.org%2FnamePerson&openid.ax.type.first=http%3A%2F%2Faxschema.org%2FnamePerson%2Ffirst&openid.ax.type.last=http%3A%2F%2Faxschema.org%2FnamePerson%2Flast&openid.ax.type.email2=http%3A%2F%2Fschema.openid.net%2Fcontact%2Femail&openid.ax.type.name2=http%3A%2F%2Fschema.openid.net%2FnamePerson&openid.ax.type.first2=http%3A%2F%2Fschema.openid.net%2FnamePerson%2Ffirst&openid.ax.type.last2=http%3A%2F%2Fschema.openid.net%2FnamePerson%2Flast&openid.ax.required=email,name,first,last,email2,name2,first2,last2`);
         }
 
