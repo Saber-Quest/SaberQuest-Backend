@@ -152,7 +152,7 @@ export class BeatLeaderLogin {
             expiresIn: "30d"
         });
 
-        return res.redirect(`${callbackUrl}?token=${jwtToken}`);
+        return res.redirect(`${callbackUrl}?token=${jwtToken}&id=${id}`);
     }
 
     /**
@@ -274,7 +274,7 @@ export class BeatLeaderLogin {
                 }
             }, 1000 * 60 * 60);
             callbackUrl = req.query.callback.toString();
-            return res.redirect(`https://steamcommunity.com/openid/login?openid.claimed_id=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0%2Fidentifier_select&openid.identity=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0%2Fidentifier_select&openid.mode=checkid_setup&openid.ns=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0&openid.realm=http%3A%2F%2Flocalhost:3010&openid.return_to=http%3A%2F%2Flocalhost:3010%2Flogin/steam%3Fstate=${state}&openid.ns.ax=http%3A%2F%2Fopenid.net%2Fsrv%2Fax%2F1.0&openid.ax.mode=fetch_request&openid.ax.type.email=http%3A%2F%2Faxschema.org%2Fcontact%2Femail&openid.ax.type.name=http%3A%2F%2Faxschema.org%2FnamePerson&openid.ax.type.first=http%3A%2F%2Faxschema.org%2FnamePerson%2Ffirst&openid.ax.type.last=http%3A%2F%2Faxschema.org%2FnamePerson%2Flast&openid.ax.type.email2=http%3A%2F%2Fschema.openid.net%2Fcontact%2Femail&openid.ax.type.name2=http%3A%2F%2Fschema.openid.net%2FnamePerson&openid.ax.type.first2=http%3A%2F%2Fschema.openid.net%2FnamePerson%2Ffirst&openid.ax.type.last2=http%3A%2F%2Fschema.openid.net%2FnamePerson%2Flast&openid.ax.required=email,name,first,last,email2,name2,first2,last2`);
+            return res.redirect(`https://steamcommunity.com/openid/login?openid.claimed_id=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0%2Fidentifier_select&openid.identity=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0%2Fidentifier_select&openid.mode=checkid_setup&openid.ns=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0&openid.realm=${process.env.REDIRECT_URI_API}&openid.return_to=${process.env.REDIRECT_URI_API}/login/steam%3Fstate=${state}&openid.ns.ax=http%3A%2F%2Fopenid.net%2Fsrv%2Fax%2F1.0&openid.ax.mode=fetch_request&openid.ax.type.email=http%3A%2F%2Faxschema.org%2Fcontact%2Femail&openid.ax.type.name=http%3A%2F%2Faxschema.org%2FnamePerson&openid.ax.type.first=http%3A%2F%2Faxschema.org%2FnamePerson%2Ffirst&openid.ax.type.last=http%3A%2F%2Faxschema.org%2FnamePerson%2Flast&openid.ax.type.email2=http%3A%2F%2Fschema.openid.net%2Fcontact%2Femail&openid.ax.type.name2=http%3A%2F%2Fschema.openid.net%2FnamePerson&openid.ax.type.first2=http%3A%2F%2Fschema.openid.net%2FnamePerson%2Ffirst&openid.ax.type.last2=http%3A%2F%2Fschema.openid.net%2FnamePerson%2Flast&openid.ax.required=email,name,first,last,email2,name2,first2,last2`);
         }
 
         const identity = req.query["openid.identity"];

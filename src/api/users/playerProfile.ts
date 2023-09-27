@@ -255,10 +255,11 @@ export class PlayerProfile {
      * @tags Users
      * @security BasicAuth
      * @param {createUser} request.body.required - The player's profile data
-     * @return {object} 200 - Success
+     * @return {string} 200 - Success
      * @return {string} 403 - Forbidden
      * @return {string} 500 - Internal server error
      * @example response - 200 - Success
+     * "OK"
      * @example response - 403 - Forbidden
      * "Forbidden"
      * @example response - 500 - Internal server error
