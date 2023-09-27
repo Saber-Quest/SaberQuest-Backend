@@ -333,12 +333,12 @@ export class BeatLeaderLogin {
         const code = req.query.code;
         const iss = req.query.iss;
 
-        if (iss !== "https://api.beatleader.xyz/") {
-            return res.status(403).send("Invalid issuer");
+        if (!code) {
+            return res.redirect(`https://api.beatleader.xyz/oauth2/authorize?client_id=${process.env.BEATLEADER_ID}&response_type=code&redirect_uri=${process.env.REDIRECT_URI_API}/login/mod/beatleader&scope=profile`)
         }
 
-        if (!code) {
-            return res.status(400).send("No code provided");
+        if (iss !== "https://api.beatleader.xyz/") {
+            return res.status(403).send("Invalid issuer");
         }
 
         const response = await fetch(
