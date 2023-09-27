@@ -3,7 +3,7 @@ import { GET, PUT } from "../../router";
 import db from "../../db";
 import { User } from "../../models/user";
 import { UserItem } from "../../models/userItem";
-import fs from "fs";
+import { verifyJWT } from "../../functions/users/jwtVerify";
 import { Item } from "../../models/item";
 import { userInventoryRes, userRes } from "../../types/user";
 import { cache, setCache } from "../../functions/cache";
@@ -54,7 +54,18 @@ export class PlayerProfile {
         try {
             res.setHeader("Access-Control-Allow-Origin", "*");
 
-            const id = req.params.id;
+            let id = req.params.id;
+            const token = req.query.code as unknown as boolean;
+
+            if (token) {
+                const jwt = verifyJWT(req.headers.authorization);
+
+                if (!jwt || jwt.exp < Date.now() / 1000) {
+                    return res.status(403).json({ message: "Forbidden" });
+                }
+
+                id = jwt.id;
+            }
 
             if (!id) {
                 return res.status(400).json({ error: "Invalid request" });
@@ -157,7 +168,18 @@ export class PlayerProfile {
         try {
             res.setHeader("Access-Control-Allow-Origin", "*");
 
-            const id = req.params.id;
+            let id = req.params.id;
+            const token = req.query.code as unknown as boolean;
+
+            if (token) {
+                const jwt = verifyJWT(req.headers.authorization);
+
+                if (!jwt || jwt.exp < Date.now() / 1000) {
+                    return res.status(403).json({ message: "Forbidden" });
+                }
+
+                id = jwt.id;
+            }
 
             if (!id) {
                 return res.status(400).json({ error: "Invalid request" });
@@ -207,15 +229,20 @@ export class PlayerProfile {
      * @tags Users
      * @param {string} id.path.required - The id of the player
      * @return {object} 200 - Success
+     * @return {object} 400 - Invalid request
      * @return {object} 404 - User not found
      * @return {string} 500 - Internal server error
      * @example response - 200 - Success
      * {
      * "difficulty": 1
      * }
+     * @example response - 400 - Invalid request
+     * {
+     * "error": "Invalid request"
+     * }
      * @example response - 404 - User not found
      * {
-     * "message": "User not found."
+     * "error": "User not found."
      * }
      * @example response - 500 - Internal server error
      * "Internal server error"
@@ -224,12 +251,30 @@ export class PlayerProfile {
     async getPlayerDifficulty(req: Request, res: Response) {
         try {
             res.setHeader("Access-Control-Allow-Origin", "*");
+
+            let id = req.params.id;
+            const token = req.query.code as unknown as boolean;
+
+            if (token) {
+                const jwt = verifyJWT(req.headers.authorization);
+
+                if (!jwt || jwt.exp < Date.now() / 1000) {
+                    return res.status(403).json({ message: "Forbidden" });
+                }
+
+                id = jwt.id;
+            }
+
+            if (!id) {
+                return res.status(400).json({ error: "Invalid request" });
+            }
+
             const user = await db<User>("users")
                 .select("diff")
-                .where("platform_id", req.params.id)
+                .where("platform_id", id)
                 .first();
             if (!user) {
-                return res.status(404).json({ message: "User not found." });
+                return res.status(404).json({ error: "User not found." });
             }
             return res.status(200).json({ difficulty: user.diff });
         } catch (err) {

@@ -9,7 +9,8 @@ import { ChallengeHistory } from "../../models/challengeHistory";
 import { ChallengeSet } from "../../models/challengeSet";
 import { Difficulty } from "../../models/difficulty";
 import { ChallengeHistoryResponse } from "../../types/challenges";
-import { cache, setCache } from "../../functions/cache";
+import { setCache } from "../../functions/cache";
+import { verifyJWT } from "../../functions/users/jwtVerify";
 
 enum DifficultyEnum {
     Normal = 1,
@@ -210,11 +211,24 @@ export class AdvancedPlayerProfile {
     async get(req: Request, res: Response): Promise<void | Response> {
         try {
             res.setHeader("Access-Control-Allow-Origin", "*");
-            if (!req.params.id) {
-                return res.status(400).json({ error: "Missing fields" });
+
+            const token = req.query.code as unknown as boolean;
+
+            let id = req.params.id;
+
+            if (token) {
+                const jwt = verifyJWT(req.headers.authorization);
+
+                if (!jwt || jwt.exp < Date.now() / 1000) {
+                    return res.status(403).json({ message: "Forbidden" });
+                }
+
+                id = jwt.id;
             }
 
-            const id = req.params.id;
+            if (!id) {
+                return res.status(400).json({ error: "Missing fields" });
+            }
 
             setCache(req, `profile:${id}`);
 
