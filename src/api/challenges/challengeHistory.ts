@@ -8,6 +8,7 @@ import { GET } from "../../router";
 import { cache, setCache } from "../../functions/cache";
 import { User } from "../../models/user";
 import { ChallengeHistoryResponse } from "../../types/challenges";
+import { verifyJWT } from "../../functions/users/jwtVerify";
 
 enum DifficultyEnum {
     Normal = 1,
@@ -71,9 +72,21 @@ export class ChallengeHistoryEndpoint {
     @GET("challenge/history/:id", cache)
     async getChallengeHistoryId(req: Request, res: Response) {
         try {
-            const id = req.params.id;
+            let id = req.params.id;
             const page = Number(req.query.page);
             let limit = Number(req.query.limit);
+
+            const token = req.query.code as unknown as boolean;
+
+            if (token) {
+                const jwt = verifyJWT(req.headers.authorization);
+
+                if (!jwt || jwt.exp < Date.now() / 1000) {
+                    return res.status(403).json({ message: "Forbidden" });
+                }
+
+                id = jwt.id;
+            }
 
             if (page < 1 || isNaN(page)) {
                 return res.status(400).json({ error: "Invalid page" });
