@@ -443,7 +443,7 @@ export class BeatLeaderLogin {
 
         const user = await db<User>("users").where("platform_id", id).first();
 
-        if (!user) {
+        if (user === undefined) {
             let hasBl = false;
             let hasSs = false;
             let username: string = "";
@@ -509,7 +509,7 @@ export class BeatLeaderLogin {
                         username: username
                     });
 
-                    return res.redirect(`${process.env.REDIRECT_URI_API}/login/mod?token=${token}`);
+                    return res.redirect(`${process.env.REDIRECT_URI_API}/login/mod#${token}`);
                 }
 
                 return res.sendStatus(500);
