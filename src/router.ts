@@ -70,28 +70,31 @@ export function AllRoute(route: string, middleware?: RequestHandler) {
 export function setupRoutes(app: Express) {
     for (let i = 0; i < routes.length; i++) {
         const route = routes[i];
-        if (route.middleware) {
-            app.use("/" + route.route, route.middleware);
-        }
         console.log(route);
         switch (route.type) {
             case "ALL":
-                app.all("/" + route.route, route.function);
+                if (route.middleware) app.all("/" + route.route, route.middleware, route.function);
+                else app.all("/" + route.route, route.function);
                 break;
             case "POST":
-                app.post("/" + route.route, route.function);
+                if (route.middleware) app.post("/" + route.route, route.middleware, route.function);
+                else app.post("/" + route.route, route.function);
                 break;
             case "PATCH":
-                app.patch("/" + route.route, route.function);
+                if (route.middleware) app.patch("/" + route.route, route.middleware, route.function);
+                else app.patch("/" + route.route, route.function);
                 break;
             case "DEL":
-                app.delete("/" + route.route, route.function);
+                if (route.middleware) app.delete("/" + route.route, route.middleware, route.function);
+                else app.delete("/" + route.route, route.function);
                 break;
             case "PUT":
-                app.put("/" + route.route, route.function);
+                if (route.middleware) app.put("/" + route.route, route.middleware, route.function);
+                else app.put("/" + route.route, route.function);
                 break;
             case "GET":
-                app.get("/" + route.route, route.function);
+                if (route.middleware) app.get("/" + route.route, route.middleware, route.function);
+                else app.get("/" + route.route, route.function);
                 break;
 
             default:
