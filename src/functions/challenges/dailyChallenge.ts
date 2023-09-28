@@ -23,7 +23,7 @@ async function switchChallenge() {
         await db<ChallengeHistory>("challenge_histories")
             .insert({
                 challenge_id: filtered[random].id,
-                date: new Date().toISOString(),
+                date: new Date(new Date().setUTCHours(0, 0, 0, 0)).toISOString(),
             });
 
         socketServer.emit("daily", filtered[random].id);

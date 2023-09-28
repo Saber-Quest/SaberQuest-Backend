@@ -79,7 +79,7 @@ export class ChallengeHistoryEndpoint {
             const token = req.query.code as unknown as boolean;
 
             if (token) {
-                const jwt = verifyJWT(req.headers.authorization);
+                const jwt = verifyJWT(req.headers.authorization.split(" ")[1]);
 
                 if (!jwt || jwt.exp < Date.now() / 1000) {
                     return res.status(403).json({ message: "Forbidden" });
