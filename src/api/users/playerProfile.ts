@@ -57,7 +57,7 @@ export class PlayerProfile {
             let id = req.params.id;
             const token = req.query.code as unknown as boolean;
 
-            if (token) {
+            if (token === true) {
                 const jwt = verifyJWT(req.headers.authorization.split(" ")[1]);
 
                 if (!jwt || jwt.exp < Date.now() / 1000) {
@@ -171,7 +171,7 @@ export class PlayerProfile {
             let id = req.params.id;
             const token = req.query.code as unknown as boolean;
 
-            if (token) {
+            if (token === true) {
                 const jwt = verifyJWT(req.headers.authorization.split(" ")[1]);
 
                 if (!jwt || jwt.exp < Date.now() / 1000) {
@@ -255,7 +255,7 @@ export class PlayerProfile {
             let id = req.params.id;
             const token = req.query.code as unknown as boolean;
 
-            if (token) {
+            if (token === true) {
                 const jwt = verifyJWT(req.headers.authorization.split(" ")[1]);
 
                 if (!jwt || jwt.exp < Date.now() / 1000) {

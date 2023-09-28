@@ -216,7 +216,7 @@ export class AdvancedPlayerProfile {
 
             let id = req.params.id;
 
-            if (token) {
+            if (token === true) {
                 const jwt = verifyJWT(req.headers.authorization.split(" ")[1]);
 
                 if (!jwt || jwt.exp < Date.now() / 1000) {
