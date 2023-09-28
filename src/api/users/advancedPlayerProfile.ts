@@ -212,7 +212,7 @@ export class AdvancedPlayerProfile {
         try {
             res.setHeader("Access-Control-Allow-Origin", "*");
 
-            const token = req.query.code as unknown as boolean;
+            const token = req.query.code === "true" ? true : false;
 
             let id = req.params.id;
 

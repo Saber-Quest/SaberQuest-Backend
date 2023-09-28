@@ -76,7 +76,7 @@ export class ChallengeHistoryEndpoint {
             const page = Number(req.query.page);
             let limit = Number(req.query.limit);
 
-            const token = req.query.code as unknown as boolean;
+            const token = req.query.code === "true" ? true : false;
 
             if (token === true) {
                 const jwt = verifyJWT(req.headers.authorization.split(" ")[1]);

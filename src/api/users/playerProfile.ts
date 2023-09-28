@@ -55,7 +55,7 @@ export class PlayerProfile {
             res.setHeader("Access-Control-Allow-Origin", "*");
 
             let id = req.params.id;
-            const token = req.query.code as unknown as boolean;
+            const token = req.query.code === "true" ? true : false;
 
             if (token === true) {
                 const jwt = verifyJWT(req.headers.authorization.split(" ")[1]);
@@ -169,7 +169,7 @@ export class PlayerProfile {
             res.setHeader("Access-Control-Allow-Origin", "*");
 
             let id = req.params.id;
-            const token = req.query.code as unknown as boolean;
+            const token = req.query.code === "true" ? true : false;
 
             if (token === true) {
                 const jwt = verifyJWT(req.headers.authorization.split(" ")[1]);
@@ -253,7 +253,7 @@ export class PlayerProfile {
             res.setHeader("Access-Control-Allow-Origin", "*");
 
             let id = req.params.id;
-            const token = req.query.code as unknown as boolean;
+            const token = req.query.code === "true" ? true : false;
 
             if (token === true) {
                 const jwt = verifyJWT(req.headers.authorization.split(" ")[1]);
