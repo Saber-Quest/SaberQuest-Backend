@@ -1,7 +1,11 @@
 import apicache from "apicache";
 import { Request } from "express";
 
-const cache = apicache.middleware("1 hour");
+const cache = apicache.options({
+    statusCodes: {
+        exclude: [404, 400, 500],
+    },
+}).middleware("1 hour");
 
 function setCache(req: Request, name: string) {
     // @ts-ignore

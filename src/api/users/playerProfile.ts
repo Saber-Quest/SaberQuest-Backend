@@ -326,7 +326,11 @@ export class PlayerProfile {
                 preference: userData.preference,
                 rank: userData.rank,
                 qp: 0,
-                value: 0
+                value: 0,
+                patreon: false,
+                auto_complete: false,
+                diff: 0,
+                about: null
             })
             .then(() => {
                 res.sendStatus(200);
