@@ -23,6 +23,8 @@ async function main() {
     const httpPort = parseInt(process.env.PORT) || 5000;
     const app = express();
 
+    app.use(require("express-status-monitor")());
+
     const options = {
         info: {
             version: "1.0.0",
