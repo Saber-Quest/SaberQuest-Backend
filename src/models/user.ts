@@ -14,4 +14,9 @@ export class User {
     value: number;
     diff: number;
     auto_complete: boolean;
+    mod: boolean;
+    admin: boolean;
+    banned: boolean;
+    banned_reason: string;
+    closed_notifier: boolean;
 }

@@ -44,6 +44,11 @@ export async function up(knex: Knex): Promise<void> {
         table.integer("value");
         table.integer("diff");
         table.boolean("auto_complete");
+        table.boolean("mod");
+        table.boolean("admin");
+        table.boolean("banned");
+        table.string("banned_reason");
+        table.boolean("closed_notifier");
     });
 
     // id: string;
@@ -105,6 +110,12 @@ export async function up(knex: Knex): Promise<void> {
 
     // id: string;
     // challenges: Challenge[];
+
+    await knex.schema.createTable("frontend", (table) => {
+        table.boolean("maintenance");
+        table.string("maintenance_message");
+        table.string("current_notifier");
+    })
 }
 
 export async function down(knex: Knex): Promise<void> {

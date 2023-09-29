@@ -24,7 +24,9 @@ export async function seed(knex: Knex): Promise<void> {
             rank: 2,
             qp: 14,
             diff: 2,
-            value: 32
+            value: 32,
+            mod: true,
+            admin: true
         }
     ]);
 }
