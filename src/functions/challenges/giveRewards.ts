@@ -181,7 +181,7 @@ export default async function giveRewards(id: string, diff: number, challengeId:
             user_id: user.id,
             challenge_id: challengeId,
             date: new Date().toISOString(),
-            item_ids: rewards.items.join(","),
+            item_ids: rewards.items.map((item) => item.id).join(","),
             difficulty: diff,
             qp: rewards.qp,
             preference: preference
@@ -199,7 +199,7 @@ export default async function giveRewards(id: string, diff: number, challengeId:
         })
     });
 
-    setRanks(id);
+    setRanks(user.id);
 
     return rewards;
 }

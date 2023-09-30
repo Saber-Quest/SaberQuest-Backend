@@ -9,10 +9,10 @@ import xAccuracyPp from "./separate-bl/xAccuracyPp";
 import xAccuracyStars from "./separate-bl/xAccuracyStars";
 
 export default async function BeatLeader(type: string, challenge: number[], id: string): Promise<boolean> {
-    const today = new Date().setUTCHours(0, 0, 0, 0);
+    const today = new Date("4/12/2023").setUTCHours(0, 0, 0, 0);
     const todayUnix = new Date(today).getTime();
 
-    const response: BeatLeaderRes = await fetch(`https://api.beatleader.xyz/player/${id}/scores?sortBy=date&page=1%count=50`).then((res: any) => res.json());
+    const response: BeatLeaderRes = await fetch(`https://api.beatleader.xyz/player/${id}/scores?sortBy=date&page=1&count=50`).then((res: any) => res.json());
 
     switch (type) {
         case "fcNotes":
