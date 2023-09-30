@@ -102,7 +102,7 @@ export class ChallengeComplete {
             .orderBy("date", "desc")
             .first();
 
-        const complete = await Complete(dailyChallenge.type, dailyChallenge.challenge, challenge.preference, decoded.id, challenge.diff, challenge.id);
+        const complete = await Complete(dailyChallenge.type, dailyChallenge.challenge, challenge.preference, decoded.id, challenge.diff, challenge.challenge_id);
 
         if (complete === false) {
             return res.status(400).json({ error: "Challenge not completed" });

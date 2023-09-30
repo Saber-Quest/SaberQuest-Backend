@@ -94,12 +94,12 @@ export class Crafting {
             }
 
             const item1 = await db<Item>("items")
-                .select("id", "name_id", "value")
+                .select("id", "name_id", "value", "image")
                 .where("name_id", used1)
                 .first();
 
             const item2 = await db<Item>("items")
-                .select("id", "name_id", "value")
+                .select("id", "name_id", "value", "image")
                 .where("name_id", used2)
                 .first();
 
@@ -118,7 +118,7 @@ export class Crafting {
             }
 
             const craftedItem = await db<Item>("items")
-                .select("id", "value")
+                .select("id", "value", "image", "name_id")
                 .where("name_id", crafted)
                 .first();
 
@@ -166,7 +166,23 @@ export class Crafting {
 
             setRanks(user.id);
 
-            socketServer.emit("crafted", [item1.id, item2.id, craftedItem.id]);
+            socketServer.emit("crafted", {
+                items: [
+                    {
+                        "id": item1.name_id,
+                        "image": item1.image
+                    },
+                    {
+                        "id": item2.name_id,
+                        "image": item2.image
+                    },
+                    {
+                        "id": craftedItem.name_id,
+                        "image": craftedItem.image
+                    }
+                ],
+                user: user.platform_id
+            });
 
             clearUserCache(user.platform_id);
 

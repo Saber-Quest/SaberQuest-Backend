@@ -4,6 +4,7 @@ import { ChallengeSet } from "../../models/challengeSet";
 import { clearGlobalCache } from "../cache";
 import socketServer from "../../websocket";
 import { User } from "../../models/user";
+import { Difficulty } from "../../models/difficulty";
 
 async function switchChallenge() {
     const date = new Date().getTime();
@@ -26,7 +27,21 @@ async function switchChallenge() {
                 date: new Date(new Date().setUTCHours(0, 0, 0, 0)).toISOString(),
             });
 
-        socketServer.emit("daily", filtered[random].id);
+        const difficulties = await db<Difficulty>("difficulties")
+            .select("*")
+            .where("challenge_id", filtered[random].id);
+
+        socketServer.emit("daily", {
+            name: filtered[random].name,
+            type: filtered[random].type,
+            description: filtered[random].description,
+            difficulties: difficulties.map((diff) => {
+                return {
+                    challenge: diff.challenge,
+                    difficulty: diff.diff,
+                }
+            }),
+        });
 
         console.log("[LOG] Switched daily challenge.");
 
