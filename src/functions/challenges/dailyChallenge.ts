@@ -39,7 +39,7 @@ async function switchChallenge() {
                 return {
                     challenge: diff.challenge,
                     difficulty: diff.diff,
-                }
+                };
             }),
         });
 

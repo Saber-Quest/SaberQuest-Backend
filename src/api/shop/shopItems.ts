@@ -59,7 +59,7 @@ export class ShopItems {
             setCache(req, "daily");
 
             const shop = await db<ShopItem>("shop_items")
-                .select("*")
+                .select("*");
 
             const itemMap = shop.map(async (item) => {
                 const itemObject = await db<Item>("items")
@@ -150,7 +150,7 @@ export class ShopItems {
                 .first();
 
             const shop = await db<ShopItem>("shop_items")
-                .select("*")
+                .select("*");
 
             const itemIDs = shop.map((item) => item.name_id);
 

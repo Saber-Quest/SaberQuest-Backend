@@ -209,7 +209,7 @@ export class Daily {
                 });
             }
 
-            res.status(200).send({ challenges: response })
+            res.status(200).send({ challenges: response });
         } catch (err) {
             console.log(err);
             res.sendStatus(500);

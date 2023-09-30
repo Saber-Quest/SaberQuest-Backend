@@ -23,4 +23,4 @@ export type statsRes = {
             legendary: number;
         }
     }
-}
+};

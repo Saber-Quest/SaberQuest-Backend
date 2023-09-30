@@ -73,28 +73,48 @@ export function setupRoutes(app: Express) {
         console.log(route);
         switch (route.type) {
             case "ALL":
-                if (route.middleware) app.all("/" + route.route, route.middleware, route.function);
+                if (route.middleware) {
+                    app.all("/" + route.route, route.middleware, route.function);
+                }
                 else app.all("/" + route.route, route.function);
                 break;
             case "POST":
-                if (route.middleware) app.post("/" + route.route, route.middleware, route.function);
+                if (route.middleware) {
+                    app.post("/" + route.route, route.middleware, route.function);
+                }
                 else app.post("/" + route.route, route.function);
                 break;
             case "PATCH":
-                if (route.middleware) app.patch("/" + route.route, route.middleware, route.function);
-                else app.patch("/" + route.route, route.function);
+                if (route.middleware) {
+                    app.patch("/" + route.route, route.middleware, route.function);
+                }
+                else {
+                    app.patch("/" + route.route, route.function);
+                }
                 break;
             case "DEL":
-                if (route.middleware) app.delete("/" + route.route, route.middleware, route.function);
-                else app.delete("/" + route.route, route.function);
+                if (route.middleware) {
+                    app.delete("/" + route.route, route.middleware, route.function);
+                }
+                else {
+                    app.delete("/" + route.route, route.function);
+                }
                 break;
             case "PUT":
-                if (route.middleware) app.put("/" + route.route, route.middleware, route.function);
-                else app.put("/" + route.route, route.function);
+                if (route.middleware) {
+                    app.put("/" + route.route, route.middleware, route.function);
+                }
+                else {
+                    app.put("/" + route.route, route.function);
+                }
                 break;
             case "GET":
-                if (route.middleware) app.get("/" + route.route, route.middleware, route.function);
-                else app.get("/" + route.route, route.function);
+                if (route.middleware) {
+                    app.get("/" + route.route, route.middleware, route.function);
+                }
+                else {
+                    app.get("/" + route.route, route.function);
+                }
                 break;
 
             default:

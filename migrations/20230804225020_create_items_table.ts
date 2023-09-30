@@ -16,7 +16,7 @@ export async function up(knex: Knex): Promise<void> {
             .references("id")
             .inTable("items")
             .onDelete("CASCADE");
-        table.string("name_id")
+        table.string("name_id");
         table.string("image");
         table.string("name");
         table.string("rarity");

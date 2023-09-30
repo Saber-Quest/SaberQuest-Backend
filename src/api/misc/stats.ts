@@ -50,38 +50,38 @@ export class Stats {
         try {
             res.setHeader("Access-Control-Allow-Origin", "*");
             const users = await db<User>("users")
-                .count("id as count")
+                .count("id as count");
 
             const modUsers = await db<User>("users")
                 .count("id as count")
-                .where("mod", true)
+                .where("mod", true);
 
             const challenges = await db<ChallengeHistory>("challenge_histories")
                 .count("challenge_id as count")
-                .where("user_id", null)
+                .where("user_id", null);
 
             const challengesCompleted = await db<ChallengeHistory>("challenge_histories")
                 .count("challenge_id as count")
-                .not.where("user_id", null)
+                .not.where("user_id", null);
 
             const items = await db<Item>("items")
-                .count("id as count")
+                .count("id as count");
 
             const totalQp = await db<User>("users")
-                .sum("qp as count")
+                .sum("qp as count");
 
             const itemsOwned = await db<UserItem>("user_items")
-                .count("item_id as count")
+                .count("item_id as count");
 
             const itemByRarity = await db<Item>("items")
                 .select("rarity")
                 .count("rarity as count")
-                .groupBy("rarity")
+                .groupBy("rarity");
 
             const preferences = await db<User>("users")
                 .select("preference")
                 .count("preference as count")
-                .groupBy("preference")
+                .groupBy("preference");
 
             const object = users as unknown as { count: string }[];
             const object2 = modUsers as unknown as { count: string }[];

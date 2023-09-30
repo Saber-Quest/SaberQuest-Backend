@@ -26,7 +26,7 @@ export class Resources {
     getPlayerAvatar(req: Request, res: Response): Response {
         res.setHeader("Access-Control-Allow-Origin", "*");
 
-        setCache(req, `avatar:${req.params.id}`)
+        setCache(req, `avatar:${req.params.id}`);
 
         const id = req.params.id;
         let exists: boolean;

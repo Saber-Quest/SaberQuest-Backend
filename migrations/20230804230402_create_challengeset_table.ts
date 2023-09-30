@@ -115,7 +115,7 @@ export async function up(knex: Knex): Promise<void> {
         table.boolean("maintenance");
         table.string("maintenance_message");
         table.string("current_notifier");
-    })
+    });
 }
 
 export async function down(knex: Knex): Promise<void> {

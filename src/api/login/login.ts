@@ -185,7 +185,7 @@ export class BeatLeaderLogin {
 
         if (!code) {
             callbackUrl = req.query.callback.toString();
-            return res.redirect(`https://api.beatleader.xyz/oauth2/authorize?client_id=${process.env.BEATLEADER_ID}&response_type=code&redirect_uri=${process.env.REDIRECT_URI_API}/login/beatleader&scope=profile`)
+            return res.redirect(`https://api.beatleader.xyz/oauth2/authorize?client_id=${process.env.BEATLEADER_ID}&response_type=code&redirect_uri=${process.env.REDIRECT_URI_API}/login/beatleader&scope=profile`);
         }
 
         if (iss !== "https://api.beatleader.xyz/") {
@@ -334,7 +334,7 @@ export class BeatLeaderLogin {
         const iss = req.query.iss;
 
         if (!code) {
-            return res.redirect(`https://api.beatleader.xyz/oauth2/authorize?client_id=${process.env.BEATLEADER_ID}&response_type=code&redirect_uri=${process.env.REDIRECT_URI_API}/login/mod/beatleader&scope=profile`)
+            return res.redirect(`https://api.beatleader.xyz/oauth2/authorize?client_id=${process.env.BEATLEADER_ID}&response_type=code&redirect_uri=${process.env.REDIRECT_URI_API}/login/mod/beatleader&scope=profile`);
         }
 
         if (iss !== "https://api.beatleader.xyz/") {

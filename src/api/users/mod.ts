@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import { GET, PUT } from "../../router";
+import { GET } from "../../router";
 import db from "../../db";
 import { User } from "../../models/user";
 import { UserItem } from "../../models/userItem";

@@ -40,7 +40,7 @@ export class Search {
             const users = await db<User>("users")
                 .select("username", "platform_id", "rank", "value")
                 .where("username", "ilike", `%${search}%`)
-                .orWhere("platform_id", "ilike", `%${search}%`)
+                .orWhere("platform_id", "ilike", `%${search}%`);
 
             const response: { username: string, id: string, rank: number, value: number }[] = [];
 
