@@ -75,7 +75,7 @@ export class PlayerProfile {
 
             const user = await db<User>("users")
                 .select("*")
-                .where("platform_idy", id)
+                .where("platform_id", id)
                 .first();
 
             if (!user) {
