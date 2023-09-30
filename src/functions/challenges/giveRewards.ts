@@ -7,7 +7,7 @@ import setRanks from "../users/ranks";
 
 async function getRandomItem(rarity: string) {
     const item = await db<Item>("items")
-        .select("name_id", "value")
+        .select("name_id", "value", "image")
         .where("rarity", rarity)
         .orderByRaw("RANDOM()")
         .first();
@@ -15,7 +15,8 @@ async function getRandomItem(rarity: string) {
     return {
         id: item.name_id,
         rarity: rarity,
-        value: item.value
+        value: item.value,
+        image: item.image
     };
 }
 

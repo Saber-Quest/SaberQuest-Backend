@@ -108,7 +108,8 @@ export class PlayerProfile {
                     },
                     preference: user.preference,
                     patreon: user.patreon,
-                    autoComplete: user.auto_complete
+                    autoComplete: user.auto_complete,
+                    banned: user.banned
                 },
                 stats: {
                     challengesCompleted: parseInt(object.count),

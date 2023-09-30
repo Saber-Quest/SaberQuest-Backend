@@ -19,6 +19,7 @@ interface IUserInfo {
     preference: string;
     autoComplete: boolean;
     patreon: boolean;
+    banned: boolean;
 }
 
 interface IUserStats {

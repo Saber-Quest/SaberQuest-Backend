@@ -75,7 +75,7 @@ export class PlayerProfile {
 
             const user = await db<User>("users")
                 .select("*")
-                .where("platform_id", id)
+                .where("platform_idy", id)
                 .first();
 
             if (!user) {
@@ -117,7 +117,8 @@ export class PlayerProfile {
                     },
                     preference: user.preference,
                     patreon: user.patreon,
-                    autoComplete: user.auto_complete
+                    autoComplete: user.auto_complete,
+                    banned: user.banned
                 },
                 stats: {
                     challengesCompleted: parseInt(object.count),

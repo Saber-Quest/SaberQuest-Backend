@@ -147,7 +147,8 @@ export class Leaderboard {
                     },
                     patreon: user.patreon,
                     preference: user.preference,
-                    autoComplete: user.auto_complete
+                    autoComplete: user.auto_complete,
+                    banned: user.banned
                 },
                 stats: {
                     challengesCompleted: parseInt(object.count),
@@ -277,7 +278,8 @@ export class Leaderboard {
                     },
                     patreon: user.patreon,
                     preference: user.preference,
-                    autoComplete: user.auto_complete
+                    autoComplete: user.auto_complete,
+                    banned: user.banned
                 },
                 stats: {
                     challengesCompleted: parseInt(object.count),
