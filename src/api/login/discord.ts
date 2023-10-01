@@ -37,7 +37,7 @@ export class DiscordLogin {
     async get(req: Request, res: Response): Promise<void | Response> {
         try {
             const code = req.query.code.toString();
-            const jwt = req.cookies.token;
+            const jwt = req.cookies.token
 
             if (!code) {
                 return res.status(400).send("No code provided");
@@ -53,7 +53,7 @@ export class DiscordLogin {
                     code: code,
                     client_secret: process.env.DISCORD_SECRET,
                     client_id: process.env.DISCORD_ID,
-                    redirect_uri: `${process.env.REDIRECT_URI_API}/link`,
+                    redirect_uri: `${process.env.REDIRECT_URI_API}/link/discord`,
                 }),
             });
 
@@ -81,11 +81,11 @@ export class DiscordLogin {
             if (!dbUser) {
                 const jwtData = verifyJWT(jwt);
 
-                if (!jwtData || jwtData.exp < Date.now()) {
+                if (!jwtData || jwtData.exp < Date.now() / 1000) {
                     return res.status(401).send("Invalid JWT");
                 }
 
-                const user = await db<User>("users").where("id", jwtData.id).first();
+                const user = await db<User>("users").where("platform_id", jwtData.id).first();
 
                 if (!user) {
                     return res.status(404).send("User not found");
@@ -100,15 +100,12 @@ export class DiscordLogin {
                     discord_id: String(userData.id)
                 });
 
-                res.status(200).send("Successfully linked your Discord account.\nYou will be redirected back to the website shortly.");
-
-                setTimeout(() => {
-                    res.redirect(process.env.REDIRECT_URI);
-                }, 5000);
+                res.status(200).send("<p>Successfully linked your Discord account.</p><p>You will be redirected back to the website shortly.</p><script>setTimeout(() => { window.location.href = '" + process.env.REDIRECT_URI + "'; }, 5000);</script>");
             } else {
                 res.status(400).send("Your Discord account is already linked to a user.");
             }
         } catch (err) {
+            console.error(err);
             return res.status(500).send("Error getting user.");
         }
     }
