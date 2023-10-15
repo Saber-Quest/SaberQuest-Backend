@@ -10,7 +10,7 @@ import socketServer from "../../websocket";
 
 const activeStates: string[] = [];
 const activeTokens: string[] = [];
-let callbackUrl: string = "";
+const callbacks = new Map<string, string>();
 
 export class BeatLeaderLogin {
     /**
@@ -129,7 +129,12 @@ export class BeatLeaderLogin {
                         username: username
                     });
 
-                    return res.redirect(`${callbackUrl}?token=${token}&id=${id}`);
+                    const ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
+
+                    const callback = callbacks.get(ip.toString());
+                    callbacks.delete(ip.toString());
+
+                    return res.redirect(`${callback})}?token=${token}&id=${id}`);
                 }
 
                 return res.sendStatus(500);
@@ -152,7 +157,12 @@ export class BeatLeaderLogin {
             expiresIn: "30d"
         });
 
-        return res.redirect(`${callbackUrl}?token=${jwtToken}&id=${id}`);
+        const ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
+
+        const callback = callbacks.get(ip.toString());
+        callbacks.delete(ip.toString());
+
+        return res.redirect(`${callback})}?token=${jwtToken}&id=${id}`);
     }
 
     /**
@@ -184,7 +194,8 @@ export class BeatLeaderLogin {
         const iss = req.query.iss;
 
         if (!code) {
-            callbackUrl = req.query.callback.toString();
+            const ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
+            callbacks.set(ip.toString(), req.query.callback.toString());
             return res.redirect(`https://api.beatleader.xyz/oauth2/authorize?client_id=${process.env.BEATLEADER_ID}&response_type=code&redirect_uri=${process.env.REDIRECT_URI_API}/login/beatleader&scope=profile`);
         }
 
@@ -273,7 +284,8 @@ export class BeatLeaderLogin {
                     activeStates.splice(index, 1);
                 }
             }, 1000 * 60 * 60);
-            callbackUrl = req.query.callback.toString();
+            const ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
+            callbacks.set(ip.toString(), req.query.callback.toString());
             return res.redirect(`https://steamcommunity.com/openid/login?openid.claimed_id=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0%2Fidentifier_select&openid.identity=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0%2Fidentifier_select&openid.mode=checkid_setup&openid.ns=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0&openid.realm=${process.env.REDIRECT_URI_API}&openid.return_to=${process.env.REDIRECT_URI_API}/login/steam%3Fstate=${state}&openid.ns.ax=http%3A%2F%2Fopenid.net%2Fsrv%2Fax%2F1.0&openid.ax.mode=fetch_request&openid.ax.type.email=http%3A%2F%2Faxschema.org%2Fcontact%2Femail&openid.ax.type.name=http%3A%2F%2Faxschema.org%2FnamePerson&openid.ax.type.first=http%3A%2F%2Faxschema.org%2FnamePerson%2Ffirst&openid.ax.type.last=http%3A%2F%2Faxschema.org%2FnamePerson%2Flast&openid.ax.type.email2=http%3A%2F%2Fschema.openid.net%2Fcontact%2Femail&openid.ax.type.name2=http%3A%2F%2Fschema.openid.net%2FnamePerson&openid.ax.type.first2=http%3A%2F%2Fschema.openid.net%2FnamePerson%2Ffirst&openid.ax.type.last2=http%3A%2F%2Fschema.openid.net%2FnamePerson%2Flast&openid.ax.required=email,name,first,last,email2,name2,first2,last2`);
         }
 
