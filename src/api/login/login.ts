@@ -134,7 +134,7 @@ export class BeatLeaderLogin {
                     const callback = callbacks.get(ip.toString());
                     callbacks.delete(ip.toString());
 
-                    return res.redirect(`${callback})}?token=${token}&id=${id}`);
+                    return res.redirect(`${callback}?token=${token}&id=${id}`);
                 }
 
                 return res.sendStatus(500);
@@ -162,7 +162,7 @@ export class BeatLeaderLogin {
         const callback = callbacks.get(ip.toString());
         callbacks.delete(ip.toString());
 
-        return res.redirect(`${callback})}?token=${jwtToken}&id=${id}`);
+        return res.redirect(`${callback}?token=${jwtToken}&id=${id}`);
     }
 
     /**
