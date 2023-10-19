@@ -314,7 +314,7 @@ export class AdvancedPlayerProfile {
 
             for (const item of items) {
                 await db<Item>("items")
-                    .select("name_id", "image", "name")
+                    .select("name_id", "image", "name", "rarity")
                     .where("id", item.item_id)
                     .first()
                     .then((itemData) => {
@@ -322,6 +322,7 @@ export class AdvancedPlayerProfile {
                             id: itemData.name_id,
                             image: itemData.image,
                             name: itemData.name,
+                            rarity: itemData.rarity,
                             amount: item.amount,
                         });
                     });
