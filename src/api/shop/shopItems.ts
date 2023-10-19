@@ -138,7 +138,7 @@ export class ShopItems {
 
             const jwt = verifyJWT(token);
 
-            if (jwt.exp < Date.now() / 1000) {
+            if (jwt === null) {
                 return res.status(401).json({ error: "Token expired" });
             }
 
@@ -151,7 +151,7 @@ export class ShopItems {
                 .select("*");
 
             for (const item of shop) {
-                if (item.item_id === itemId.toLowerCase()) {
+                if (item.name_id === itemId.toLowerCase()) {
                     if (user.qp < item.price) {
                         return res.status(400).json({ error: "Not enough qp" });
                     } else {
@@ -163,7 +163,7 @@ export class ShopItems {
 
                         const userItems = await db<UserItem>("user_items")
                             .where("user_id", user.id);
-                        
+
                         let hasItem = false;
 
                         for (const userItem of userItems) {
@@ -188,10 +188,11 @@ export class ShopItems {
 
                         return res.sendStatus(200);
                     }
-                } else {
-                    return res.status(404).json({ error: "Item not in shop" });
                 }
-            }            
+            }
+
+            return res.status(404).json({ error: "Item not in shop" });
+
         } catch (error) {
             console.error(error);
             return res.sendStatus(500);

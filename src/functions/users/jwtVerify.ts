@@ -7,5 +7,9 @@ interface IToken {
 }
 
 export const verifyJWT = (token: string): IToken => {
+    try {
     return jwt.verify(token, process.env.JWT_SECRET) as IToken;
+    } catch (err) {
+        return null;
+    }
 };
