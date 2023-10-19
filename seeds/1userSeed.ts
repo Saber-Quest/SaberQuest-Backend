@@ -22,7 +22,7 @@ export async function seed(knex: Knex): Promise<void> {
             preference: "bl",
             patreon: true,
             rank: 2,
-            qp: 14,
+            qp: 9999,
             diff: 2,
             value: 32,
             mod: true,
