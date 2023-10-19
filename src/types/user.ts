@@ -44,5 +44,6 @@ export type userInventoryRes = {
     id: string;
     image: string;
     name: string;
+    rarity: string;
     amount: number;
 };

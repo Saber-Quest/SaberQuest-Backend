@@ -154,6 +154,7 @@ export class PlayerProfile {
      *        "id": "sp",
      *        "image": "https://saberquest.xyz/images/silver_pieces_icon.png",
      *        "name": "Silver Pieces",
+     *        "rarity": "Legendary",
      *        "amount": 1
      *    }
      *]
@@ -204,7 +205,7 @@ export class PlayerProfile {
 
             for (const item of items) {
                 await db<Item>("items")
-                    .select("name_id", "image", "name")
+                    .select("name_id", "image", "name", "rarity")
                     .where("id", item.item_id)
                     .first()
                     .then((itemData) => {
@@ -212,6 +213,7 @@ export class PlayerProfile {
                             id: itemData.name_id,
                             image: itemData.image,
                             name: itemData.name,
+                            rarity: itemData.rarity,
                             amount: item.amount,
                         });
                     });
