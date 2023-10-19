@@ -90,7 +90,7 @@ export class ShopItems {
      * Buy shop item
      * @typedef {object} BuyShopItem
      * @property {string} token.required - JWT token
-     * @property {string} item_id.required - Item id
+     * @property {string} itemId.required - Item id
      */
 
     /**
@@ -150,15 +150,13 @@ export class ShopItems {
             const shop = await db<ShopItem>("shop_items")
                 .select("*");
 
-            const itemIDs = shop.map((item) => item.name_id);
-
             for (const item of shop) {
-                if (itemIDs.includes(itemId)) {
+                if (item.item_id === itemId.toLowerCase()) {
                     if (user.qp < item.price) {
                         return res.status(400).json({ error: "Not enough qp" });
                     } else {
                         await db<User>("users")
-                            .where("users.platform_id", jwt.id)
+                            .where("platform_id", jwt.id)
                             .update({
                                 qp: user.qp - item.price
                             });
@@ -169,7 +167,7 @@ export class ShopItems {
                         let hasItem = false;
 
                         for (const userItem of userItems) {
-                            if (userItem.item_id === item.item_id) {
+                            if (userItem.item_id === item.id) {
                                 hasItem = true;
                             }
                         }
@@ -177,7 +175,7 @@ export class ShopItems {
                         if (hasItem) {
                             await db<UserItem>("user_items")
                                 .where("user_id", user.id)
-                                .andWhere("item_id", item.item_id)
+                                .andWhere("item_id", item.id)
                                 .increment("amount", 1);
                         } else {
                             await db<UserItem>("user_items")
