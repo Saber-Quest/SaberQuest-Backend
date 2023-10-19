@@ -3,7 +3,6 @@ import { GET, POST } from "../../router";
 import { ShopItem } from "../../models/shopItem";
 import db from "../../db";
 import { Item } from "../../models/item";
-import { cache, setCache } from "../../functions/cache";
 import { verifyJWT } from "../../functions/users/jwtVerify";
 import { User } from "../../models/user";
 import { UserItem } from "../../models/userItem";
@@ -52,11 +51,10 @@ export class ShopItems {
      * @example response - 500 - Internal server error
      * "Internal server error"
      */
-    @GET("items/shop", cache)
+    @GET("items/shop")
     async get(req: Request, res: Response) {
         try {
             res.setHeader("Access-Control-Allow-Origin", "*");
-            setCache(req, "daily");
 
             const shop = await db<ShopItem>("shop_items")
                 .select("*");
