@@ -501,4 +501,79 @@ export class Update {
             return res.sendStatus(500);
         }
     }
+
+    /**
+     * Update discord
+     * @typedef {object} Autocomplete
+     * @property {string} autocomplete.required - ON/OFF
+     * @property {string} token.required - The user's JWT token
+     */
+
+    /**
+     * PUT /update/autocomplete
+     * @summary Update the user's auto complete setting
+     * @tags Update
+     * @security JWT
+     * @param {Autocomplete} request.body.required - ON/OFF
+     * @return {string} 200 - Success
+     * @return {object} 400 - Missing fields
+     * @return {object} 400 - Invalid autocomplete
+     * @return {object} 400 - Invalid token
+     * @return {string} 500 - Internal server error
+     * @example response - 200 - Success
+     * "OK"
+     * @example response - 400 - Missing fields
+     * {
+     * "error": "Missing fields"
+     * }
+     * @example response - 400 - Invalid autocomplete
+     * {
+     * "error": "Invalid autocomplete"
+     * }
+     * @example response - 400 - Invalid token
+     * {
+     * "error": "Invalid token"
+     * }
+     * @example response - 500 - Internal server error
+     * "Internal server error"
+     */
+    @PUT("update/autocomplete")
+    async autocomplete(req: Request, res: Response) {
+        try {
+            const { autocomplete, token } = req.body;
+
+            if (!autocomplete || !token) {
+                return res.status(400).json({ error: "Missing fields" });
+            }
+
+            if (autocomplete !== "on" && autocomplete !== "off") {
+                return res.status(400).json({ error: "Invalid autocomplete" });
+            }
+
+            const decoded = verifyJWT(token);
+
+            if (!decoded || decoded.exp < Date.now() / 1000) {
+                return res.status(400).json({ error: "Invalid token" });
+            }
+
+            if (autocomplete === "on") {
+                await db<User>("users")
+                    .update("auto_complete", true)
+                    .where("platform_id", decoded.id);
+            }
+
+            else if (autocomplete === "off") {
+                await db<User>("users")
+                    .update("auto_complete", false)
+                    .where("platform_id", decoded.id);
+            }
+
+            clearUserCache(decoded.id);
+
+            res.sendStatus(200);
+        } catch (err) {
+            console.error(err);
+            return res.sendStatus(500);
+        }
+    }
 }
