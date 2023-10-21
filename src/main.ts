@@ -48,7 +48,7 @@ async function main() {
 
     app.use(cookieParser());
     app.use(express.json({ limit: "10mb" }));
-    app.use(express.urlencoded({ limit: "10mb", extended: true }));
+    app.use(express.urlencoded({ limit: "10mb", extended: true, parameterLimit: 10000 }));
 
     app.disable("x-powered-by");
 
