@@ -1,12 +1,12 @@
-# SaberQuest - Backend 🖥️
+# SaberQuest - Backend 🗄️
 
 The backend code for [SaberQuest](https://saberquest.xyz).
 
 ## API
 
-You can view all of the endpoints over at the [Swagger documentation](https://dev.saberquest.xyz/docs)
+You can view all of the endpoints over at the [Swagger documentation](https://dev.saberquest.xyz/docs).
 
-## Frontend 🗄️
+## Frontend 🖥️
 - [Frontend Service](https://github.com/Saber-Quest/SaberQuest-frontend)
 
 # Want to help?
@@ -16,7 +16,7 @@ You can view all of the endpoints over at the [Swagger documentation](https://de
 > 
 > If you want to contribute, fork the repository and make a pull request.
 > The name of the pull request should represent what you are trying to add.
-> If you want to contribute to the frontend, go to the [Frontend Repository](https://github.com/Saber-Quest/SaberQuest-frontend)
+> If you want to contribute to the frontend, go to the [Frontend Repository](https://github.com/Saber-Quest/SaberQuest-frontend).
 >
 > Every pull request will be review by a maintainer, and if it is accepted, it will be merged into the next-branch for testing.
 > If it passes testing and is stable, it will be merged into the main branch, otherwise a maintainer will contact you to fix the issues.
@@ -33,8 +33,12 @@ npm run deps:get
 yarn deps:get
 ```
 
-> [!WARNING]
+> [!IMPORTANT]
 > You will need to set up the environment before you can start working on this!
+
+> [!WARNING]
+> Make sure that you use never before made secrets and authorization codes
+> to prevent people from cracking your security.
 
 Environment variables:
 ```js
@@ -53,9 +57,9 @@ AUTHORIZATION_CODE
 PROD_PATH
 ```
 
-Secondly configure the database
+Secondly configure the database.
 
-> [!WARNING]
+> [!IMPORTANT]
 > You will need a docker container for PostgreSQL.
 >
 > If you're using windows, install [Docker Desktop](https://www.docker.com/products/docker-desktop/).
@@ -93,10 +97,10 @@ Or if you prefer running the nodemon version:
 ```bash
 npm run watch
 # or 
-yarn run watch
+yarn watch
 ```
 
-Open localhost on the port that you've set it to in the .env file.
+Open localhost on the port that you've set in the .env file.
 
 ## Scripts
 
@@ -126,6 +130,6 @@ Express:
 
 - [Getting Started](https://www.typescriptlang.org/docs/) - How to get started with express.
 - [Guide](https://expressjs.com/en/guide/routing.html) - A writeup on what and how you can do stuff with express.
-- [Documentation](https://expressjs.com/en/4x/api.html) - Express documentation
+- [Documentation](https://expressjs.com/en/4x/api.html) - Express documentation.
 
 This project is licensed under the Apache-2.0 License - see the [LICENSE](LICENSE) file for details.
