@@ -76,13 +76,17 @@ export function setupRoutes(app: Express) {
                 if (route.middleware) {
                     app.all("/" + route.route, route.middleware, route.function);
                 }
-                else app.all("/" + route.route, route.function);
+                else {
+                    app.all("/" + route.route, route.function);
+                }
                 break;
             case "POST":
                 if (route.middleware) {
                     app.post("/" + route.route, route.middleware, route.function);
                 }
-                else app.post("/" + route.route, route.function);
+                else {
+                    app.post("/" + route.route, route.function);
+                }
                 break;
             case "PATCH":
                 if (route.middleware) {

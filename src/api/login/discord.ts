@@ -37,7 +37,7 @@ export class DiscordLogin {
     async get(req: Request, res: Response): Promise<void | Response> {
         try {
             const code = req.query.code.toString();
-            const jwt = req.cookies.token
+            const jwt = req.cookies.token;
 
             if (!code) {
                 return res.status(400).send("No code provided");
