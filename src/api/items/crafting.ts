@@ -59,7 +59,7 @@ export class Crafting {
      * "Internal server error"
      */
     @POST("craft")
-    async patch(req: Request, res: Response) {
+    async post(req: Request, res: Response) {
         try {
             const { used1, used2, token } = req.body;
 
@@ -69,7 +69,7 @@ export class Crafting {
 
             const jwt = verifyJWT(token);
 
-            if (jwt.exp < Date.now() / 1000) {
+            if (!jwt || jwt.exp < Date.now() / 1000) {
                 return res.status(401).json({ error: "Token expired" });
             }
 

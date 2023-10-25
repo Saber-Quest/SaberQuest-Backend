@@ -131,8 +131,12 @@ export class BeatLeaderLogin {
 
                     const ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
 
-                    const callback = callbacks.get(ip.toString());
+                    let callback = callbacks.get(ip.toString());
                     callbacks.delete(ip.toString());
+
+                    if (!callback) {
+                        callback = `${process.env.REDIRECT_URI}/api/auth/login`;
+                    }
 
                     return res.redirect(`${callback}?token=${token}&id=${id}`);
                 }
@@ -159,8 +163,12 @@ export class BeatLeaderLogin {
 
         const ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
 
-        const callback = callbacks.get(ip.toString());
+        let callback = callbacks.get(ip.toString());
         callbacks.delete(ip.toString());
+
+        if (!callback) {
+            callback = `${process.env.REDIRECT_URI}/api/auth/login`;
+        }
 
         return res.redirect(`${callback}?token=${jwtToken}&id=${id}`);
     }
