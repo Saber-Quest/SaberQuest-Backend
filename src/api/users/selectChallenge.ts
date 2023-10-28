@@ -63,7 +63,7 @@ export class SelectChallenge {
             const user = await db("users")
                 .select("id", "platform_id")
                 .where("platform_id", jwt.id)
-                .update({ challenge: challengeNum })
+                .update({ diff: challengeNum })
                 .first();
 
             if (!user) {
