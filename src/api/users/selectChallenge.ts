@@ -1,7 +1,8 @@
-import { POST } from "../../router";
+import { PUT } from "../../router";
 import db from "../../db";
 import { Request, Response } from "express";
 import { verifyJWT } from "../../functions/users/jwtVerify";
+import { clearUserCache } from "../../functions/cache";
 
 export class SelectChallenge {
     /**
@@ -12,9 +13,9 @@ export class SelectChallenge {
      */
 
     /**
-     * POST /profile/select
+     * POST /update/diff
      * @summary Select a challenge
-     * @tags Users
+     * @tags Update
      * @security JWT
      * @param {SelectChallenge} request.body.required - The challenge to select
      * @return {object} 200 - Success
@@ -46,13 +47,13 @@ export class SelectChallenge {
      * @example response - 500 - Internal server error
      * "Internal server error"
      */
-    @POST("profile/select")
-    async patch(req: Request, res: Response) {
+    @PUT("update/diff")
+    async put(req: Request, res: Response) {
         try {
             const jwt = verifyJWT(req.body.token);
             const challengeNum = Number(req.body.challenge);
 
-            if (jwt.exp < Date.now() / 1000) {
+            if (!jwt || jwt.exp < Date.now() / 1000) {
                 return res.status(401).json({ error: "Token expired" });
             }
 
@@ -69,6 +70,8 @@ export class SelectChallenge {
             if (!user) {
                 return res.status(404).json({ error: "User not found" });
             }
+
+            clearUserCache(jwt.id);
 
             return res.status(200).json({ message: "Success" });
         } catch (err) {
