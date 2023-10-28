@@ -13,7 +13,7 @@ export class SelectChallenge {
      */
 
     /**
-     * POST /update/diff
+     * PUT /update/diff
      * @summary Select a challenge
      * @tags Update
      * @security JWT
