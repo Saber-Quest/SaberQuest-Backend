@@ -64,12 +64,16 @@ export class SelectChallenge {
             const user = await db("users")
                 .select("id", "platform_id")
                 .where("platform_id", jwt.id)
-                .update({ diff: challengeNum })
                 .first();
 
             if (!user) {
                 return res.status(404).json({ error: "User not found" });
             }
+
+            await db("users")
+                .select("id", "platform_id")
+                .where("platform_id", jwt.id)
+                .update({ diff: challengeNum })
 
             clearUserCache(jwt.id);
 
