@@ -6,6 +6,7 @@ import { verifyJWT } from '../../functions/users/jwtVerify';
 import { User } from '../../models/user';
 import Complete from '../../functions/challenges/complete';
 import { ChallengeHistory } from '../../models/challengeHistory';
+import { Difficulty } from '../../models/difficulty';
 
 export class ChallengeComplete {
     /** 
@@ -80,30 +81,39 @@ export class ChallengeComplete {
                 return res.status(400).json({ error: "Invalid token" });
             }
 
-            const challenge = await db<User>("users")
-                .join("challenge_histories", "users.id", "=", "challenge_histories.user_id")
-                .select("challenge_histories.*", "users.diff", "users.preference")
-                .where("users.platform_id", decoded.id)
+            const user = await db<User>("users")
+                .select("diff", "preference", "id")
+                .where("platform_id", decoded.id)
+                .first();
+
+            const challenge = await db<ChallengeHistory>("challenge_histories")
+                .where("user_id", user.id)
                 .orderBy("date", "desc")
                 .first();
 
-            if (challenge.diff === 0 || challenge.diff === null) {
+            if (user.diff === 0 || user.diff === null) {
                 return res.status(400).json({ error: "Missing difficulty" });
             }
 
-            if (new Date(challenge.date).getUTCDay() === new Date().getUTCDay()) {
-                return res.status(400).json({ error: "Challenge already completed today" });
+            if (challenge) {
+                if (new Date(challenge.date).getUTCDay() === new Date().getUTCDay()) {
+                    return res.status(400).json({ error: "Challenge already completed today" });
+                }
             }
 
-            const dailyChallenge = await db<ChallengeHistory>("challenge_histories")
-                .join("challenge_sets", "challenge_histories.challenge_id", "=", "challenge_sets.id")
-                .join("difficulties", "challenge_sets.id", "=", "difficulties.challenge_id")
-                .select("challenge_sets.type", "challenge_sets.id", "difficulties.challenge", "difficulties.diff")
-                .where("difficulties.diff", challenge.diff)
+            const challengeToday = await db<ChallengeHistory>("challenge_histories")
+                .select("challenge_id")
                 .orderBy("date", "desc")
                 .first();
 
-            const complete = await Complete(dailyChallenge.type, dailyChallenge.challenge, challenge.preference, decoded.id, challenge.diff, challenge.challenge_id);
+            const diffChallenge = await db<Difficulty>("difficulties")
+                .join("challenge_sets", "difficulties.challenge_id", "=", "challenge_sets.id")
+                .select("challenge_sets.type", "difficulties.challenge")
+                .where("difficulties.diff", user.diff)
+                .andWhere("difficulties.challenge_id", challengeToday.challenge_id)
+                .first();
+
+            const complete = await Complete(diffChallenge.type, diffChallenge.challenge, user.preference, decoded.id, user.diff, challengeToday.challenge_id);
 
             if (complete === false) {
                 return res.status(400).json({ error: "Challenge not completed" });
@@ -111,7 +121,7 @@ export class ChallengeComplete {
 
             socketServer.emit("challengeCompleted", {
                 id: decoded.id,
-                diff: challenge.diff,
+                diff: user.diff,
                 rewards: complete
             });
 
