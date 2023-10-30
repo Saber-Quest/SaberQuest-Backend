@@ -314,6 +314,16 @@ export class Update {
                 return res.status(400).json({ error: "Not a patreon" });
             }
 
+            if (border === "none") {
+                await db<User>("users")
+                    .update("border", null)
+                    .where("platform_id", decoded.id);
+
+                clearUserCache(decoded.id);
+
+                return res.sendStatus(200);
+            }
+
             await db<User>("users")
                 .update("border", border)
                 .where("platform_id", decoded.id);

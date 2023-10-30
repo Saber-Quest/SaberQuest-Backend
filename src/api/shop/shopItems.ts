@@ -143,7 +143,7 @@ export class ShopItems {
             }
 
             const user = await db<User>("users")
-                .select("id", "platform_id", "qp")
+                .select("id", "platform_id", "qp", "value")
                 .where("platform_id", jwt.id)
                 .first();
 
@@ -185,6 +185,17 @@ export class ShopItems {
                                     amount: 1
                                 });
                         }
+
+                        const itemValue = await db<Item>("items")
+                            .select("value")
+                            .where("id", item.id)
+                            .first();
+
+                        await db<User>("users")
+                            .where("platform_id", jwt.id)
+                            .update({
+                                value: user.value + itemValue.value
+                            });
 
                         return res.sendStatus(200);
                     }
