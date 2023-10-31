@@ -24,7 +24,7 @@ jobs:
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USER }}
         port: ${{ secrets.PORT }}
-        key: ${{ secrets.SSHKEY }}
+        password: ${{ secrets.PASSWORD }}
         rm: true
         source: "."
         target: "/var/www/dev.saberquest.xyz"
@@ -35,7 +35,7 @@ jobs:
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USER }}
         port: ${{ secrets.PORT }}
-        key: ${{ secrets.SSHKEY }}
+        password: ${{ secrets.PASSWORD }}
         script_stop: true
         script: |
           cd "/var/www/"
