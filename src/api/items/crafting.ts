@@ -111,6 +111,18 @@ export class Crafting {
                 return res.status(404).json({ error: "Item not found" });
             }
 
+            if (item1.name_id === item2.name_id) {
+                const userItem = await db("user_items")
+                    .select("amount")
+                    .where("user_id", user.id)
+                    .andWhere("item_id", item1.id)
+                    .first();
+
+                if (userItem.amount < 2) {
+                    return res.status(400).json({ error: "Invalid items" });
+                }
+            }
+
             const crafted = await Craft(item1.name_id, item2.name_id);
 
             if (crafted === "") {
