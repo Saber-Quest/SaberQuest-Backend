@@ -62,7 +62,8 @@ Secondly configure the database.
 > [!IMPORTANT]
 > You will need a docker container for PostgreSQL.
 >
-> If you're using windows, install [Docker Desktop](https://www.docker.com/products/docker-desktop/).
+> If you're using windows, install [Docker Desktop](https://www.docker.com/products/docker-desktop/) OR 
+> use WSL2 and use the [Docker Engine](https://docs.docker.com/desktop/install/linux-install/).
 >
 > If you're using linux, install the [Docker Engine](https://docs.docker.com/desktop/install/linux-install/).
 
