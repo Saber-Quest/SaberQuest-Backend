@@ -23,6 +23,7 @@
     "reflect-metadata": "^0.1.13",
     "serve-favicon": "^2.5.0",
     "socket.io": "^4.7.1",
+    "yabsl": "^1.1.1",
     "zod": "^3.21.4"
   },
   "devDependencies": {
