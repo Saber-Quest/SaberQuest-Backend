@@ -1,4 +1,3 @@
-import { BeatLeaderRes } from "../../types/beatleaderRes";
 import fcNotes from "./separate-bl/fcNotes";
 import fcStars from "./separate-bl/fcStars";
 import map from "./separate-bl/map";
@@ -7,12 +6,17 @@ import pp from "./separate-bl/pp";
 import xAccuracyNotes from "./separate-bl/xAccuracyNotes";
 import xAccuracyPp from "./separate-bl/xAccuracyPp";
 import xAccuracyStars from "./separate-bl/xAccuracyStars";
+import * as yabsl from "yabsl";
 
 export default async function BeatLeader(type: string, challenge: number[], id: string): Promise<boolean> {
     const today = new Date().setUTCHours(0, 0, 0, 0);
     const todayUnix = new Date(today).getTime();
 
-    const response: BeatLeaderRes = await fetch(`https://api.beatleader.xyz/player/${id}/scores?sortBy=date&page=1&count=50`).then((res: any) => res.json());
+    const response = await yabsl.BeatLeader.scores.get(id, {
+        sortBy: "date",
+        page: 1,
+        count: 50
+    })
 
     switch (type) {
         case "fcNotes":

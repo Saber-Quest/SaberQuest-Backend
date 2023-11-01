@@ -1,6 +1,6 @@
-import { ScoreSaberRes } from "../../../types/scoresaberRes";
+import { SSPlayerScores } from "yabsl/src/scoresaber/players";
 
-export default function map(response: ScoreSaberRes, todayUnix: number, challenge: number[]): boolean {
+export default function map(response: SSPlayerScores, todayUnix: number, challenge: number[]): boolean {
     let maps = 0;
     response.playerScores.forEach((data) => {
         if (new Date(data.score.timeSet).getTime() >= todayUnix) {
