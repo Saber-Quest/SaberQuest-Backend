@@ -310,10 +310,6 @@ export class Update {
                 .where("platform_id", decoded.id)
                 .first();
 
-            if (!user.patreon) {
-                return res.status(400).json({ error: "Not a patreon" });
-            }
-
             if (border === "none") {
                 await db<User>("users")
                     .update("border", null)
@@ -322,6 +318,10 @@ export class Update {
                 clearUserCache(decoded.id);
 
                 return res.sendStatus(200);
+            }
+
+            if (!user.patreon) {
+                return res.status(400).json({ error: "Not a patreon" });
             }
 
             await db<User>("users")
