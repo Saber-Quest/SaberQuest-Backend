@@ -412,7 +412,7 @@ export class Update {
             const dimensions = sizeOf(buffer);
 
             if (type === "hor") {
-                if (dimensions.width !== 750 || dimensions.height !== 150) {
+                if (dimensions.width !== 800 || dimensions.height !== 150) {
                     return res.status(400).json({ error: "Invalid banner" });
                 }
             } else {
