@@ -1,41 +1,57 @@
 import { Knex } from "knex";
 
 export async function up(knex: Knex): Promise<void> {
-    await knex.schema.createTable("difficulty", (table) => {
+    await knex.schema.createTable("challenge_sets", async (table) => {
         table.uuid("id").defaultTo(knex.raw("gen_random_uuid()")).primary();
-        table.json("difficulty");
-        table.string("color");
-    });
-
-    await knex.schema.createTable("challenge_sets", (table) => {
-        table.uuid("id").defaultTo(knex.raw("gen_random_uuid()")).primary();
-        table.string("name");
         table.string("type");
+        table.string("name");
+        table.string("description");
         table.string("image");
-        table.date("reset_time");
     });
 
     // id: string;
     // name: string;
-    // type: string;
+    // description: string;
     // image: string;
-    // reset_time: Date;
+    // reset_time: number;
+
+
+    await knex.schema.createTable("difficulties", (table) => {
+        table.uuid("id").defaultTo(knex.raw("gen_random_uuid()")).primary();
+        table.uuid("challenge_id")
+            .references("id")
+            .inTable("challenge_sets")
+            .onDelete("CASCADE");
+        table.specificType("challenge", "float ARRAY");
+        table.integer("diff");
+        table.string("color");
+    });
 
     await knex.schema.createTable("users", (table) => {
         table.uuid("id").defaultTo(knex.raw("gen_random_uuid()")).primary();
         table.string("platform_id");
         table.string("username");
+        table.string("about");
         table.string("avatar");
-        table.string("banner");
+        table.boolean("banner");
         table.string("border");
         table.string("preference");
         table.string("discord_id");
         table.boolean("patreon");
+        table.string("patreon_token");
         table.integer("rank");
         table.integer("qp");
+        table.integer("value");
+        table.integer("diff");
+        table.boolean("auto_complete");
+        table.boolean("mod");
+        table.boolean("admin");
+        table.boolean("banned");
+        table.string("banned_reason");
+        table.boolean("closed_notifier");
     });
 
-        // id: string;
+    // id: string;
     // username: string;
     // avatar: string;
     // banner: string;
@@ -52,9 +68,7 @@ export async function up(knex: Knex): Promise<void> {
     // completed: boolean;
 
     await knex.schema.createTable("user_items", (table) => {
-        table.uuid("user_id");
-        table
-            .foreign("user_id")
+        table.uuid("user_id")
             .references("id")
             .inTable("users")
             .onDelete("CASCADE");
@@ -65,23 +79,6 @@ export async function up(knex: Knex): Promise<void> {
             .inTable("items")
             .onDelete("CASCADE");
         table.integer("amount");
-    });
-
-    await knex.schema.createTable("challenges", (table) => {
-        table.uuid("id").defaultTo(knex.raw("gen_random_uuid()")).primary();
-        table.uuid("challenge_set_id");
-        table
-            .foreign("challenge_set_id")
-            .references("id")
-            .inTable("challenge_sets")
-            .onDelete("CASCADE");
-        table.string("type");
-        table.uuid("difficulty_id");
-        table
-            .foreign("difficulty_id")
-            .references("id")
-            .inTable("difficulty")
-            .onDelete("CASCADE");
     });
 
     // id: string;
@@ -96,30 +93,29 @@ export async function up(knex: Knex): Promise<void> {
     // }
 
     await knex.schema.createTable("challenge_histories", (table) => {
-        table.uuid("user_id");
-        table
-            .foreign("user_id")
+        table.uuid("user_id")
             .references("id")
             .inTable("users")
             .onDelete("CASCADE");
-        table.uuid("challenge_id");
-        table
-            .foreign("challenge_id")
+        table.uuid("challenge_id")
             .references("id")
-            .inTable("challenges")
+            .inTable("challenge_sets")
             .onDelete("CASCADE");
-        table.uuid("item_id");
-        table
-            .foreign("item_id")
-            .references("id")
-            .inTable("items")
-            .onDelete("CASCADE");
-        table.date("date");
+        table.string("item_ids");
+        table.integer("difficulty");
+        table.integer("qp");
+        table.string("date");
+        table.string("preference");
     });
 
     // id: string;
     // challenges: Challenge[];
-    // date: Date; // UTC ISO string formatted.
+
+    await knex.schema.createTable("frontend", (table) => {
+        table.boolean("maintenance");
+        table.string("maintenance_message");
+        table.string("current_notifier");
+    });
 }
 
 export async function down(knex: Knex): Promise<void> {

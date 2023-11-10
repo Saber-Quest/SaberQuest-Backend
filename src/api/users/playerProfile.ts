@@ -3,171 +3,321 @@ import { GET, PUT } from "../../router";
 import db from "../../db";
 import { User } from "../../models/user";
 import { UserItem } from "../../models/userItem";
-import fs from "fs";
+import { verifyJWT } from "../../functions/users/jwtVerify";
 import { Item } from "../../models/item";
-import { userInventoryRes } from "../../types/user";
+import { userInventoryRes, userRes } from "../../types/user";
+import { cache, setCache } from "../../functions/cache";
+import dotenv from "dotenv";
+import { ChallengeHistory } from "../../models/challengeHistory";
+dotenv.config();
 
 export class PlayerProfile {
     /**
      * GET /profile/{id}
      * @summary Get a player's profile
-     * @tags users
+     * @tags Users
      * @param {string} id.path.required - The id of the player
      * @return {object} 200 - Success
      * @return {object} 404 - User not found
-     * @return {object} 500 - An error occurred
+     * @return {string} 500 - Internal server error
      * @example response - 200 - Success
-     * {
+     *{
      * "userInfo": {
-     *  "platform_id": "76561199108042297",
-     *  "username": "Raine'); DROP TABLE users;--",
-     *  "images": {
-     *   "avatar": "https://cdn.discordapp.com/avatars/813176414692966432/0ce8808ab0435a25610ae7d045e9a03f.webp",
-     *   "banner": null,
-     *   "border": null
-     *  },
-     *  "preference": "ss"
+     *     "id": "76561198343533017",
+     *     "username": "StormPacer",
+     *     "images": {
+     *         "avatar": "https://api.saberquest.xyz/profile/76561198343533017/avatar",
+     *         "banner": null,
+     *         "border": null
+     *     },
+     *     "preference": "bl"
      * },
      * "stats": {
-     *  "rank": 3,
-     *  "qp": 0
-     *  }
+     *     "challengesCompleted": 4,
+     *     "rank": 2,
+     *     "qp": 10,
+     *     "value": 41
+     * },
+     * "today": {
+     *     "diff": 2,
+     *     "completed": false
      * }
+     *}
      * @example response - 404 - User not found
      * {
      * "message": "User not found."
      * }
-     * @example response - 500 - An error occurred
-     * {
-     * "message": "An error occurred, please try again later."
-     * }
+     * @example response - 500 - Internal server error
      */
-    @GET("profile/:id")
-    get(req: Request, res: Response): void {
-        db<User>("users")
-            .select("*")
-            .where("platform_id", req.params.id)
-            .first()
-            .then((user) => {
-                if (!user) {
-                    return res.status(404).json({ message: "User not found." });
+    @GET("profile/:id", cache)
+    async get(req: Request, res: Response): Promise<void | Response> {
+        try {
+            res.setHeader("Access-Control-Allow-Origin", "*");
+
+            let id = req.params.id;
+            const token = req.query.code === "true" ? true : false;
+
+            if (token === true) {
+                const jwt = verifyJWT(req.headers.authorization.split(" ")[1]);
+
+                if (!jwt || jwt.exp < Date.now() / 1000) {
+                    return res.status(403).json({ message: "Forbidden" });
                 }
 
-                const JsonResponse = {
-                    userInfo: {
-                        platform_id: user.platform_id,
-                        username: user.username,
-                        images: {
-                            avatar: user.avatar,
-                            banner: user.banner,
-                            border: user.border,
-                        },
-                        preference: user.preference,
-                    },
-                    stats: {
-                        rank: user.rank,
-                        qp: user.qp,
-                    },
-                };
-                return res.status(200).json(JsonResponse);
-            })
-            .catch((err) => {
-                console.error(err);
-                return res.status(500).json({
-                    message: "An error occurred, please try again later.",
-                });
-            });
-    }
+                id = jwt.id;
+            }
 
-    @GET("profile/:id/inventory")
-    async getPlayerInventory(req: Request, res: Response) {
-        await db<User>("users")
-            .select("id")
-            .where("platform_id", req.params.id)
-            .first()
-            .then(async (user) => {
-                if (!user.id) {
-                    return res.status(404).json({ message: "User not found." });
+            if (!id) {
+                return res.status(400).json({ error: "Invalid request" });
+            }
+
+            setCache(req, `profile:${id}`);
+
+            const user = await db<User>("users")
+                .select("*")
+                .where("platform_id", id)
+                .first();
+
+            if (!user) {
+                return res.status(404).json({ message: "User not found." });
+            }
+
+            let completed = false;
+
+            const challenges = await db<ChallengeHistory>("challenge_histories")
+                .select("date")
+                .where("user_id", user.id)
+                .orderBy("date", "desc")
+                .first();
+
+            if (!challenges) {
+                completed = false;
+            } else {
+                if (challenges.date.slice(0, 10) === new Date().toISOString().slice(0, 10)) {
+                    completed = true;
                 }
-                await db<UserItem>("user_items")
-                    .select("item_id", "amount")
-                    .where("user_id", user.id)
-                    .then(async (items) => {
-                        let itemsArray: userInventoryRes[] = [];
+            }
 
-                        for (const item of items) {
-                            await db<Item>("items")
-                                .select("name_id", "image", "name")
-                                .where("id", item.item_id)
-                                .first()
-                                .then((itemData) => {
-                                    itemsArray.push({
-                                        id: itemData.name_id,
-                                        image: itemData.image,
-                                        name: itemData.name,
-                                        amount: item.amount,
-                                    });
-                                });
-                        }
+            const challengeCount = await db<ChallengeHistory>("challenge_histories")
+                .count("user_id as count")
+                .where("user_id", user.id)
+                .first();
 
-                        return res.status(200).json(itemsArray);
-                    });
-            })
-            .catch((err) => {
-                console.error(err);
-                return res.status(500).json({
-                    message: "An error occurred, please try again later.",
-                });
-            });
+            const object = challengeCount as unknown as { count: string };
+
+            const JsonResponse: userRes = {
+                userInfo: {
+                    id: user.platform_id,
+                    username: user.username,
+                    about: user.about,
+                    images: {
+                        avatar: user.avatar,
+                        banner: user.banner,
+                        border: user.border,
+                    },
+                    preference: user.preference,
+                    patreon: user.patreon,
+                    autoComplete: user.auto_complete,
+                    banned: user.banned
+                },
+                stats: {
+                    challengesCompleted: parseInt(object.count),
+                    rank: user.rank,
+                    qp: user.qp,
+                    value: user.value
+                },
+                today: {
+                    diff: user.diff,
+                    completed: completed
+                }
+            };
+
+            return res.status(200).json(JsonResponse);
+
+        } catch (err) {
+            console.error(err);
+            return res.sendStatus(500);
+        }
     }
 
     /**
-     * GET /profile/{id}/avatar
-     * @summary Get a player's avatar
-     * @tags users
+     * GET /profile/{id}/inventory
+     * @summary Get a player's inventory
+     * @tags Users
      * @param {string} id.path.required - The id of the player
-     * @return {image/png} 200 - Success
+     * @return {object} 200 - Success
      * @return {object} 404 - User not found
-     * @return {object} 500 - An error occurred
+     * @return {string} 500 - An error occurred
      * @example response - 200 - Success
+     *[
+     *    {
+     *        "id": "sp",
+     *        "image": "https://saberquest.xyz/images/silver_pieces_icon.png",
+     *        "name": "Silver Pieces",
+     *        "rarity": "Legendary",
+     *        "amount": 1
+     *    }
+     *]
      * @example response - 404 - User not found
      * {
      * "message": "User not found."
      * }
      * @example response - 500 - An error occurred
-     * {
-     * "message": "An error occurred, please try again later."
-     * }
+     * "An error occurred, please try again later."
      */
-    @GET("profile/:id/avatar")
-    getPlayerAvatar(req: Request, res: Response): Response {
-        const exists = fs.existsSync(`./data/avatars/${req.params.id}.png`);
-        if (!exists) {
-            return res.status(404).json({ message: "User not found." });
-        }
+    @GET("profile/:id/inventory")
+    async getPlayerInventory(req: Request, res: Response) {
         try {
-            const file = fs.readFileSync(`./data/avatars/${req.params.id}.png`);
+            res.setHeader("Access-Control-Allow-Origin", "*");
 
-            res.setHeader("Content-Type", "image/png");
-            res.setHeader("Content-Length", file.length);
-            res.status(200).end(file);
+            let id = req.params.id;
+            const token = req.query.code === "true" ? true : false;
+
+            if (token === true) {
+                const jwt = verifyJWT(req.headers.authorization.split(" ")[1]);
+
+                if (!jwt || jwt.exp < Date.now() / 1000) {
+                    return res.status(403).json({ message: "Forbidden" });
+                }
+
+                id = jwt.id;
+            }
+
+            if (!id) {
+                return res.status(400).json({ error: "Invalid request" });
+            }
+
+            setCache(req, `inventory:${id}`);
+
+            const user = await db<User>("users")
+                .select("id")
+                .where("platform_id", id)
+                .first();
+            if (!user.id) {
+                return res.status(404).json({ message: "User not found." });
+            }
+
+            const items = await db<UserItem>("user_items")
+                .select("item_id", "amount")
+                .where("user_id", user.id);
+
+            const itemsArray: userInventoryRes[] = [];
+
+            for (const item of items) {
+                await db<Item>("items")
+                    .select("name_id", "image", "name", "rarity")
+                    .where("id", item.item_id)
+                    .first()
+                    .then((itemData) => {
+                        itemsArray.push({
+                            id: itemData.name_id,
+                            image: itemData.image,
+                            name: itemData.name,
+                            rarity: itemData.rarity,
+                            amount: item.amount,
+                        });
+                    });
+            }
+
+            return res.status(200).json(itemsArray);
         } catch (err) {
-            return res.status(500).json({
-                message: "An error occurred, please try again later.",
-            });
+            console.error(err);
+            return res.sendStatus(500);
         }
     }
+
+    /**
+     * GET /profile/{id}/difficulty
+     * @summary Get the player's selected difficulty
+     * @tags Users
+     * @param {string} id.path.required - The id of the player
+     * @return {object} 200 - Success
+     * @return {object} 400 - Invalid request
+     * @return {object} 404 - User not found
+     * @return {string} 500 - Internal server error
+     * @example response - 200 - Success
+     * {
+     * "difficulty": 1
+     * }
+     * @example response - 400 - Invalid request
+     * {
+     * "error": "Invalid request"
+     * }
+     * @example response - 404 - User not found
+     * {
+     * "error": "User not found."
+     * }
+     * @example response - 500 - Internal server error
+     * "Internal server error"
+     */
+    @GET("profile/:id/difficulty")
+    async getPlayerDifficulty(req: Request, res: Response) {
+        try {
+            res.setHeader("Access-Control-Allow-Origin", "*");
+
+            let id = req.params.id;
+            const token = req.query.code === "true" ? true : false;
+
+            if (token === true) {
+                const jwt = verifyJWT(req.headers.authorization.split(" ")[1]);
+
+                if (!jwt || jwt.exp < Date.now() / 1000) {
+                    return res.status(403).json({ message: "Forbidden" });
+                }
+
+                id = jwt.id;
+            }
+
+            if (!id) {
+                return res.status(400).json({ error: "Invalid request" });
+            }
+
+            const user = await db<User>("users")
+                .select("diff")
+                .where("platform_id", id)
+                .first();
+            if (!user) {
+                return res.status(404).json({ error: "User not found." });
+            }
+            return res.status(200).json({ difficulty: user.diff });
+        } catch (err) {
+            console.error(err);
+            return res.sendStatus(500);
+        }
+    }
+
+    /**
+     * Create
+     * @typedef {object} createUser
+     * @property {string} authorization_code.required - The authorization code
+     * @property {string} platform_id.required - The player's platform id
+     * @property {string} username.required - The player's username
+     * @property {string} avatar.required - The player's avatar
+     * @property {string} preference.required - The player's preference
+     * @property {number} rank.required - The player's rank
+     */
 
     /**
      * PUT /profile/create
      * @summary Create a player's profile
-     * @tags users
+     * @tags Users
+     * @security BasicAuth
+     * @param {createUser} request.body.required - The player's profile data
+     * @return {string} 200 - Success
+     * @return {string} 403 - Forbidden
+     * @return {string} 500 - Internal server error
+     * @example response - 200 - Success
+     * "OK"
+     * @example response - 403 - Forbidden
+     * "Forbidden"
+     * @example response - 500 - Internal server error
+     * "Internal server error"
      */
     @PUT("profile/create")
     async createUser(req: Request, res: Response) {
         const userData = req.body;
         if (userData.authorization_code !== process.env.AUTHORIZATION_CODE) {
-            return res.status(401).send("Invalid authorization code.");
+            return res.sendStatus(403);
         }
         await db<User>("users")
             .insert({
@@ -179,15 +329,18 @@ export class PlayerProfile {
                 preference: userData.preference,
                 rank: userData.rank,
                 qp: 0,
+                value: 0,
+                patreon: false,
+                auto_complete: false,
+                diff: 0,
+                about: null
             })
             .then(() => {
                 res.sendStatus(200);
             })
             .catch((err) => {
                 console.error(err);
-                return res.status(500).json({
-                    message: `An error occurred, did you include all the data?!`,
-                });
+                return res.sendStatus(500);
             });
     }
 }

@@ -7,16 +7,19 @@ export interface IUserItem {
 
 interface IUserImages {
     avatar: string;
-    banner: string;
+    banner: boolean;
     border: string;
 }
 
 interface IUserInfo {
     id: string;
-    platform_id: string;
     username: string;
+    about: string;
     images: IUserImages;
     preference: string;
+    autoComplete: boolean;
+    patreon: boolean;
+    banned: boolean;
 }
 
 interface IUserStats {
@@ -33,8 +36,6 @@ interface IUserToday {
 
 export type userRes = {
     userInfo: IUserInfo;
-    chistory: string[];
-    items: IUserItem[];
     stats: IUserStats;
     today: IUserToday;
 };
@@ -43,5 +44,6 @@ export type userInventoryRes = {
     id: string;
     image: string;
     name: string;
+    rarity: string;
     amount: number;
 };

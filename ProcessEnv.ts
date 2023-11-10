@@ -8,6 +8,13 @@ export const env = z.object({
     REDIRECT_URI_API: z.string(),
     JWT_SECRET: z.string(),
     AUTHORIZATION_CODE: z.string(),
+    BEATLEADER_SECRET: z.string(),
+    BEATLEADER_ID: z.string(),
+    PROD_PATH: z.string(),
+    DISCORD_SECRET: z.string(),
+    DISCORD_ID: z.string(),
+    PATREON_SECRET: z.string(),
+    PATREON_ID: z.string(),
 });
 
 declare global {

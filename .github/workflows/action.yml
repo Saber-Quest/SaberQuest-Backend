@@ -4,6 +4,10 @@ on:
   push:
     branches: 
       - next
+      - dev/challenges
+  pull_request:
+    branches:
+      - next
       
     paths:
       - "./**/*.ts"
@@ -20,7 +24,7 @@ jobs:
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USER }}
         port: ${{ secrets.PORT }}
-        key: ${{ secrets.SSHKEY }}
+        password: ${{ secrets.PASSWORD }}
         rm: true
         source: "."
         target: "/var/www/dev.saberquest.xyz"
@@ -31,7 +35,7 @@ jobs:
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USER }}
         port: ${{ secrets.PORT }}
-        key: ${{ secrets.SSHKEY }}
+        password: ${{ secrets.PASSWORD }}
         script_stop: true
         script: |
           cd "/var/www/"
@@ -42,4 +46,4 @@ jobs:
           yarn actions
           cd dist/src
           pm2 delete main -s
-          pm2 start main.js -s
+          NODE_ENV=production pm2 start main.js -s

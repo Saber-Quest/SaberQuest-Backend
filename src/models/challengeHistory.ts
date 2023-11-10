@@ -1,7 +1,9 @@
-import { Challenge } from "./challenge";
-
 export class ChallengeHistory {
-    id: string;
-    challenges: Challenge[];
-    date: Date; // UTC ISO string formatted.
+    user_id: string;
+    challenge_id: string;
+    item_ids: string;
+    date: string;
+    difficulty: number;
+    qp: number;
+    preference: string;
 }

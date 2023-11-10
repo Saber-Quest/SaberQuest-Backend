@@ -1,8 +1,9 @@
 import "reflect-metadata";
+import * as dotenv from "dotenv";
+dotenv.config({ path: __dirname + "/../../.env"});
 import { readdirSync } from "fs";
 import express from "express";
 import { setupRoutes } from "./router";
-import { Server } from "socket.io";
 import path from "path";
 import cookieParser from "cookie-parser";
 const folders = readdirSync(path.join(__dirname, "api"));
@@ -12,17 +13,17 @@ for (let i = 0; i < folders.length; i++) {
         require(`./api/${folders[i]}/${files[j]}`);
     }
 }
-import * as dotenv from "dotenv";
-dotenv.config();
 import expressJSDocSwagger from "express-jsdoc-swagger";
+import switchChallenge from "./functions/challenges/dailyChallenge";
+import switchShop from "./functions/items/shop";
+import socketServer from "./websocket";
+import autoComplete from "./functions/challenges/autoComplete";
 
 async function main() {
     const httpPort = parseInt(process.env.PORT) || 5000;
-    const socketPort = parseInt(process.env.SOCKET_PORT) || 5001;
     const app = express();
-    const socketServer = new Server(socketPort);
 
-    console.log(`Web socket started on port ${socketPort}.`);
+    app.use(require("express-status-monitor")());
 
     const options = {
         info: {
@@ -34,7 +35,7 @@ async function main() {
             }
         },
         baseDir: __dirname,
-        filesPattern: "./api/**/*.ts",
+        filesPattern: "./api/**/*.{ts,js}",
         swaggerUIPath: "/docs",
         exposeSwaggerUI: true,
         exposeApiDocs: false,
@@ -46,8 +47,8 @@ async function main() {
     expressJSDocSwagger(app)(options);
 
     app.use(cookieParser());
-    app.use(express.json());
-    app.use(express.urlencoded());
+    app.use(express.json({ limit: "10mb" }));
+    app.use(express.urlencoded({ limit: "10mb", extended: true, parameterLimit: 10000 }));
 
     app.disable("x-powered-by");
 
@@ -61,11 +62,19 @@ async function main() {
         );
     });
 
+    console.log(`Websocket server listening on port ${process.env.SOCKET_PORT || 5001}`);
+
     socketServer.on("connection", (socket: any) => {
         console.log(
             `New listener connected.\nID: ${socket.id}\nIP: ${socket.handshake.address} (${socket.handshake.headers["x-forwarded-for"]})\n\n`
         );
     });
+
+    setInterval(() => {
+        switchChallenge();
+        switchShop();
+        autoComplete();
+    }, 1000 * 60);
 }
 
 main();

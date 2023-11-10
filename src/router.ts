@@ -1,62 +1,68 @@
 import { Express, RequestHandler } from "express";
 const routes: IRoutes[] = [];
 
-export function GET(route: string) {
+export function GET(route: string, middleware?: RequestHandler) {
     return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
         routes.push({
             function: descriptor.value,
             type: "GET",
-            route
+            route,
+            middleware
         });
     };
 }
 
-export function PUT(route: string) {
+export function PUT(route: string, middleware?: RequestHandler) {
     return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
         routes.push({
             function: descriptor.value,
             type: "PUT",
-            route
+            route,
+            middleware
         });
     };
 }
 
-export function PATCH(route: string) {
+export function PATCH(route: string, middleware?: RequestHandler) {
     return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
         routes.push({
             function: descriptor.value,
             type: "PATCH",
-            route
+            route,
+            middleware
         });
     };
 }
 
-export function DEL(route: string) {
+export function DEL(route: string, middleware?: RequestHandler) {
     return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
         routes.push({
             function: descriptor.value,
             type: "DEL",
-            route
+            route,
+            middleware
         });
     };
 }
 
-export function POST(route: string) {
+export function POST(route: string, middleware?: RequestHandler) {
     return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
         routes.push({
             function: descriptor.value,
             type: "POST",
-            route
+            route,
+            middleware
         });
     };
 }
 
-export function AllRoute(route: string) {
+export function AllRoute(route: string, middleware?: RequestHandler) {
     return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
         routes.push({
             function: descriptor.value,
             type: "ALL",
-            route
+            route,
+            middleware
         });
     };
 }
@@ -67,22 +73,52 @@ export function setupRoutes(app: Express) {
         console.log(route);
         switch (route.type) {
             case "ALL":
-                app.all("/" + route.route, route.function);
+                if (route.middleware) {
+                    app.all("/" + route.route, route.middleware, route.function);
+                }
+                else {
+                    app.all("/" + route.route, route.function);
+                }
                 break;
             case "POST":
-                app.post("/" + route.route, route.function);
+                if (route.middleware) {
+                    app.post("/" + route.route, route.middleware, route.function);
+                }
+                else {
+                    app.post("/" + route.route, route.function);
+                }
                 break;
             case "PATCH":
-                app.patch("/" + route.route, route.function);
+                if (route.middleware) {
+                    app.patch("/" + route.route, route.middleware, route.function);
+                }
+                else {
+                    app.patch("/" + route.route, route.function);
+                }
                 break;
             case "DEL":
-                app.delete("/" + route.route, route.function);
+                if (route.middleware) {
+                    app.delete("/" + route.route, route.middleware, route.function);
+                }
+                else {
+                    app.delete("/" + route.route, route.function);
+                }
                 break;
             case "PUT":
-                app.put("/" + route.route, route.function);
+                if (route.middleware) {
+                    app.put("/" + route.route, route.middleware, route.function);
+                }
+                else {
+                    app.put("/" + route.route, route.function);
+                }
                 break;
             case "GET":
-                app.get("/" + route.route, route.function);
+                if (route.middleware) {
+                    app.get("/" + route.route, route.middleware, route.function);
+                }
+                else {
+                    app.get("/" + route.route, route.function);
+                }
                 break;
 
             default:
@@ -95,4 +131,5 @@ interface IRoutes {
     route: string;
     type: string;
     function: RequestHandler;
+    middleware?: RequestHandler;
 }
