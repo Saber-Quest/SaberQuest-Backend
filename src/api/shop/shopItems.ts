@@ -6,6 +6,7 @@ import { Item } from "../../models/item";
 import { verifyJWT } from "../../functions/users/jwtVerify";
 import { User } from "../../models/user";
 import { UserItem } from "../../models/userItem";
+import setRanks from "../../functions/users/ranks";
 
 export class ShopItems {
     /**
@@ -196,6 +197,8 @@ export class ShopItems {
                             .update({
                                 value: user.value + itemValue.value
                             });
+
+                        setRanks(user.id);
 
                         return res.sendStatus(200);
                     }
