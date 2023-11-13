@@ -73,10 +73,6 @@ export class Update {
                 .where("platform_id", decoded.id)
                 .first();
 
-            if (!user.patreon) {
-                return res.status(400).json({ error: "Not a patreon" });
-            }
-
             await db<User>("users")
                 .update("about", about)
                 .where("platform_id", decoded.id);
@@ -108,6 +104,7 @@ export class Update {
      * @return {object} 400 - Username too long
      * @return {object} 400 - Not a patreon
      * @return {object} 400 - Invalid token
+     * @return {object} 400 - Invalid username
      * @return {string} 500 - Internal server error
      * @example response - 200 - Success
      * "OK"
@@ -127,6 +124,10 @@ export class Update {
      * {
      * "error": "Invalid token"
      * }
+     * @example response - 400 - Invalid username
+     * {
+     * "error": "Invalid username"
+     * }
      * @example response - 500 - Internal server error
      * "Internal server error"
      */
@@ -141,6 +142,12 @@ export class Update {
 
             if (username.length > 20) {
                 return res.status(400).json({ error: "Username too long" });
+            }
+
+            const regex = new RegExp("^[A-Za-z0-9_.]+(?:[ _-][A-Za-z0-9_.]+)*$");
+
+            if (!regex.test(username)) {
+                return res.status(400).json({ error: "Invalid username" });
             }
 
             const decoded = verifyJWT(token);
