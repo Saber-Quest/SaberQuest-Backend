@@ -15,7 +15,7 @@ export default async function autoComplete() {
 
         const completed = await db<ChallengeHistory>("challenge_histories")
             .select("user_id", "date")
-            .orderBy("date", "desc")
+            .orderBy("date", "desc");
 
         for (const person of completed) {
             if (new Date(person.date).setUTCHours(0, 0, 0, 0) < new Date().setUTCHours(0, 0, 0, 0)) {

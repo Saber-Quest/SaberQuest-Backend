@@ -16,7 +16,7 @@ export default async function BeatLeader(type: string, challenge: number[], id: 
         sortBy: "date",
         page: 1,
         count: 50
-    })
+    });
 
     switch (type) {
         case "fcNotes":

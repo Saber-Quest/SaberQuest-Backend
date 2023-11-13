@@ -73,7 +73,7 @@ export class SelectChallenge {
             await db("users")
                 .select("id", "platform_id")
                 .where("platform_id", jwt.id)
-                .update({ diff: challengeNum })
+                .update({ diff: challengeNum });
 
             clearUserCache(jwt.id);
 

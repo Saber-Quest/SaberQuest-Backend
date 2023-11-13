@@ -224,7 +224,7 @@ export async function seed(knex: Knex): Promise<void> {
         }
     ]);
 
-    const todayAtMidnight = new Date().setUTCHours(0, 0, 0, 0)
+    const todayAtMidnight = new Date().setUTCHours(0, 0, 0, 0);
 
     await knex<ChallengeHistory>("challenge_histories").insert([
         {
