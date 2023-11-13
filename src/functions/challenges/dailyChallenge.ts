@@ -15,26 +15,25 @@ async function switchChallenge() {
 
     if (date >= new Date(challenge.date).getTime() + (1000 * 60 * 60 * 24)) {
         const challengeSets = await db<ChallengeSet>("challenge_sets")
-            .select("*");
+            .select("*")
+            .where("id", "!=", challenge.challenge_id);
 
-        const filtered = challengeSets.filter((set) => set.id !== challenge.challenge_id);
-
-        const random = Math.floor(Math.random() * filtered.length);
+        const random = Math.floor(Math.random() * challengeSets.length);
 
         await db<ChallengeHistory>("challenge_histories")
             .insert({
-                challenge_id: filtered[random].id,
+                challenge_id: challengeSets[random].id,
                 date: new Date(new Date().setUTCHours(0, 0, 0, 0)).toISOString(),
             });
 
         const difficulties = await db<Difficulty>("difficulties")
             .select("*")
-            .where("challenge_id", filtered[random].id);
+            .where("challenge_id", challengeSets[random].id);
 
         socketServer.emit("daily", {
-            name: filtered[random].name,
-            type: filtered[random].type,
-            description: filtered[random].description,
+            name: challengeSets[random].name,
+            type: challengeSets[random].type,
+            description: challengeSets[random].description,
             difficulties: difficulties.map((diff) => {
                 return {
                     challenge: diff.challenge,
