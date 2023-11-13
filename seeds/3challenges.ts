@@ -217,18 +217,11 @@ export async function seed(knex: Knex): Promise<void> {
         }
     ]);
 
-    await knex<ChallengeHistory>("challenge_histories").insert([
-        {
-            challenge_id: pp.id,
-            date: new Date().toISOString(),
-        }
-    ]);
-
     const todayAtMidnight = new Date().setUTCHours(0, 0, 0, 0);
 
     await knex<ChallengeHistory>("challenge_histories").insert([
         {
-            challenge_id: map.id,
+            challenge_id: pp.id,
             date: new Date(todayAtMidnight).toISOString(),
         }
     ]);

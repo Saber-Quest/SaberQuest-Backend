@@ -61,6 +61,8 @@ export async function seed(knex: Knex): Promise<void> {
         possibleItems.splice(random, 1);
     }
 
+    const todayAtMidnight = new Date().setUTCHours(0, 0, 0, 0);
+
     for (const item of items) {
         await knex<ShopItem>("shop_items").insert({
             id: item.id,
@@ -69,7 +71,7 @@ export async function seed(knex: Knex): Promise<void> {
             rarity: item.rarity,
             price: item.price,
             image: item.image,
-            date: new Date().toISOString()
+            date: new Date(todayAtMidnight).toISOString(),
         });
     }
 
