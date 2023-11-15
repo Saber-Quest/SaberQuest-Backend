@@ -333,7 +333,9 @@ export class PlayerProfile {
                 patreon: false,
                 auto_complete: false,
                 diff: 0,
-                about: null
+                about: null,
+                banned: false,
+                admin: false
             })
             .then(() => {
                 res.sendStatus(200);

@@ -39,7 +39,9 @@ enum DifficultyEnum {
  *        },
  *        "preference": "bl",
  *        "patreon": null,
- *        "autoComplete": null
+ *        "autoComplete": null,
+ *        "admin": true,
+ *        "banned": false
  *    },
  *    "stats": {
  *        "challengesCompleted": 4,
@@ -340,7 +342,9 @@ export class AdvancedPlayerProfile {
                     },
                     preference: user.preference,
                     patreon: user.patreon,
-                    autoComplete: user.auto_complete
+                    autoComplete: user.auto_complete,
+                    admin: user.admin,
+                    banned: user.banned
                 },
                 stats: {
                     challengesCompleted: challengeCount,
