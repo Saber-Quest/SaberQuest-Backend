@@ -53,7 +53,7 @@
     "migrate": "knex migrate:latest",
     "seed:run": "knex seed:run",
     "seed:make": "knex seed:make",
-    "actions": "yarn deps:get && yarn db && yarn build",
+    "actions": "yarn deps:get && yarn build",
     "lint": "yarn deps:get && yarn eslint **/*.ts"
   }
 }
