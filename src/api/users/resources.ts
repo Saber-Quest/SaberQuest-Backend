@@ -32,7 +32,7 @@ export class Resources {
         let exists: boolean;
 
         if (process.env.NODE_ENV === "production") {
-            exists = fs.existsSync(`${process.env.PROD_PATH}data/avatars/${id}.png`);
+            exists = fs.existsSync(`${process.env.PROD_PATH}../data/avatars/${id}.png`);
         }
         else {
             exists = fs.existsSync(`./data/avatars/${id}.png`);
@@ -45,7 +45,7 @@ export class Resources {
             let file: Buffer;
 
             if (process.env.NODE_ENV === "production") {
-                file = fs.readFileSync(`${process.env.PROD_PATH}data/avatars/${id}.png`);
+                file = fs.readFileSync(`${process.env.PROD_PATH}../data/avatars/${id}.png`);
             }
             else {
                 file = fs.readFileSync(`./data/avatars/${id}.png`);
@@ -79,7 +79,7 @@ export class Resources {
         let exists: boolean;
 
         if (process.env.NODE_ENV === "production") {
-            exists = fs.existsSync(`${process.env.PROD_PATH}data/banners/${style}/${id}.png`);
+            exists = fs.existsSync(`${process.env.PROD_PATH}../data/banners/${style}/${id}.png`);
         }
         else {
             exists = fs.existsSync(`./data/banners/${style}/${id}.png`);
@@ -92,7 +92,7 @@ export class Resources {
             let file: Buffer;
 
             if (process.env.NODE_ENV === "production") {
-                file = fs.readFileSync(`${process.env.PROD_PATH}data/banners/${style}/${id}.png`);
+                file = fs.readFileSync(`${process.env.PROD_PATH}../data/banners/${style}/${id}.png`);
             }
             else {
                 file = fs.readFileSync(`./data/banners/${style}/${id}.png`);

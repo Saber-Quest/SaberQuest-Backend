@@ -10,7 +10,7 @@ export async function createBuffer(url: string): Promise<Buffer> {
 
 export function downloadAvatar(buffer: Buffer, id: string): void {
     if (process.env.NODE_ENV === "production") {
-        fs.writeFileSync(`./../../data/avatars/${id}.png`, buffer);
+        fs.writeFileSync(`${process.env.PROD_PATH}../data/avatars/${id}.png`, buffer);
         return;
     }
     fs.writeFileSync(`./data/avatars/${id}.png`, buffer);
@@ -18,7 +18,7 @@ export function downloadAvatar(buffer: Buffer, id: string): void {
 
 export function downloadBanner(buffer: Buffer, id: string, type: string): void {
     if (process.env.NODE_ENV === "production") {
-        fs.writeFileSync(`./../../data/banners/${type}/${id}.png`, buffer);
+        fs.writeFileSync(`${process.env.PROD_PATH}../data/banners/${type}/${id}.png`, buffer);
         return;
     }
     fs.writeFileSync(`./data/banners/${type}/${id}.png`, buffer);
@@ -28,7 +28,7 @@ export async function compareAvatars(url: string, id: string): Promise<void> {
     const buffer = await createBuffer(url);
     let exists: boolean;
     if (process.env.NODE_ENV === "production") {
-        exists = fs.existsSync(`${process.env.PROD_PATH}data/avatars/${id}.png`);
+        exists = fs.existsSync(`${process.env.PROD_PATH}../data/avatars/${id}.png`);
     } else {
         exists = fs.existsSync(`./data/avatars/${id}.png`);
     }
@@ -39,7 +39,7 @@ export async function compareAvatars(url: string, id: string): Promise<void> {
     let file: Buffer;
 
     if (process.env.NODE_ENV === "production") {
-        file = fs.readFileSync(`${process.env.PROD_PATH}data/avatars/${id}.png`);
+        file = fs.readFileSync(`${process.env.PROD_PATH}../data/avatars/${id}.png`);
     } else {
         file = fs.readFileSync(`./data/avatars/${id}.png`);
     }
