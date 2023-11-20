@@ -10,7 +10,7 @@ async function switchChallenge() {
     const date = new Date().getTime();
     const challenge = await db<ChallengeHistory>("challenge_histories")
         .select("challenge_id", "date")
-        .where("user_id", "=", null)
+        .where("user_id", null)
         .orderBy("date", "desc")
         .first();
 
