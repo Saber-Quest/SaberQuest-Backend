@@ -25,12 +25,16 @@ export class PlayerProfile {
      * "userInfo": {
      *     "id": "76561198343533017",
      *     "username": "StormPacer",
+     *     "about": null,
      *     "images": {
      *         "avatar": "https://api.saberquest.xyz/profile/76561198343533017/avatar",
      *         "banner": null,
      *         "border": null
      *     },
-     *     "preference": "bl"
+     *     "preference": "bl",
+     *     "patreon": false,
+     *     "autoComplete": true,
+     *     "banned": null,
      * },
      * "stats": {
      *     "challengesCompleted": 4,

@@ -4,7 +4,8 @@ import { ShopItem } from "../../models/shopItem";
 import socketServer from "../../websocket";
 
 async function switchShop() {
-    const date = new Date().getTime();
+    const today = new Date().setUTCHours(0, 0, 0, 0);
+    const date = new Date(today).getTime();
 
     const shop = await db<ShopItem>("shop_items")
         .select("date")
@@ -16,7 +17,7 @@ async function switchShop() {
 
         const items = [];
         const possibleItems = await db<Item>("items").select("*");
-    
+
         for (let i = 0; i < 5; i++) {
             const random = Math.floor(Math.random() * possibleItems.length);
             items.push({
@@ -29,7 +30,7 @@ async function switchShop() {
             });
             possibleItems.splice(random, 1);
         }
-    
+
         for (const item of items) {
             await db<ShopItem>("shop_items").insert({
                 id: item.id,

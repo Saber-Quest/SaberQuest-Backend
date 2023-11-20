@@ -7,9 +7,11 @@ import { User } from "../../models/user";
 import { Difficulty } from "../../models/difficulty";
 
 async function switchChallenge() {
-    const date = new Date().getTime();
+    const today = new Date().setUTCHours(0, 0, 0, 0);
+    const date = new Date(today).getTime();
     const challenge = await db<ChallengeHistory>("challenge_histories")
         .select("challenge_id", "date")
+        .where("user_id", "=", null)
         .orderBy("date", "desc")
         .first();
 
