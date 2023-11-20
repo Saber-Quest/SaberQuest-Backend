@@ -4,8 +4,7 @@ import { ShopItem } from "../../models/shopItem";
 import socketServer from "../../websocket";
 
 async function switchShop() {
-    const today = new Date().setUTCHours(0, 0, 0, 0);
-    const date = new Date(today).getTime();
+    const date = new Date().getTime();
 
     const shop = await db<ShopItem>("shop_items")
         .select("date")
