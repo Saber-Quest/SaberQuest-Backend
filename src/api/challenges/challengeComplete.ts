@@ -96,7 +96,7 @@ export class ChallengeComplete {
             }
 
             if (challenge) {
-                if (new Date(challenge.date).getUTCDay() === new Date().getUTCDay()) {
+                if (new Date(challenge.date).getUTCDay() === new Date().getUTCDay() && new Date(challenge.date).getUTCFullYear() === new Date().getUTCFullYear() && new Date(challenge.date).getUTCMonth() === new Date().getUTCMonth()) {
                     return res.status(400).json({ error: "Challenge already completed today" });
                 }
             }

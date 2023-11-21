@@ -11,7 +11,6 @@ export default async function fcNotes(response: SSPlayerScores, todayUnix: numbe
                 for (const diff of map.versions[0].diffs) {
                     if (diff.difficulty === data.leaderboard.difficulty.difficultyRaw.split("_")[1].split("_")[0]) {
                         if (diff.notes >= challenge[0]) {
-                            console.log("fcNotes");
                             return true;
                         }
                     }
