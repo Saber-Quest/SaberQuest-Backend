@@ -13,7 +13,6 @@ export default async function BeatLeader(type: string, challenge: number[], id: 
     const todayUnix = new Date(today).getTime();
 
     const response = await yabsl.BeatLeader.scores.get(id, {
-        sortBy: "date",
         page: 1,
         count: 50
     });
