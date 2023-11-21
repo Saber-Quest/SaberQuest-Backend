@@ -9,11 +9,8 @@ export default async function fcNotes(response: SSPlayerScores, todayUnix: numbe
                 const map = await BeatSaver.maps.hash(data.leaderboard.songHash);
 
                 for (const diff of map.versions[0].diffs) {
-                    console.log(diff.difficulty, data.leaderboard.difficulty.difficultyRaw.split("_")[1].split("_")[0]);
                     if (diff.difficulty === data.leaderboard.difficulty.difficultyRaw.split("_")[1].split("_")[0]) {
-                        console.log("diff.notes: " + diff.notes);
                         if (diff.notes >= challenge[0]) {
-                            console.log("fcNotes true");
                             return true;
                         }
                     }

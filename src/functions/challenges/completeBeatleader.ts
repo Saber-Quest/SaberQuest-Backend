@@ -18,21 +18,21 @@ export default async function BeatLeader(type: string, challenge: number[], id: 
     });
 
     switch (type) {
-        case "fcNotes":
+        case "fcnotes":
             return await fcNotes(response, todayUnix, challenge);
-        case "fcStars":
+        case "fcstars":
             return fcStars(response, todayUnix, challenge);
         case "pp":
             return pp(response, todayUnix, challenge);
         case "map":
             return map(response, todayUnix, challenge);
-        case "passNotes":
+        case "passnotes":
             return await passNotes(response, todayUnix, challenge);
-        case "xAccuracyNotes":
+        case "xaccuracynotes":
             return await xAccuracyNotes(response, todayUnix, challenge);
-        case "xAccuracyPp":
+        case "xaccuracypp":
             return xAccuracyPp(response, todayUnix, challenge);
-        case "xAccuracyStars":
+        case "xaccuracystars":
             return xAccuracyStars(response, todayUnix, challenge);
     }
 
