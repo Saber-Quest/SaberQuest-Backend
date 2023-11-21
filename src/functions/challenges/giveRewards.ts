@@ -202,5 +202,7 @@ export default async function giveRewards(id: string, diff: number, challengeId:
 
     setRanks(user.id);
 
+    console.log(`[LOG] Gave rewards to ${id}.`);
+
     return rewards;
 }
