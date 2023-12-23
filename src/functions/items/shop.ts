@@ -3,6 +3,25 @@ import { Item } from "../../models/item";
 import { ShopItem } from "../../models/shopItem";
 import socketServer from "../../websocket";
 
+async function getRandomItem(rarity: string, items: string[]) {
+    const item = await db<Item>("items")
+        .select("*")
+        .where("rarity", rarity)
+        .andWhere("price", ">", 0)
+        .whereNotIn("name_id", items)
+        .orderByRaw("RANDOM()")
+        .first();
+
+    return {
+        id: item.id,
+        name_id: item.name_id,
+        name: item.name,
+        image: item.image,
+        rarity: item.rarity,
+        price: item.price
+    }
+}
+
 async function switchShop() {
     const date = new Date().getTime();
 
@@ -15,19 +34,33 @@ async function switchShop() {
         await db("shop_items").del();
 
         const items = [];
-        const possibleItems = await db<Item>("items").select("*");
+
+        const itemChances = {
+            common: 0.75,
+            uncommon: 0.90,
+            rare: 0.95,
+            epic: 0.99,
+        }
 
         for (let i = 0; i < 5; i++) {
-            const random = Math.floor(Math.random() * possibleItems.length);
-            items.push({
-                id: possibleItems[random].id,
-                name_id: possibleItems[random].name_id,
-                name: possibleItems[random].name,
-                image: possibleItems[random].image,
-                rarity: possibleItems[random].rarity,
-                price: possibleItems[random].price
-            });
-            possibleItems.splice(random, 1);
+            const rarity = Math.random();
+
+            if (rarity <= itemChances.common) {
+                const item = await getRandomItem("Common", items.map((item) => item.name_id));
+                items.push(item);
+            } else if (rarity <= itemChances.uncommon) {
+                const item = await getRandomItem("Uncommon", items.map((item) => item.name_id));
+                items.push(item);
+            } else if (rarity <= itemChances.rare) {
+                const item = await getRandomItem("Rare", items.map((item) => item.name_id));
+                items.push(item);
+            } else if (rarity <= itemChances.epic) {
+                const item = await getRandomItem("Epic", items.map((item) => item.name_id));
+                items.push(item);
+            } else {
+                const item = await getRandomItem("Legendary", items.map((item) => item.name_id));
+                items.push(item);
+            }
         }
 
         for (const item of items) {
