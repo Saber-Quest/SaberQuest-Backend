@@ -7,7 +7,7 @@ async function getRandomItem(rarity: string, items: string[]) {
     const item = await db<Item>("items")
         .select("*")
         .where("rarity", rarity)
-        .andWhere("price", ">", 0)
+        .whereNot("price", 0)
         .whereNotIn("name_id", items)
         .orderByRaw("RANDOM()")
         .first();
