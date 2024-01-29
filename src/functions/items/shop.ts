@@ -19,7 +19,7 @@ async function getRandomItem(rarity: string, items: string[]) {
         image: item.image,
         rarity: item.rarity,
         price: item.price
-    }
+    };
 }
 
 async function switchShop() {
@@ -36,11 +36,11 @@ async function switchShop() {
         const items = [];
 
         const itemChances = {
-            common: 0.75,
-            uncommon: 0.90,
-            rare: 0.95,
+            common: 0.4,
+            uncommon: 0.8,
+            rare: 0.9,
             epic: 0.99,
-        }
+        };
 
         for (let i = 0; i < 5; i++) {
             const rarity = Math.random();
