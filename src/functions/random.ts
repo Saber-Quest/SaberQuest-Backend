@@ -1,5 +1,5 @@
 import { randomInt } from "crypto";
-
+// We be creating our own tokens now B)
 export function createRandomToken() {
     let token = "";
     const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
