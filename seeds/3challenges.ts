@@ -2,8 +2,6 @@ import { Knex } from "knex";
 import { ChallengeSet } from "../src/models/challengeSet";
 import { Difficulty } from "../src/models/difficulty";
 import { ChallengeHistory } from "../src/models/challengeHistory";
-import { User } from "../src/models/user";
-import { Item } from "../src/models/item";
 
 export async function seed(knex: Knex): Promise<void> {
     await knex("difficulties").del();
