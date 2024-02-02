@@ -259,7 +259,7 @@ export class AdvancedPlayerProfile {
 
             const challengeCount = await db<ChallengeHistory>("challenge_histories")
                 .where("user_id", user.id)
-                .count("id as count")
+                .count("user_id as count")
 
             const fixedChallengeCount = challengeCount as unknown as { count: string }[];
 
