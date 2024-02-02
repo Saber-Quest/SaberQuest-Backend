@@ -257,7 +257,11 @@ export class AdvancedPlayerProfile {
                 }
             }
 
-            const challengeCount = challenges.length;
+            const challengeCount = await db<ChallengeHistory>("challenge_histories")
+                .where("user_id", user.id)
+                .count("id as count")
+
+            const fixedChallengeCount = challengeCount as unknown as { count: string }[];
 
             const mappedChallenges = challenges.map(async (history: ChallengeHistory) => {
                 const items = history.item_ids.split(",");
@@ -347,7 +351,7 @@ export class AdvancedPlayerProfile {
                     banned: user.banned
                 },
                 stats: {
-                    challengesCompleted: challengeCount,
+                    challengesCompleted: parseInt(fixedChallengeCount[0].count),
                     rank: user.rank,
                     qp: user.qp,
                     value: user.value
