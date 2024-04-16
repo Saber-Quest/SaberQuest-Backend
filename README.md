@@ -4,7 +4,7 @@ The backend code for [SaberQuest](https://saberquest.xyz).
 
 ## API
 
-You can view all of the endpoints over at the [Swagger documentation](https://dev.saberquest.xyz/docs).
+You can view all of the endpoints over at the [Swagger documentation](https://api.saberquest.xyz/docs).
 
 ## Frontend 🖥️
 - [Frontend Service](https://github.com/Saber-Quest/SaberQuest-frontend)
