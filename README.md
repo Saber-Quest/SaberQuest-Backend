@@ -2,6 +2,7 @@
 
 The backend code for [SaberQuest](https://saberquest.xyz).
 
+
 ## API
 
 You can view all of the endpoints over at the [Swagger documentation](https://api.saberquest.xyz/docs).
