@@ -1,170 +1,137 @@
-# This branch is currently stale, the rewrite is being done on the dev/knex/pgsql branch
+# SaberQuest - Backend 🗄️
 
-## Why are you rewriting the project?!
+The backend code for [SaberQuest](https://saberquest.xyz).
 
-In short, the web server was basically broken from release and didn't work properly half the time, and as such, this version of the web server is largely unsupported and anything gained/done on the current version will be lost when the rewrite releases.
 
-## Are you a developer? We welcome contributions!
+## API
 
-While yes, we're working on this largely internally, all of our code is open source under [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0) and welcomes contributions to make development go faster, making you, the end-user have the product faster. All questions regarding the project should be asked in [the developer channel](https://canary.discord.com/channels/1036356704742416505/1139295840465342558) in [the discord](https://discord.gg/ZRvXXqd9jM)
+You can view all of the endpoints over at the [Swagger documentation](https://api.saberquest.xyz/docs).
 
----
+## Frontend 🖥️
+- [Frontend Service](https://github.com/Saber-Quest/SaberQuest-frontend)
 
-# API Endpoints
+# Want to help?
 
-## Use these API endpoints if you want to get data from SaberQuest.
+> [!NOTE]
+> Contributions are always appreciated!
+> 
+> If you want to contribute, fork the repository and make a pull request.
+> The name of the pull request should represent what you are trying to add.
+> If you want to contribute to the frontend, go to the [Frontend Repository](https://github.com/Saber-Quest/SaberQuest-frontend).
+>
+> Every pull request will be review by a maintainer, and if it is accepted, it will be merged into the next-branch for testing.
+> If it passes testing and is stable, it will be merged into the main branch, otherwise a maintainer will contact you to fix the issues.
+>
+> This can take 3-4 days, so please be patient, as we're all working on this in our free time. Thank you!
+#
+## Getting started
 
-`/api/current-deals` - Returns a JSON array of all the items that are currently
-being sold in the shop.
+First, install the dependencies:
 
-```js
-{
-    "message": "string",
-    "deals": object[]
-}
-
-// Example of the deals object
-
-{
-    "id": "string",
-    "price": int,
-    "rarity": "string",
-    "value": int
-}
+```bash
+npm run deps:get
+# or
+yarn deps:get
 ```
 
-`/api/daily-challenges` - Returns a JSON array of the current challenges.
+> [!IMPORTANT]
+> You will need to set up the environment before you can start working on this!
 
+> [!WARNING]
+> Make sure that you use never before made secrets and authorization codes
+> to prevent people from cracking your security.
+
+Environment variables:
 ```js
-{
-    "message": "string",
-    "type": "string",
-    "task": "string",
-    "dailyChallenges": object[]
-}
-
-// Daily Challenges object is different depending on the type of challenge.
+DISCORD_SECRET // most likely you won't use
+DISCORD_ID // most likely you won't use
+BEATLEADER_SECRET // most likely you won't use
+BEATLEADER_ID // most likely you won't use
+PATREON_SECRET  // most likely you won't use
+PATREON_ID // most likely you won't use
+PORT
+SOCKET_PORT
+JWT_SECRET
+REDIRECT_URI
+REDIRECT_URI_API
+AUTHORIZATION_CODE
+PROD_PATH
 ```
 
-`/api/items` - Returns a JSON array of all the items available on SaberQuest.
-The objects contain the item ID, full name and where their image is being
-stored.
+Secondly configure the database.
 
-```js
-// Returns all of the objects in one response, example of one object below.
+> [!IMPORTANT]
+> You will need a docker container for PostgreSQL.
+>
+> If you're using windows, install [Docker Desktop](https://www.docker.com/products/docker-desktop/) OR 
+> use WSL2 and use the [Docker Engine](https://docs.docker.com/desktop/install/linux-install/).
+>
+> If you're using linux, install the [Docker Engine](https://docs.docker.com/desktop/install/linux-install/).
 
-{
-    "id": "string",
-    "image": "string",
-    "name": "string"
-}
+Start up a PostgreSQL docker container and edit the configuration in `src/config.json`.
+
+If you don't know how to use docker, run this command:
+
+```bash
+docker run --name SaberQuest -e POSTGRES_PASSWORD=test -d -p 5432:5432 postgres
 ```
 
-`/api/top-players` - Returns a JSON array of all the top players. Must include a
-page query. Example: `/api/top-players?page=1`
+config.json is already configured for this setup.
 
-```js
-{
-    "message": "string",
-    "topPlayers": object[]
-}
+After you've successfully initialized the database run the following command:
 
-// Example of a topPLayers object
-
-{
-    "_id": "string",
-    "userId": "string",
-    "r": int, // Rank
-    "cp": int, // Challenges completed
-    "value": int
-}
+```bash
+npm run db
+# or
+yarn db
 ```
 
-`/api/user` - Returns a JSON object of the requested user. Needed parameter is
-the user ID. Example: `/api/user/76561198343533017`
+Then to run the development server use this command:
 
-```js
-{
-    "message": "string",
-    "user": "string",
-    "preference": "string",
-    "rank": int,
-    "qp": int, // Quest points
-    "challengesCompleted": int,
-    "collectibles": object[],
-    "value": int,
-    "diff": int, // Currently selected difficulty, 4 = none selected
-    "completed": bool // If challenge is completed or not
-}
-
-// Example of collectibles object
-
-{
-    "name": "string",
-    "amount": int
-}
+```bash
+npm run dev
+# or
+yarn dev
 ```
 
-# Websocket
+Or if you prefer running the nodemon version:
 
-SaberQuest also has a websocket that you can listen to if you want to get all
-the latest updates.
-
-The websocket runs on port 8080, you can listen to it at `ws://saberquest.xyz:8080`.
-
-Each update has it's own specific event, so make sure to listen to the events
-that you need.
-
-## Events
-
-`userUpdate` - Emitted each time a user gets a new collectible or gets one taken
-away through crafting.
-
-```js
-{
-    "userId": "string",
-    "type": "string", // (add/remove)
-    "collectibles": string[],
-    "value": int
-}
+```bash
+npm run watch
+# or 
+yarn watch
 ```
 
-`challengeCompleted` - Emitted each time a user completes a challenge.
+Open localhost on the port that you've set in the .env file.
 
-```js
-{
-    "userId": "string",
-    "difficulty": "string",
-    "rewards": string[]
-}
-```
+## Scripts
 
-`itemBought` - Emitted each time a user buys a new collectible from the shop.
+- `dev` - Runs the development server on the specified port (default 5000)
+- `build` - Builds the server for deployment
+- `watch` - Runs the development server using nodemon
+- `db` - Runs the migrations and seeds for the database
+- `deps:get` - Runs deps:global and deps:local
+- `deps:global` - Globally installs typescript, ts-node, nodemon and yarn
+- `deps:local` - Install the dependencies using yarn
+- `migrate` - Runs the database migrations
+- `seed:run` - Seeds the database with dummy data
+- `seed:make` - Makes a new seed template
+- `actions` - Used for CI/CD to automatically build the project on the server.
+- `lint` - Runs eslint
 
-```js
-{
-    "userId": "string",
-    "item": "string",
-    "qp": int,
-    "value": int
-}
-```
+## Learn More
 
-`newUser` - Emitted each time a new user gets added to SaberQuest.
+If you want to learn how to contribue to SaberQuest but don't know where to start, here are some useful resources:
 
-```js
-{
-    "userId": "string",
-    "link": "string"
-}
-```
+Language:
 
-`gamble` - Emitted each time a user gambles and gets something.
+- [Learn NodeJS](https://www.w3schools.com/nodejs/default.asp) - Learn about NodeJS and it's quirks.
+- [TypeScript Documentation](https://www.typescriptlang.org/docs/) - Learn how TypeScript differs from NodeJS and how to use it's types.
 
-```js
-{
-    "userId": "string",
-    "itemWon": "string",
-    "rarity": "string"
-}
-```
+Express:
+
+- [Getting Started](https://www.typescriptlang.org/docs/) - How to get started with express.
+- [Guide](https://expressjs.com/en/guide/routing.html) - A writeup on what and how you can do stuff with express.
+- [Documentation](https://expressjs.com/en/4x/api.html) - Express documentation.
+
+This project is licensed under the Apache-2.0 License - see the [LICENSE](LICENSE) file for details.
